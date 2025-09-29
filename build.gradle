@@ -1,0 +1,83 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'idea'
+}
+
+group = 'javanaise'
+version = '1.0.0'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+repositories {
+    mavenCentral()
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src']
+        }
+    }
+}
+
+dependencies {
+}
+
+// Set the main class for the application plugin
+application {
+    mainClass = 'irc.Irc'
+}
+
+// Configure the run task with proper JVM arguments for RMI
+run {
+    jvmArgs = [
+        '-Djava.security.policy=all.policy',
+        '-Djava.rmi.server.codebase=file://' + projectDir.absolutePath + '/build/classes/java/main/'
+    ]
+}
+
+// Create a simple security policy file if it doesn't exist
+tasks.register('createSecurityPolicy') {
+    doLast {
+        def policyFile = file('all.policy')
+        if (!policyFile.exists()) {
+            policyFile.text = '''grant {
+    permission java.security.AllPermission;
+};'''
+        }
+    }
+}
+
+// Ensure security policy is created before running
+run.dependsOn createSecurityPolicy
+compileJava.dependsOn createSecurityPolicy
+
+// Configure JAR task
+jar {
+    archiveBaseName = 'javanaise-chat'
+    
+    manifest {
+        attributes(
+            'Main-Class': 'irc.Irc'
+        )
+    }
+    
+    // Include all classes in the JAR
+    from sourceSets.main.output
+}
+
+// Task to run the coordinator (if needed separately)
+tasks.register('runCoordinator', JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'jvn.JvnCoordImpl'
+    jvmArgs = [
+            '-Djava.security.policy=all.policy',
+            '-Djava.rmi.server.codebase=file://' + projectDir.absolutePath + '/build/classes/java/main/'
+    ]
+}
+
+runCoordinator.dependsOn createSecurityPolicy
