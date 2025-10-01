@@ -1,4 +1,7 @@
-package jvn;
+package jvn.Implementations;
+
+import jvn.Exceptions.JvnException;
+import jvn.Models.JvnObject;
 
 import java.io.Serializable;
 

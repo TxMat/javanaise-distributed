@@ -8,10 +8,13 @@
 package irc;
 
 import java.awt.*;
-import java.awt.event.*; 
+import java.awt.event.*;
 
 
-import jvn.*;
+import jvn.Exceptions.JvnException;
+import jvn.Implementations.JvnServerImpl;
+import jvn.Models.JvnObject;
+
 import java.io.*;
 
 
@@ -19,7 +22,7 @@ public class Irc {
 	public TextArea		text;
 	public TextField	data;
 	Frame 			frame;
-	JvnObject       sentence;
+	JvnObject sentence;
 
 
   /**

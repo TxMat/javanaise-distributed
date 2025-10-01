@@ -5,7 +5,9 @@
  * Authors: 
  */
 
-package jvn; 
+package jvn.Models;
+
+import jvn.Exceptions.JvnException;
 
 import java.io.*;
 
@@ -23,21 +25,21 @@ public interface JvnObject extends Serializable {
 	* @throws JvnException
 	**/
 	public void jvnLockRead()
-	throws jvn.JvnException; 
+	throws JvnException;
 
 	/**
 	* Get a Write lock on the object 
 	* @throws JvnException
 	**/
 	public void jvnLockWrite()
-     	throws jvn.JvnException; 
+     	throws JvnException;
 
 	/**
 	* Unlock  the object 
 	* @throws JvnException
 	**/
 	public void jvnUnLock()
-	throws jvn.JvnException; 
+	throws JvnException;
 	
 	
 	/**
@@ -45,14 +47,14 @@ public interface JvnObject extends Serializable {
 	* @throws JvnException
 	**/
 	public int jvnGetObjectId()
-	throws jvn.JvnException; 
+	throws JvnException;
 	
 	/**
 	* Get the shared object associated to this JvnObject
 	* @throws JvnException
 	**/
 	public Serializable jvnGetSharedObject()
-	throws jvn.JvnException; 
+	throws JvnException;
 	
 	
 	/**
@@ -60,7 +62,7 @@ public interface JvnObject extends Serializable {
 	* @throws JvnException
 	**/
   public void jvnInvalidateReader()
-	throws jvn.JvnException;
+	throws JvnException;
 	    
 	/**
 	* Invalidate the Write lock of the JVN object  
@@ -68,7 +70,7 @@ public interface JvnObject extends Serializable {
 	* @throws JvnException
 	**/
   public Serializable jvnInvalidateWriter()
-	throws jvn.JvnException;
+	throws JvnException;
 	
 	/**
 	* Reduce the Write lock of the JVN object 
@@ -76,5 +78,5 @@ public interface JvnObject extends Serializable {
 	* @throws JvnException
 	**/
    public Serializable jvnInvalidateWriterForReader()
-	 throws jvn.JvnException;	
+	 throws JvnException;
 }

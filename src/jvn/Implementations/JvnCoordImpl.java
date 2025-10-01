@@ -7,7 +7,12 @@
  * Authors: 
  */ 
 
-package jvn;
+package jvn.Implementations;
+
+import jvn.Exceptions.JvnException;
+import jvn.Models.JvnObject;
+import jvn.Models.JvnRemoteCoord;
+import jvn.Models.JvnRemoteServer;
 
 import java.rmi.server.UnicastRemoteObject;
 import java.io.Serializable;
@@ -15,7 +20,7 @@ import java.io.Serializable;
 
 public class JvnCoordImpl 	
               extends UnicastRemoteObject 
-							implements JvnRemoteCoord{
+							implements JvnRemoteCoord {
 	
 
   /**
@@ -37,7 +42,7 @@ public class JvnCoordImpl
   * @throws java.rmi.RemoteException,JvnException
   **/
   public int jvnGetObjectId()
-  throws java.rmi.RemoteException,jvn.JvnException {
+  throws java.rmi.RemoteException, JvnException {
     // to be completed 
     return 0;
   }
@@ -51,7 +56,7 @@ public class JvnCoordImpl
   * @throws java.rmi.RemoteException,JvnException
   **/
   public void jvnRegisterObject(String jon, JvnObject jo, JvnRemoteServer js)
-  throws java.rmi.RemoteException,jvn.JvnException{
+  throws java.rmi.RemoteException, JvnException {
     // to be completed 
   }
   
@@ -62,7 +67,7 @@ public class JvnCoordImpl
   * @throws java.rmi.RemoteException,JvnException
   **/
   public JvnObject jvnLookupObject(String jon, JvnRemoteServer js)
-  throws java.rmi.RemoteException,jvn.JvnException{
+  throws java.rmi.RemoteException, JvnException {
     // to be completed 
     return null;
   }

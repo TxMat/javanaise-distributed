@@ -22,9 +22,7 @@
     </wildcardResourcePatterns>
     <bytecodeTargetLevel target="11" />
   </component>
-  <component name="CopyrightManager" default="">
-    <module2copyright />
-  </component>
+  <component name="CopyrightManager" default="" />
   <component name="DependencyValidationManager">
     <option name="SKIP_IMPORT_STATEMENTS" value="false" />
   </component>
@@ -36,6 +34,18 @@
     <option name="migrationStatus" value="COMPLETED" />
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="GitToolBoxProjectSettings">
+    <option name="commitMessageIssueKeyValidationOverride">
+      <BoolValueOverride>
+        <option name="enabled" value="true" />
+      </BoolValueOverride>
+    </option>
+    <option name="commitMessageValidationEnabledOverride">
+      <BoolValueOverride>
+        <option name="enabled" value="true" />
+      </BoolValueOverride>
+    </option>
+  </component>
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>

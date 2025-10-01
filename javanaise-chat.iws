@@ -4,14 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="121dbfce-64e4-46d9-a543-2d549f40603e" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/javanaise-chat.main.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/javanaise-chat.test.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/jvn/JvnObjectImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javanaise-chat.iml" beforeDir="false" afterPath="$PROJECT_DIR$/javanaise-chat.iml" afterDir="false" />
+    <list default="true" id="121dbfce-64e4-46d9-a543-2d549f40603e" name="Changes" comment="java stuff i guess">
+      <change afterPath="$PROJECT_DIR$/src/jvn/Implementations/JvnRemoteCoordImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/jvn/Implementations/JvnRemoteServerImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/javanaise-chat.ipr" beforeDir="false" afterPath="$PROJECT_DIR$/javanaise-chat.ipr" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/javanaise-chat.iws" beforeDir="false" afterPath="$PROJECT_DIR$/javanaise-chat.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvn/JvnServerImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/JvnServerImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/irc/Irc.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/irc/Irc.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvn/JvnCoordImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Implementations/JvnCoordImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvn/JvnException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Exceptions/JvnException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvn/JvnLocalServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Models/JvnLocalServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvn/JvnObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Models/JvnObject.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvn/JvnObjectImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Implementations/JvnObjectImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvn/JvnRemoteCoord.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Models/JvnRemoteCoord.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvn/JvnRemoteServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Models/JvnRemoteServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvn/JvnServerImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Implementations/JvnServerImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -147,6 +153,11 @@
     "to.speed.mode.migration.done": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="jvn" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration default="true" type="Applet" factoryName="Applet">
       <module name="" />
@@ -247,14 +258,34 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1759311127648</updated>
-      <workItem from="1759311128689" duration="1814000" />
+      <workItem from="1759311128689" duration="3263000" />
     </task>
+    <task id="LOCAL-00001" summary="basic start">
+      <option name="closed" value="true" />
+      <created>1759313034224</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1759313034224</updated>
+    </task>
+    <task id="LOCAL-00002" summary="java stuff i guess">
+      <option name="closed" value="true" />
+      <created>1759313057803</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1759313057803</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
+    <MESSAGE value="basic start" />
+    <MESSAGE value="java stuff i guess" />
+    <option name="LAST_COMMIT_MESSAGE" value="java stuff i guess" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
 </project>
