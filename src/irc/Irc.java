@@ -17,6 +17,7 @@ import jvn.Models.JvnObject;
 import jvn.Models.JvnRemoteCoord;
 
 import java.io.*;
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
@@ -111,7 +112,7 @@ class readListener implements ActionListener {
             // display the read value
             irc.data.setText(s);
             irc.text.append(s + "\n");
-        } catch (JvnException je) {
+        } catch (JvnException | RemoteException je) {
             System.out.println("IRC problem : " + je.getMessage());
         }
     }
@@ -143,7 +144,7 @@ class writeListener implements ActionListener {
 
             // unlock the object
             irc.sentence.jvnUnLock();
-        } catch (JvnException je) {
+        } catch (JvnException | RemoteException je) {
             System.out.println("IRC problem  : " + je.getMessage());
         }
     }

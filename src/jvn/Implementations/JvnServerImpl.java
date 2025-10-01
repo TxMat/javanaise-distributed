@@ -2,7 +2,7 @@
  * JAVANAISE Implementation
  * JvnServerImpl class
  * Implementation of a Jvn server
- * Contact: 
+ * Contact:
  *
  * Authors: 
  */
@@ -16,6 +16,7 @@ import jvn.Models.JvnRemoteCoord;
 import jvn.Models.JvnRemoteServer;
 
 import java.rmi.ConnectException;
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
@@ -38,7 +39,7 @@ public class JvnServerImpl
     private static JvnRemoteCoord coordinator;
 
     // store for JVN objects
-    private Map<String, JvnObject> objectMap = new HashMap<>();
+    private Map<Integer, Map<String, JvnObject>> objectMap = new HashMap<>();
 
     /**
      * Default constructor
@@ -78,9 +79,11 @@ public class JvnServerImpl
      *
      * @throws JvnException
      **/
-    public void jvnTerminate()
-            throws JvnException {
-        // to be completed
+    public void jvnTerminate() throws JvnException {
+        coordinator = null;
+        js = null;
+//        objectMap.clear();
+        System.gc();
     }
 
     /**
@@ -102,12 +105,15 @@ public class JvnServerImpl
      * @param jo  : the JVN object
      * @throws JvnException
      **/
-    public void jvnRegisterObject(String jon, JvnObject jo) throws JvnException {
+    public void jvnRegisterObject(String jon, JvnObject jo) throws JvnException, RemoteException {
         if (jon == null || jon.isEmpty())
             throw new JvnException("jvnRegisterObject: null name");
         if (jo == null)
             throw new JvnException("jvnRegisterObject: null object");
-        objectMap.put(jon, jo);
+        int id = coordinator.jvnRegisterObject(jon, jo, this);
+        objectMap.putIfAbsent(id, new HashMap<>());
+        objectMap.get(id).put(jon, jo);
+        jo.setObjectId(id);
     }
 
     /**
@@ -117,10 +123,16 @@ public class JvnServerImpl
      * @return the JVN object
      * @throws JvnException
      **/
-    public JvnObject jvnLookupObject(String jon) throws JvnException {
+    public JvnObject jvnLookupObject(String jon) throws JvnException, RemoteException {
         if (jon == null || jon.isEmpty())
             throw new JvnException("jvnLookupObject: null name");
-        return objectMap.get(jon);
+        for (Map<String, JvnObject> map : objectMap.values()) {
+            if (map.containsKey(jon)) {
+                return map.get(jon);
+            }
+        }
+        // cache miss
+        return coordinator.jvnLookupObject(jon, this);
     }
 
     /**
@@ -130,11 +142,8 @@ public class JvnServerImpl
      * @return the current JVN object state
      * @throws JvnException
      **/
-    public Serializable jvnLockRead(int joi)
-            throws JvnException {
-        // to be completed
-        return null;
-
+    public Serializable jvnLockRead(int joi) throws JvnException, RemoteException {
+        return coordinator.jvnLockRead(joi, this);
     }
 
     /**
@@ -145,9 +154,8 @@ public class JvnServerImpl
      * @throws JvnException
      **/
     public Serializable jvnLockWrite(int joi)
-            throws JvnException {
-        // to be completed
-        return null;
+            throws JvnException, RemoteException {
+        return coordinator.jvnLockWrite(joi, this);
     }
 
 
@@ -198,4 +206,4 @@ public class JvnServerImpl
 
 }
 
- 
+

@@ -10,6 +10,7 @@ package jvn.Models;
 import jvn.Exceptions.JvnException;
 
 import java.io.*;
+import java.rmi.RemoteException;
 
 /**
  * Interface of a JVN object. 
@@ -54,7 +55,7 @@ public interface JvnObject extends Serializable {
 	* @throws JvnException
 	**/
 	public Serializable jvnGetSharedObject()
-	throws JvnException;
+            throws JvnException, RemoteException;
 	
 	
 	/**
@@ -79,4 +80,6 @@ public interface JvnObject extends Serializable {
 	**/
    public Serializable jvnInvalidateWriterForReader()
 	 throws JvnException;
+
+    void setObjectId(int id);
 }

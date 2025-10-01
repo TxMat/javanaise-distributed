@@ -46,16 +46,19 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
   }
   
   /**
-  * Associate a symbolic name with a JVN object
-  * @param jon : the JVN object name
-  * @param jo  : the JVN object 
-  * @param joi : the JVN object identification
-  * @param js  : the remote reference of the JVNServer
-  * @throws java.rmi.RemoteException,JvnException
-  **/
-  public void jvnRegisterObject(String jon, JvnObject jo, JvnRemoteServer js)
+   * Associate a symbolic name with a JVN object
+   *
+   * @param jon : the JVN object name
+   * @param jo  : the JVN object
+   * @param joi : the JVN object identification
+   * @param js  : the remote reference of the JVNServer
+   * @return
+   * @throws java.rmi.RemoteException,JvnException
+   */
+  public int jvnRegisterObject(String jon, JvnObject jo, JvnRemoteServer js)
   throws java.rmi.RemoteException, JvnException {
     // to be completed 
+      return 0;
   }
   
   /**

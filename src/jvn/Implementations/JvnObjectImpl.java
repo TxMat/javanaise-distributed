@@ -2,8 +2,10 @@ package jvn.Implementations;
 
 import jvn.Exceptions.JvnException;
 import jvn.Models.JvnObject;
+import jvn.Models.JvnLocalServer;
 
 import java.io.Serializable;
+import java.rmi.RemoteException;
 
 public class JvnObjectImpl implements JvnObject {
 
@@ -12,9 +14,19 @@ public class JvnObjectImpl implements JvnObject {
     private int objectId;
     private boolean isReadLocked = false;
     private boolean isWriteLocked = false;
+    //jvn server proxy
+    private transient JvnLocalServer jvnServer;
 
     public JvnObjectImpl(Serializable o) {
         this.object = o;
+    }
+
+    // Get server reference
+    private JvnLocalServer getJvnServer() {
+        if (jvnServer == null) {
+            jvnServer = JvnServerImpl.jvnGetServer();
+        }
+        return jvnServer;
     }
 
     @Override
@@ -41,12 +53,12 @@ public class JvnObjectImpl implements JvnObject {
 
     @Override
     public int jvnGetObjectId() throws JvnException {
-        return 0;
+        return objectId;
     }
 
     @Override
-    public Serializable jvnGetSharedObject() throws JvnException {
-        return object;
+    public Serializable jvnGetSharedObject() throws JvnException, RemoteException {
+        return getJvnServer().jvnLockRead(objectId);
     }
 
     @Override
@@ -62,5 +74,9 @@ public class JvnObjectImpl implements JvnObject {
     @Override
     public Serializable jvnInvalidateWriterForReader() throws JvnException {
         return null;
+    }
+
+    public void setObjectId(int objectId) {
+        this.objectId = objectId;
     }
 }

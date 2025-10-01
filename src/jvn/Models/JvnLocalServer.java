@@ -12,6 +12,7 @@ package jvn.Models;
 import jvn.Exceptions.JvnException;
 
 import java.io.Serializable;
+import java.rmi.RemoteException;
 
 /**
  * Local interface of a JVN server  (used by the applications).
@@ -37,7 +38,7 @@ public interface JvnLocalServer {
 	* @throws JvnException
 	**/
 	public  void jvnRegisterObject(String jon, JvnObject jo)
-	throws JvnException;
+            throws JvnException, RemoteException;
 	
 	/**
 	* Get the reference of a JVN object associated to a symbolic name
@@ -46,7 +47,7 @@ public interface JvnLocalServer {
 	* @throws JvnException
 	**/
 	public  JvnObject jvnLookupObject(String jon)
-	throws JvnException;
+            throws JvnException, RemoteException;
 	
 	
 	/**
@@ -56,7 +57,7 @@ public interface JvnLocalServer {
 	* @throws  JvnException
 	**/
    public Serializable jvnLockRead(int joi)
-	 throws JvnException;
+           throws JvnException, RemoteException;
 
 	/**
 	* Get a Write lock on a JVN object 
@@ -65,7 +66,7 @@ public interface JvnLocalServer {
 	* @throws  JvnException
 	**/
    public Serializable jvnLockWrite(int joi)
-	 throws JvnException;
+           throws JvnException, RemoteException;
 
          
    /**

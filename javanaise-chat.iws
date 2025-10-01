@@ -4,12 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="121dbfce-64e4-46d9-a543-2d549f40603e" name="Changes" comment="stuff">
-      <change afterPath="$PROJECT_DIR$/src/jvn/Coordinator.java" afterDir="false" />
+    <list default="true" id="121dbfce-64e4-46d9-a543-2d549f40603e" name="Changes" comment="rpc start">
       <change beforePath="$PROJECT_DIR$/javanaise-chat.iws" beforeDir="false" afterPath="$PROJECT_DIR$/javanaise-chat.iws" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/irc/Irc.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/irc/Irc.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/jvn/Implementations/JvnCoordImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Implementations/JvnCoordImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvn/Implementations/JvnObjectImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Implementations/JvnObjectImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvn/Implementations/JvnRemoteCoordImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Implementations/JvnRemoteCoordImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/jvn/Implementations/JvnServerImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Implementations/JvnServerImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvn/Models/JvnLocalServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Models/JvnLocalServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvn/Models/JvnObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Models/JvnObject.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvn/Models/JvnRemoteCoord.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Models/JvnRemoteCoord.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -134,7 +138,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Gradle.javanaise-distributed [:irc.Irc.main()].executor": "Debug",
-    "Gradle.javanaise-distributed [:jvn.Coordinator.main()].executor": "Run",
+    "Gradle.javanaise-distributed [:jvn.Coordinator.main()].executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
@@ -152,7 +156,7 @@
       <recent name="jvn" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Irc">
+  <component name="RunManager" selected="Compound.setup">
     <configuration default="true" type="Applet" factoryName="Applet">
       <module name="" />
       <option name="MAIN_CLASS_NAME" />
@@ -173,7 +177,7 @@
       <Host>localhost</Host>
       <Port>5050</Port>
     </configuration>
-    <configuration name="Coordinator" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+    <configuration name="Coordinator" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="jvn.Coordinator" />
       <module name="javanaise-chat.main" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
@@ -188,7 +192,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Irc" type="Application" factoryName="Application" singleton="false" temporary="true" nameIsGenerated="true">
+    <configuration name="Irc" type="Application" factoryName="Application" singleton="false" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="irc.Irc" />
       <module name="javanaise-chat.main" />
       <extension name="coverage">
@@ -208,6 +212,11 @@
         <option name="BuildArtifacts" enabled="false" />
         <option name="Make" enabled="true" />
       </method>
+    </configuration>
+    <configuration name="setup" type="CompoundRunConfigurationType">
+      <toRun name="Coordinator" type="Application" />
+      <toRun name="Irc" type="Application" />
+      <method v="2" />
     </configuration>
     <configuration default="true" type="JUnit" factoryName="JUnit">
       <option name="TEST_OBJECT" value="class" />
@@ -232,12 +241,11 @@
         <option name="BuildArtifacts" enabled="false" />
       </method>
     </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Application.Coordinator" />
-        <item itemvalue="Application.Irc" />
-      </list>
-    </recent_temporary>
+    <list>
+      <item itemvalue="Application.Coordinator" />
+      <item itemvalue="Application.Irc" />
+      <item itemvalue="Compound.setup" />
+    </list>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -269,7 +277,7 @@
       <option name="presentableId" value="Default" />
       <updated>1759311127648</updated>
       <workItem from="1759311128689" duration="3263000" />
-      <workItem from="1759338747524" duration="2659000" />
+      <workItem from="1759338747524" duration="6133000" />
     </task>
     <task id="LOCAL-00001" summary="basic start">
       <option name="closed" value="true" />
@@ -295,7 +303,15 @@
       <option name="project" value="LOCAL" />
       <updated>1759338809759</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="rpc start">
+      <option name="closed" value="true" />
+      <created>1759341431546</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1759341431546</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -305,21 +321,17 @@
     <MESSAGE value="basic start" />
     <MESSAGE value="java stuff i guess" />
     <MESSAGE value="stuff" />
-    <option name="LAST_COMMIT_MESSAGE" value="stuff" />
+    <MESSAGE value="rpc start" />
+    <option name="LAST_COMMIT_MESSAGE" value="rpc start" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/jvn/Coordinator.java</url>
-          <line>15</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/jvn/Implementations/JvnServerImpl.java</url>
-          <line>65</line>
-          <option name="timeStamp" value="3" />
+          <url>file://$PROJECT_DIR$/src/jvn/Implementations/JvnRemoteCoordImpl.java</url>
+          <line>50</line>
+          <option name="timeStamp" value="9" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
