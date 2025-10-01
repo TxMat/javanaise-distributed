@@ -18,9 +18,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.io.Serializable;
 
 
-public class JvnCoordImpl 	
-              extends UnicastRemoteObject 
-							implements JvnRemoteCoord {
+public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord {
 	
 
   /**

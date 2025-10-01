@@ -12,8 +12,12 @@ package jvn.Implementations;
 import jvn.Exceptions.JvnException;
 import jvn.Models.JvnLocalServer;
 import jvn.Models.JvnObject;
+import jvn.Models.JvnRemoteCoord;
 import jvn.Models.JvnRemoteServer;
 
+import java.rmi.ConnectException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.io.*;
 import java.util.HashMap;
@@ -30,6 +34,8 @@ public class JvnServerImpl
     private static final long serialVersionUID = 1L;
     // A JVN server is managed as a singleton
     private static JvnServerImpl js = null;
+
+    private static JvnRemoteCoord coordinator;
 
     // store for JVN objects
     private Map<String, JvnObject> objectMap = new HashMap<>();
@@ -54,7 +60,13 @@ public class JvnServerImpl
         if (js == null) {
             try {
                 js = new JvnServerImpl();
+                Registry registry = LocateRegistry.getRegistry("localhost", 1099);
+                coordinator = (JvnRemoteCoord) registry.lookup("Coordinator");
+            } catch (ConnectException e) {
+                System.out.println("JVN server not running");
+                System.exit(1);
             } catch (Exception e) {
+                System.out.println("JVN server problem : " + e.getMessage());
                 return null;
             }
         }
