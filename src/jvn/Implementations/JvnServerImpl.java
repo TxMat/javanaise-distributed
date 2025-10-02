@@ -28,17 +28,18 @@ public class JvnServerImpl
         extends UnicastRemoteObject
         implements JvnLocalServer, JvnRemoteServer {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
     // A JVN server is managed as a singleton
     private static JvnServerImpl js = null;
 
     private static JvnRemoteCoord coordinator;
 
-    // store for JVN objects
+    // ain't no way this is the right way to do it
+
+    // store for JVN objects by name
     private Map<String, JvnObject> objectMap = new HashMap<>();
+    // store for JVN objects by ID
+    private Map<Integer, JvnObject> objectIdMap = new HashMap<>();
 
     /**
      * Default constructor
@@ -92,7 +93,19 @@ public class JvnServerImpl
     public JvnObject jvnCreateObject(Serializable o) throws JvnException {
         if (o == null)
             throw new JvnException("jvnCreateObject: null object");
-        return new JvnObjectImpl(o);
+        
+        try {
+            // Get a new object ID from the coordinator
+            int objectId = coordinator.jvnGetObjectId();
+            JvnObjectImpl jvnObject = new JvnObjectImpl(o, objectId);
+            
+            // Store the object by ID
+            objectIdMap.put(objectId, jvnObject);
+            
+            return jvnObject;
+        } catch (Exception e) {
+            throw new JvnException("Error creating JVN object: " + e.getMessage());
+        }
     }
 
     /**
@@ -107,7 +120,21 @@ public class JvnServerImpl
             throw new JvnException("jvnRegisterObject: null name");
         if (jo == null)
             throw new JvnException("jvnRegisterObject: null object");
-        objectMap.put(jon, jo);
+        
+        try {
+            // Cast to access internal methods
+            JvnObjectImpl jvnObj = (JvnObjectImpl) jo;
+            jvnObj.setObjectName(jon);
+            
+            // Register with coordinator
+            coordinator.jvnRegisterObject(jon, jo, this);
+            
+            // Store locally by name
+            objectMap.put(jon, jo);
+            
+        } catch (Exception e) {
+            throw new JvnException("Error registering object: " + e.getMessage());
+        }
     }
 
     /**
@@ -120,7 +147,25 @@ public class JvnServerImpl
     public JvnObject jvnLookupObject(String jon) throws JvnException {
         if (jon == null || jon.isEmpty())
             throw new JvnException("jvnLookupObject: null name");
-        return objectMap.get(jon);
+        
+        // First check local cache
+        JvnObject localObject = objectMap.get(jon);
+        if (localObject != null) {
+            return localObject;
+        }
+        
+        // If not found locally, ask the coordinator
+        try {
+            JvnObject remoteObject = coordinator.jvnLookupObject(jon, this);
+            if (remoteObject != null) {
+                // Cache the object locally
+                objectMap.put(jon, remoteObject);
+                objectIdMap.put(remoteObject.jvnGetObjectId(), remoteObject);
+            }
+            return remoteObject;
+        } catch (Exception e) {
+            throw new JvnException("Error looking up object: " + e.getMessage());
+        }
     }
 
     /**
@@ -132,9 +177,11 @@ public class JvnServerImpl
      **/
     public Serializable jvnLockRead(int joi)
             throws JvnException {
-        // to be completed
-        return null;
-
+        try {
+            return coordinator.jvnLockRead(joi, this);
+        } catch (Exception e) {
+            throw new JvnException("Error acquiring read lock: " + e.getMessage());
+        }
     }
 
     /**
@@ -146,10 +193,12 @@ public class JvnServerImpl
      **/
     public Serializable jvnLockWrite(int joi)
             throws JvnException {
-        // to be completed
-        return null;
+        try {
+            return coordinator.jvnLockWrite(joi, this);
+        } catch (Exception e) {
+            throw new JvnException("Error acquiring write lock: " + e.getMessage());
+        }
     }
-
 
     /**
      * Invalidate the Read lock of the JVN object identified by id
@@ -161,10 +210,11 @@ public class JvnServerImpl
      **/
     public void jvnInvalidateReader(int joi)
             throws java.rmi.RemoteException, JvnException {
-        // to be completed
+        JvnObject obj = objectIdMap.get(joi);
+        if (obj != null) {
+            obj.jvnInvalidateReader();
+        }
     }
-
-    ;
 
     /**
      * Invalidate the Write lock of the JVN object identified by id
@@ -175,11 +225,12 @@ public class JvnServerImpl
      **/
     public Serializable jvnInvalidateWriter(int joi)
             throws java.rmi.RemoteException, JvnException {
-        // to be completed
+        JvnObject obj = objectIdMap.get(joi);
+        if (obj != null) {
+            return obj.jvnInvalidateWriter();
+        }
         return null;
     }
-
-    ;
 
     /**
      * Reduce the Write lock of the JVN object identified by id
@@ -190,12 +241,10 @@ public class JvnServerImpl
      **/
     public Serializable jvnInvalidateWriterForReader(int joi)
             throws java.rmi.RemoteException, JvnException {
-        // to be completed
+        JvnObject obj = objectIdMap.get(joi);
+        if (obj != null) {
+            return obj.jvnInvalidateWriterForReader();
+        }
         return null;
     }
-
-    ;
-
 }
-
- 
