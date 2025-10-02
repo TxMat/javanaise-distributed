@@ -247,4 +247,14 @@ public class JvnServerImpl
         }
         return null;
     }
+
+    public void jvnUpdateObject(int joi, Serializable newState) throws JvnException {
+        try {
+            // Update the coordinator with the new object state
+            coordinator.jvnUpdateObject(joi, newState, this);
+            System.out.println("Updated object " + joi + " state in coordinator");
+        } catch (Exception e) {
+            throw new JvnException("Error updating object state: " + e.getMessage());
+        }
+    }
 }

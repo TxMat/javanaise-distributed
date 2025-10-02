@@ -4,12 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="121dbfce-64e4-46d9-a543-2d549f40603e" name="Changes" comment="communication with the local server">
+    <list default="true" id="121dbfce-64e4-46d9-a543-2d549f40603e" name="Changes" comment="picked some parts of last time code">
       <change beforePath="$PROJECT_DIR$/javanaise-chat.iws" beforeDir="false" afterPath="$PROJECT_DIR$/javanaise-chat.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvn/Coordinator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Coordinator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/jvn/Implementations/JvnCoordImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Implementations/JvnCoordImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvn/Implementations/JvnRemoteCoordImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvn/Implementations/JvnRemoteServerImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvn/Implementations/JvnObjectImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Implementations/JvnObjectImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvn/Implementations/JvnServerImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Implementations/JvnServerImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvn/Models/JvnLocalServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Models/JvnLocalServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvn/Models/JvnRemoteCoord.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Models/JvnRemoteCoord.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -277,7 +278,7 @@
       <updated>1759311127648</updated>
       <workItem from="1759311128689" duration="3263000" />
       <workItem from="1759338747524" duration="2659000" />
-      <workItem from="1759430612682" duration="4961000" />
+      <workItem from="1759430612682" duration="5772000" />
     </task>
     <task id="LOCAL-00001" summary="basic start">
       <option name="closed" value="true" />
@@ -319,7 +320,23 @@
       <option name="project" value="LOCAL" />
       <updated>1759439247964</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="removed useless files">
+      <option name="closed" value="true" />
+      <created>1759439838013</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1759439838013</updated>
+    </task>
+    <task id="LOCAL-00007" summary="picked some parts of last time code">
+      <option name="closed" value="true" />
+      <created>1759439881219</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1759439881219</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -342,7 +359,9 @@
     <MESSAGE value="stuff" />
     <MESSAGE value="run configs" />
     <MESSAGE value="communication with the local server" />
-    <option name="LAST_COMMIT_MESSAGE" value="communication with the local server" />
+    <MESSAGE value="removed useless files" />
+    <MESSAGE value="picked some parts of last time code" />
+    <option name="LAST_COMMIT_MESSAGE" value="picked some parts of last time code" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -352,6 +371,16 @@
           <url>file://$PROJECT_DIR$/src/jvn/Implementations/JvnServerImpl.java</url>
           <line>66</line>
           <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/irc/Irc.java</url>
+          <line>105</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/jvn/Implementations/JvnObjectImpl.java</url>
+          <line>115</line>
+          <option name="timeStamp" value="6" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

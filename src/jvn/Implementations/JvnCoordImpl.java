@@ -218,6 +218,18 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
         }
     }
 
+    public synchronized void jvnUpdateObject(int joi, Serializable newState, JvnRemoteServer js)
+    throws java.rmi.RemoteException, JvnException {
+        ObjectInfo info = objects.get(joi);
+        if (info == null) {
+            throw new JvnException("Coordinator: Object " + joi + " not found for update");
+        }
+
+        // Update the object state in the coordinator
+        info.currentState = newState;
+        System.out.println("Coordinator: Updated object " + joi + " state from server");
+    }
+
     /**
      * A JVN server terminates
      * @param js  : the remote reference of the server

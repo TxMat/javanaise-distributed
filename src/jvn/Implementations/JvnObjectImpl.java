@@ -91,8 +91,18 @@ public class JvnObjectImpl implements JvnObject {
 
     @Override
     public void jvnUnLock() throws JvnException {
-        isReadLocked = false;
-        isWriteLocked = false;
+        try {
+            // If we had a write lock, we need to notify the coordinator of potential changes
+            if (isWriteLocked && localServer != null && objectId != -1) {
+                localServer.jvnUpdateObject(objectId, object);
+            }
+        } catch (Exception e) {
+            System.err.println("Warning: Failed to update object state: " + e.getMessage());
+        } finally {
+            // Always clear the locks
+            isReadLocked = false;
+            isWriteLocked = false;
+        }
     }
 
     @Override
@@ -111,16 +121,30 @@ public class JvnObjectImpl implements JvnObject {
 
     @Override
     public void jvnInvalidateReader() throws JvnException {
-
+        if (isReadLocked) {
+            isReadLocked = false;
+            System.out.println("JvnObject " + objectId + ": Read lock invalidated");
+        }
     }
 
     @Override
     public Serializable jvnInvalidateWriter() throws JvnException {
-        return null;
+        if (isWriteLocked) {
+            isWriteLocked = false;
+            System.out.println("JvnObject " + objectId + ": Write lock invalidated, returning current state");
+            return object; // Return the current (possibly modified) object
+        }
+        return null; // No write lock to invalidate
     }
 
     @Override
     public Serializable jvnInvalidateWriterForReader() throws JvnException {
-        return null;
+        if (isWriteLocked) {
+            isWriteLocked = false;
+            isReadLocked = true; // Downgrade to read lock
+            System.out.println("JvnObject " + objectId + ": Write lock downgraded to read lock");
+            return object; // Return the current (possibly modified) object
+        }
+        return null; // No write lock to downgrade
     }
 }
