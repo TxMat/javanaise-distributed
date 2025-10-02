@@ -32,19 +32,6 @@ public class JvnObjectImpl implements JvnObject {
         localServer = JvnServerImpl.jvnGetServer();
     }
 
-    // Constructor with both ID and name (used when creating/registering)
-    public JvnObjectImpl(Serializable o, int objectId, String objectName) {
-        this.object = o;
-        this.objectId = objectId;
-        this.objectName = objectName;
-        localServer = JvnServerImpl.jvnGetServer();
-    }
-
-    // Setter for object ID (called when object is registered with coordinator)
-    public void setObjectId(int objectId) {
-        this.objectId = objectId;
-    }
-
     // Setter for object name (called when object is registered)
     public void setObjectName(String objectName) {
         this.objectName = objectName;
