@@ -100,6 +100,41 @@
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="21" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
+  <component name="ProjectRunConfigurationManager">
+    <configuration default="false" name="All" type="CompoundRunConfigurationType">
+      <toRun name="Coordinator" type="Application" />
+      <toRun name="Irc" type="Application" />
+      <method v="2" />
+    </configuration>
+    <configuration default="false" name="Coordinator" type="Application" factoryName="Application" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="jvn.Coordinator" />
+      <module name="javanaise-chat.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="jvn.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="BuildArtifacts" enabled="false" />
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="false" name="Irc" type="Application" factoryName="Application" singleton="false" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="irc.Irc" />
+      <module name="javanaise-chat.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="irc.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="BuildArtifacts" enabled="false" />
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
   <component name="SvnBranchConfigurationManager">
     <option name="mySupportsUserInfoFilter" value="true" />
   </component>
