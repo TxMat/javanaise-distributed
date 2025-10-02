@@ -4,13 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="121dbfce-64e4-46d9-a543-2d549f40603e" name="Changes" comment="picked some parts of last time code">
+    <list default="true" id="121dbfce-64e4-46d9-a543-2d549f40603e" name="Changes" comment="seems to work for 1 client">
       <change beforePath="$PROJECT_DIR$/javanaise-chat.iws" beforeDir="false" afterPath="$PROJECT_DIR$/javanaise-chat.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvn/Implementations/JvnCoordImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Implementations/JvnCoordImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/jvn/Implementations/JvnObjectImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Implementations/JvnObjectImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/jvn/Implementations/JvnServerImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Implementations/JvnServerImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvn/Models/JvnLocalServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Models/JvnLocalServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvn/Models/JvnRemoteCoord.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Models/JvnRemoteCoord.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvn/Models/JvnObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Models/JvnObject.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -164,7 +162,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Gradle.javanaise-distributed [:irc.Irc.main()].executor": "Run",
+    "Gradle.javanaise-distributed [:irc.Irc.main()].executor": "Debug",
     "Gradle.javanaise-distributed [:jvn.Coordinator.main()].executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
@@ -278,7 +276,7 @@
       <updated>1759311127648</updated>
       <workItem from="1759311128689" duration="3263000" />
       <workItem from="1759338747524" duration="2659000" />
-      <workItem from="1759430612682" duration="5772000" />
+      <workItem from="1759430612682" duration="6276000" />
     </task>
     <task id="LOCAL-00001" summary="basic start">
       <option name="closed" value="true" />
@@ -336,7 +334,15 @@
       <option name="project" value="LOCAL" />
       <updated>1759439881219</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="seems to work for 1 client">
+      <option name="closed" value="true" />
+      <created>1759440589104</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1759440589104</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -361,7 +367,8 @@
     <MESSAGE value="communication with the local server" />
     <MESSAGE value="removed useless files" />
     <MESSAGE value="picked some parts of last time code" />
-    <option name="LAST_COMMIT_MESSAGE" value="picked some parts of last time code" />
+    <MESSAGE value="seems to work for 1 client" />
+    <option name="LAST_COMMIT_MESSAGE" value="seems to work for 1 client" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -382,6 +389,20 @@
           <line>115</line>
           <option name="timeStamp" value="6" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/jvn/Implementations/JvnServerImpl.java</url>
+          <line>60</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/jvn/Implementations/JvnObjectImpl.java</url>
+          <line>30</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.NullPointerException" package="java.lang" />
+          <option name="timeStamp" value="8" />
+        </breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>

@@ -79,4 +79,6 @@ public interface JvnObject extends Serializable {
 	**/
    public Serializable jvnInvalidateWriterForReader()
 	 throws JvnException;
+
+    void initializeTransientFields();
 }

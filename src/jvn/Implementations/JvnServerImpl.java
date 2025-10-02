@@ -161,6 +161,7 @@ public class JvnServerImpl
                 // Cache the object locally
                 objectMap.put(jon, remoteObject);
                 objectIdMap.put(remoteObject.jvnGetObjectId(), remoteObject);
+                remoteObject.initializeTransientFields();
             }
             return remoteObject;
         } catch (Exception e) {

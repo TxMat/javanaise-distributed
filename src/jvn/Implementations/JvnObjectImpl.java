@@ -15,7 +15,7 @@ public class JvnObjectImpl implements JvnObject {
     private String objectName; // track object name here i suppose
     private boolean isReadLocked = false;
     private boolean isWriteLocked = false;
-    private static JvnLocalServer localServer;
+    private transient JvnLocalServer localServer;
 
     public JvnObjectImpl(Serializable o) {
         this.object = o;
@@ -146,5 +146,10 @@ public class JvnObjectImpl implements JvnObject {
             return object; // Return the current (possibly modified) object
         }
         return null; // No write lock to downgrade
+    }
+
+    @Override
+    public void initializeTransientFields() {
+        this.localServer = JvnServerImpl.jvnGetServer();
     }
 }
