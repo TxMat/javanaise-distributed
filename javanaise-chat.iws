@@ -4,11 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="121dbfce-64e4-46d9-a543-2d549f40603e" name="Changes" comment="run configs">
-      <change beforePath="$PROJECT_DIR$/javanaise-chat.ipr" beforeDir="false" afterPath="$PROJECT_DIR$/javanaise-chat.ipr" afterDir="false" />
+    <list default="true" id="121dbfce-64e4-46d9-a543-2d549f40603e" name="Changes" comment="communication with the local server">
       <change beforePath="$PROJECT_DIR$/javanaise-chat.iws" beforeDir="false" afterPath="$PROJECT_DIR$/javanaise-chat.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvn/Implementations/JvnObjectImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Implementations/JvnObjectImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvn/Implementations/JvnServerImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Implementations/JvnServerImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvn/Coordinator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Coordinator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvn/Implementations/JvnCoordImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Implementations/JvnCoordImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvn/Implementations/JvnRemoteCoordImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvn/Implementations/JvnRemoteServerImpl.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -276,7 +277,7 @@
       <updated>1759311127648</updated>
       <workItem from="1759311128689" duration="3263000" />
       <workItem from="1759338747524" duration="2659000" />
-      <workItem from="1759430612682" duration="4361000" />
+      <workItem from="1759430612682" duration="4961000" />
     </task>
     <task id="LOCAL-00001" summary="basic start">
       <option name="closed" value="true" />
@@ -310,7 +311,15 @@
       <option name="project" value="LOCAL" />
       <updated>1759436869137</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="communication with the local server">
+      <option name="closed" value="true" />
+      <created>1759439247964</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1759439247964</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -332,17 +341,13 @@
     <MESSAGE value="java stuff i guess" />
     <MESSAGE value="stuff" />
     <MESSAGE value="run configs" />
-    <option name="LAST_COMMIT_MESSAGE" value="run configs" />
+    <MESSAGE value="communication with the local server" />
+    <option name="LAST_COMMIT_MESSAGE" value="communication with the local server" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/jvn/Coordinator.java</url>
-          <line>15</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/jvn/Implementations/JvnServerImpl.java</url>
           <line>66</line>

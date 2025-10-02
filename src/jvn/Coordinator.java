@@ -1,6 +1,6 @@
 package jvn;
 
-import jvn.Implementations.JvnRemoteCoordImpl;
+import jvn.Implementations.JvnCoordImpl;
 import jvn.Models.JvnRemoteCoord;
 
 import java.rmi.RemoteException;
@@ -10,14 +10,13 @@ import java.rmi.server.UnicastRemoteObject;
 
 public class Coordinator {
 
-    public static void main(String[] args) throws RemoteException {
+    public static void main(String[] args) throws RemoteException, Exception {
         System.out.println("Coordinator");
 
-        JvnRemoteCoordImpl jrci = new JvnRemoteCoordImpl();
-        JvnRemoteCoord coordinator_stub = (JvnRemoteCoord) UnicastRemoteObject.exportObject(jrci, 0);
+        JvnCoordImpl jrci = JvnCoordImpl.createCoordinator();
 
         Registry registry = LocateRegistry.createRegistry(1099);
-        registry.rebind("Coordinator", coordinator_stub);
+        registry.rebind("Coordinator", jrci);
 
         System.out.println("Coordinator ready");
 
