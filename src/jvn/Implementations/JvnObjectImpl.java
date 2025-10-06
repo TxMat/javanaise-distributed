@@ -13,7 +13,7 @@ public class JvnObjectImpl implements JvnObject {
     private int objectId;
     // TODO: Do we really need objectName ?
     private String objectName; // track object name here I suppose
-    private LockState lock = LockState.W;
+    private LockState lock = LockState.NL;
     private transient JvnLocalServer localServer;
 
     // Lock states :
