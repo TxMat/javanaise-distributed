@@ -41,6 +41,7 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
     private static class ObjectInfo {
         JvnObject object;
         Serializable currentState;
+        // uses only NL, R, W here
         LockState lockState = LockState.NL;
         Set<JvnRemoteServer> readers = new HashSet<>();
         JvnRemoteServer writer = null;
@@ -150,7 +151,7 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
 
         try {
             // If there's a writer, we need to invalidate it first
-            if (info.lockState == LockState.W && info.writer != null) {
+            if ((info.lockState == LockState.W || info.lockState == LockState.WC) && info.writer != null) {
                 System.out.println("Coordinator: Invalidating writer for read lock on object " + joi);
                 Serializable newState = info.writer.jvnInvalidateWriterForReader(joi);
                 if (newState != null) {
@@ -196,7 +197,7 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
             info.readers.clear();
 
             // Invalidate writer if there is one
-            if (info.lockState == LockState.W && info.writer != null && !info.writer.equals(js)) {
+            if ((info.lockState == LockState.W || info.lockState == LockState.WC) && info.writer != null && !info.writer.equals(js)) {
                 System.out.println("Coordinator: Invalidating writer for write lock on object " + joi);
                 Serializable newState = info.writer.jvnInvalidateWriter(joi);
                 if (newState != null) {
@@ -225,6 +226,11 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
 
         // Update the object state in the coordinator
         info.currentState = newState;
+
+        // The writer is still cached at the client but no longer holds an active write lock
+        if (info.writer != null && info.writer.equals(js) && info.lockState == LockState.W) {
+            info.lockState = LockState.WC;
+        }
         System.out.println("Coordinator: Updated object " + joi + " state from server");
     }
 

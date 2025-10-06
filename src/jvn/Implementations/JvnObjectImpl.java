@@ -60,11 +60,19 @@ public class JvnObjectImpl implements JvnObject {
                 lock = LockState.R;
                 break;
             case RC:
-                // RC -> R
+                // RC -> R : Need to get latest from coordinator since we only have cached read
+                latestObject = localServer.jvnLockRead(objectId);
+                if (latestObject != null) {
+                    this.object = latestObject;
+                }
                 lock = LockState.R;
                 break;
             case WC:
-                // WC -> RWC
+                // WC -> RWC : Need to get latest from coordinator since another writer may have updated
+                latestObject = localServer.jvnLockRead(objectId);
+                if (latestObject != null) {
+                    this.object = latestObject;
+                }
                 lock = LockState.RWC;
                 break;
             case W:
