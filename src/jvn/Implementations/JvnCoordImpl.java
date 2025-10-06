@@ -9,6 +9,7 @@
 
 package jvn.Implementations;
 
+import jvn.Enums.LockState;
 import jvn.Exceptions.JvnException;
 import jvn.Models.JvnObject;
 import jvn.Models.JvnRemoteCoord;
@@ -36,14 +37,11 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
     // Object state and lock management
     private Map<Integer, ObjectInfo> objects = new ConcurrentHashMap<>();
 
-    // Lock state for each object
-    private enum LockState { NONE, READ, WRITE }
-
     // Information about each object
     private static class ObjectInfo {
         JvnObject object;
         Serializable currentState;
-        LockState lockState = LockState.NONE;
+        LockState lockState = LockState.NL;
         Set<JvnRemoteServer> readers = new HashSet<>();
         JvnRemoteServer writer = null;
         JvnRemoteServer owner; // The server that created/owns this object
@@ -152,7 +150,7 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
 
         try {
             // If there's a writer, we need to invalidate it first
-            if (info.lockState == LockState.WRITE && info.writer != null) {
+            if (info.lockState == LockState.W && info.writer != null) {
                 System.out.println("Coordinator: Invalidating writer for read lock on object " + joi);
                 Serializable newState = info.writer.jvnInvalidateWriterForReader(joi);
                 if (newState != null) {
@@ -163,7 +161,7 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
 
             // Add this server as a reader
             info.readers.add(js);
-            info.lockState = LockState.READ;
+            info.lockState = LockState.R;
 
             System.out.println("Coordinator: Granted read lock on object " + joi + " to server");
             return info.currentState;
@@ -198,7 +196,7 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
             info.readers.clear();
 
             // Invalidate writer if there is one
-            if (info.lockState == LockState.WRITE && info.writer != null && !info.writer.equals(js)) {
+            if (info.lockState == LockState.W && info.writer != null && !info.writer.equals(js)) {
                 System.out.println("Coordinator: Invalidating writer for write lock on object " + joi);
                 Serializable newState = info.writer.jvnInvalidateWriter(joi);
                 if (newState != null) {
@@ -208,7 +206,7 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
 
             // Grant write lock
             info.writer = js;
-            info.lockState = LockState.WRITE;
+            info.lockState = LockState.W;
 
             System.out.println("Coordinator: Granted write lock on object " + joi + " to server");
             return info.currentState;
@@ -244,7 +242,7 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
             info.readers.remove(js);
             if (info.writer != null && info.writer.equals(js)) {
                 info.writer = null;
-                info.lockState = LockState.NONE;
+                info.lockState = LockState.NL;
             }
         }
     }

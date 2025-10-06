@@ -5,10 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="121dbfce-64e4-46d9-a543-2d549f40603e" name="Changes" comment="seems to work for 1 client">
+      <change afterPath="$PROJECT_DIR$/src/jvn/Enums/LockState.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/javanaise-chat.ipr" beforeDir="false" afterPath="$PROJECT_DIR$/javanaise-chat.ipr" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/javanaise-chat.iws" beforeDir="false" afterPath="$PROJECT_DIR$/javanaise-chat.iws" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvn/Implementations/JvnCoordImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Implementations/JvnCoordImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/jvn/Implementations/JvnObjectImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Implementations/JvnObjectImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvn/Implementations/JvnServerImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Implementations/JvnServerImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvn/Models/JvnObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Models/JvnObject.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,6 +93,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Class" />
+        <option value="Enum" />
       </list>
     </option>
   </component>
@@ -168,7 +170,7 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "dev",
+    "git-widget-placeholder": "master",
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
     "node.js.detected.package.eslint": "true",
@@ -209,6 +211,11 @@
         <option name="BuildArtifacts" enabled="false" />
         <option name="Make" enabled="true" />
       </method>
+    </configuration>
+    <configuration name="All" type="CompoundRunConfigurationType">
+      <toRun name="Coordinator" type="Application" />
+      <toRun name="Irc" type="Application" />
+      <method v="2" />
     </configuration>
     <configuration default="true" type="JUnit" factoryName="JUnit">
       <option name="TEST_OBJECT" value="class" />
@@ -385,19 +392,9 @@
           <option name="timeStamp" value="5" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/jvn/Implementations/JvnObjectImpl.java</url>
-          <line>115</line>
-          <option name="timeStamp" value="6" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/jvn/Implementations/JvnServerImpl.java</url>
           <line>60</line>
           <option name="timeStamp" value="7" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/jvn/Implementations/JvnObjectImpl.java</url>
-          <line>30</line>
-          <option name="timeStamp" value="9" />
         </line-breakpoint>
         <breakpoint enabled="true" type="java-exception">
           <properties class="java.lang.NullPointerException" package="java.lang" />

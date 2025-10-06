@@ -2,6 +2,7 @@ package jvn.Implementations;
 
 import java.io.Serializable;
 
+import jvn.Enums.LockState;
 import jvn.Exceptions.JvnException;
 import jvn.Models.JvnLocalServer;
 import jvn.Models.JvnObject;
@@ -15,12 +16,6 @@ public class JvnObjectImpl implements JvnObject {
     private String objectName; // track object name here I suppose
     private LockState lock = LockState.NL;
     private transient JvnLocalServer localServer;
-
-    // Lock states :
-    // No lock, Read, Write, Read cached, Write cached, Read + (Write cached)
-    private enum LockState {
-        NL, R, W, RC, WC, RWC
-    }
 
     public JvnObjectImpl(Serializable o) {
         this.object = o;
