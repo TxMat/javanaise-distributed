@@ -104,11 +104,7 @@ public class JvnObjectImpl implements JvnObject {
                 lock = LockState.W;
                 break;
             case RC:
-                // RC -> W : Ask coordinator
-                latestObject = localServer.jvnLockWrite(objectId);
-                if (latestObject != null) {
-                    this.object = latestObject;
-                }
+                // RC -> W
                 lock = LockState.W;
                 break;
             case WC:
