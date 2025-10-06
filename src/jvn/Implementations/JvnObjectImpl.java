@@ -13,7 +13,7 @@ public class JvnObjectImpl implements JvnObject {
     private int objectId;
     // TODO: Do we really need objectName ?
     private String objectName; // track object name here I suppose
-    private LockState lock;
+    private LockState lock = LockState.W;
     private transient JvnLocalServer localServer;
 
     // Lock states :
@@ -151,7 +151,6 @@ public class JvnObjectImpl implements JvnObject {
                     break;
             }
         } catch (Exception e) {
-            System.err.println("Warning: Failed to update object state: " + e.getMessage());
             throw new JvnException("Unlock failed: " + e.getMessage());
         }
     }
