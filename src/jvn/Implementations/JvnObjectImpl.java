@@ -49,7 +49,8 @@ public class JvnObjectImpl implements JvnObject {
         }
 
         Serializable latestObject;
-
+        System.out.println("Locking read");
+        System.out.println("Lock state: " + lock);
         switch (lock) {
             case NL:
                 // NL -> R : Ask coordinator
@@ -81,6 +82,7 @@ public class JvnObjectImpl implements JvnObject {
             case RWC:
                 break;
         }
+        System.out.println("Lock state after: " + lock);
     }
 
     @Override
@@ -90,7 +92,8 @@ public class JvnObjectImpl implements JvnObject {
         }
 
         Serializable latestObject;
-
+        System.out.println("Locking write");
+        System.out.println("Lock state: " + lock);
         switch (lock) {
             case NL:
                 // NL -> W : Ask coordinator
@@ -113,17 +116,19 @@ public class JvnObjectImpl implements JvnObject {
                 lock = LockState.W;
                 break;
             case R:
+            case RWC:
                 throw new JvnException("Can't lock write: already read locked");
             case W:
                 break;
-            case RWC:
-                throw new JvnException("Can't lock write: already read locked");
         }
+        System.out.println("Lock state after: " + lock);
     }
 
     @Override
     public void jvnUnLock() throws JvnException {
         try {
+            System.out.println("Unlock called");
+            System.out.println("Lock state: " + lock);
             switch (lock) {
                 case W:
                     // W -> WC : Notify changes for coordinator
@@ -144,6 +149,7 @@ public class JvnObjectImpl implements JvnObject {
                     // NL, RC, WC: nothing to do
                     break;
             }
+            System.out.println("Lock state after: " + lock);
         } catch (Exception e) {
             throw new JvnException("Unlock failed: " + e.getMessage());
         }
@@ -165,6 +171,8 @@ public class JvnObjectImpl implements JvnObject {
 
     @Override
     public void jvnInvalidateReader() throws JvnException {
+        System.out.println("InvalidateReader called");
+        System.out.println("Lock state: " + lock);
         switch (lock) {
             case R:
                 // R -> NL
@@ -179,11 +187,14 @@ public class JvnObjectImpl implements JvnObject {
             default:
                 break;
         }
+        System.out.println("Lock state after: " + lock);
     }
 
     @Override
     public Serializable jvnInvalidateWriter() throws JvnException {
         Serializable result = null;
+        System.out.println("InvalidateWriter called");
+        System.out.println("Lock state: " + lock);
         switch (lock) {
             case W:
                 // W -> NL
@@ -203,11 +214,14 @@ public class JvnObjectImpl implements JvnObject {
             default:
                 break;
         }
+        System.out.println("Lock state after: " + lock);
         return result;
     }
 
     @Override
     public Serializable jvnInvalidateWriterForReader() throws JvnException {
+        System.out.println("InvalidateWriterForReader called");
+        System.out.println("Lock state: " + lock);
         Serializable result = null;
         switch (lock) {
             case W:
@@ -228,6 +242,7 @@ public class JvnObjectImpl implements JvnObject {
             default:
                 break;
         }
+        System.out.println("Lock state after: " + lock);
         return result;
     }
 

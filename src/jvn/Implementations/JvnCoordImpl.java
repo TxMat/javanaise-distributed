@@ -153,7 +153,7 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
             // If there's a writer, we need to invalidate it first
             if ((info.lockState == LockState.W || info.lockState == LockState.WC) && info.writer != null) {
                 System.out.println("Coordinator: Invalidating writer for read lock on object " + joi);
-                Serializable newState = info.writer.jvnInvalidateWriterForReader(joi);
+                Serializable newState = info.writer.jvnInvalidateWriter(joi);
                 if (newState != null) {
                     info.currentState = newState;
                 }
