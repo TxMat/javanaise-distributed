@@ -67,9 +67,7 @@ public class JvnObjectImpl implements JvnObject {
                 // WC -> RWC
                 lock = LockState.RWC;
             case W:
-                // W -> RWC
-                lock = LockState.RWC;
-                break;
+                throw new JvnException("Can't lock read: already write locked");
             case R:
             case RWC:
                 break;
@@ -94,7 +92,7 @@ public class JvnObjectImpl implements JvnObject {
                 lock = LockState.W;
                 break;
             case RC:
-                // NL -> W : Ask coordinator
+                // RC -> W : Ask coordinator
                 latestObject = localServer.jvnLockWrite(objectId);
                 if (latestObject != null) {
                     this.object = latestObject;
@@ -106,19 +104,11 @@ public class JvnObjectImpl implements JvnObject {
                 lock = LockState.W;
                 break;
             case R:
-                // R -> W : Ask coordinator
-                latestObject = localServer.jvnLockWrite(objectId);
-                if (latestObject != null) {
-                    this.object = latestObject;
-                }
-                lock = LockState.W;
-                break;
+                throw new JvnException("Can't lock write: already read locked");
             case W:
                 break;
             case RWC:
-                // RWC -> W
-                lock = LockState.W;
-                break;
+                throw new JvnException("Can't lock write: already read locked");
         }
     }
 
