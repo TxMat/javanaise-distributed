@@ -1,21 +1,26 @@
 package jvn.Implementations;
 
+import java.io.Serializable;
+
 import jvn.Exceptions.JvnException;
 import jvn.Models.JvnLocalServer;
 import jvn.Models.JvnObject;
-import jvn.Models.JvnRemoteCoord;
-
-import java.io.Serializable;
 
 public class JvnObjectImpl implements JvnObject {
 
     private static final long serialVersionUID = 1L;
     private Serializable object;
     private int objectId;
-    private String objectName; // track object name here i suppose
-    private boolean isReadLocked = false;
-    private boolean isWriteLocked = false;
+    // TODO: Do we really need objectName ?
+    private String objectName; // track object name here I suppose
+    private LockState lock;
     private transient JvnLocalServer localServer;
+
+    // Lock states :
+    // No lock, Read, Write, Read cached, Write cached, Read + (Write cached)
+    private enum LockState {
+        NL, R, W, RC, WC, RWC
+    }
 
     public JvnObjectImpl(Serializable o) {
         this.object = o;
@@ -44,51 +49,110 @@ public class JvnObjectImpl implements JvnObject {
 
     @Override
     public void jvnLockRead() throws JvnException {
-        if (isWriteLocked) {
-            throw new JvnException("Object is write-locked");
-        }
         if (objectId == -1) {
             throw new JvnException("Object not registered with coordinator");
         }
 
-        // Get the latest object state from the coordinator
-        Serializable latestObject = localServer.jvnLockRead(objectId);
-        if (latestObject != null) {
-            this.object = latestObject;
+        Serializable latestObject;
+
+        switch (lock) {
+            case NL:
+                // NL -> R : Ask coordinator
+                latestObject = localServer.jvnLockRead(objectId);
+                if (latestObject != null) {
+                    this.object = latestObject;
+                }
+                lock = LockState.R;
+                break;
+            case RC:
+                // RC -> R
+                lock = LockState.R;
+                break;
+            case WC:
+                // WC -> RWC
+                lock = LockState.RWC;
+            case W:
+                // W -> RWC
+                lock = LockState.RWC;
+                break;
+            case R:
+            case RWC:
+                break;
         }
-        isReadLocked = true;
     }
 
     @Override
     public void jvnLockWrite() throws JvnException {
-        if (isReadLocked || isWriteLocked) {
-            throw new JvnException("Object is already locked");
-        }
         if (objectId == -1) {
             throw new JvnException("Object not registered with coordinator");
         }
 
-        // Get the latest object state from the coordinator
-        Serializable latestObject = localServer.jvnLockWrite(objectId);
-        if (latestObject != null) {
-            this.object = latestObject;
+        Serializable latestObject;
+
+        switch (lock) {
+            case NL:
+                // NL -> W : Ask coordinator
+                latestObject = localServer.jvnLockWrite(objectId);
+                if (latestObject != null) {
+                    this.object = latestObject;
+                }
+                lock = LockState.W;
+                break;
+            case RC:
+                // NL -> W : Ask coordinator
+                latestObject = localServer.jvnLockWrite(objectId);
+                if (latestObject != null) {
+                    this.object = latestObject;
+                }
+                lock = LockState.W;
+                break;
+            case WC:
+                // WC -> W
+                lock = LockState.W;
+                break;
+            case R:
+                // R -> W : Ask coordinator
+                latestObject = localServer.jvnLockWrite(objectId);
+                if (latestObject != null) {
+                    this.object = latestObject;
+                }
+                lock = LockState.W;
+                break;
+            case W:
+                break;
+            case RWC:
+                // RWC -> W
+                lock = LockState.W;
+                break;
         }
-        isWriteLocked = true;
     }
 
     @Override
     public void jvnUnLock() throws JvnException {
         try {
-            // If we had a write lock, we need to notify the coordinator of potential changes
-            if (isWriteLocked && localServer != null && objectId != -1) {
-                localServer.jvnUpdateObject(objectId, object);
+            switch (lock) {
+                case W:
+                    // W -> WC : Notify changes for coordinator
+                    if (localServer != null && objectId != -1) {
+                        localServer.jvnUpdateObject(objectId, object);
+                    }
+                    lock = LockState.WC;
+                    break;
+                case R:
+                    // R -> RC
+                    lock = LockState.RC;
+                    break;
+                case RWC:
+                    // RWC -> WC
+                    lock = LockState.WC;
+                    break;
+                default:
+                    // NL, RC, WC: nothing to do
+                    break;
             }
         } catch (Exception e) {
             System.err.println("Warning: Failed to update object state: " + e.getMessage());
-        } finally {
-            // Always clear the locks
-            isReadLocked = false;
-            isWriteLocked = false;
+            throw new JvnException("Unlock failed: " + e.getMessage());
         }
     }
 
@@ -108,31 +172,70 @@ public class JvnObjectImpl implements JvnObject {
 
     @Override
     public void jvnInvalidateReader() throws JvnException {
-        if (isReadLocked) {
-            isReadLocked = false;
-            System.out.println("JvnObject " + objectId + ": Read lock invalidated");
+        switch (lock) {
+            case R:
+                // R -> NL
+            case RC:
+                // RC -> NL
+                lock = LockState.NL;
+                break;
+            case RWC:
+                // RWC -> WC
+                lock = LockState.WC;
+                break;
+            default:
+                break;
         }
     }
 
     @Override
     public Serializable jvnInvalidateWriter() throws JvnException {
-        if (isWriteLocked) {
-            isWriteLocked = false;
-            System.out.println("JvnObject " + objectId + ": Write lock invalidated, returning current state");
-            return object; // Return the current (possibly modified) object
+        Serializable result = null;
+        switch (lock) {
+            case W:
+                // W -> NL
+                result = object;
+                lock = LockState.NL;
+                break;
+            case WC:
+                // WC -> NL
+                result = object;
+                lock = LockState.NL;
+                break;
+            case RWC:
+                // RWC -> RC
+                result = object;
+                lock = LockState.RC;
+                break;
+            default:
+                break;
         }
-        return null; // No write lock to invalidate
+        return result;
     }
 
     @Override
     public Serializable jvnInvalidateWriterForReader() throws JvnException {
-        if (isWriteLocked) {
-            isWriteLocked = false;
-            isReadLocked = true; // Downgrade to read lock
-            System.out.println("JvnObject " + objectId + ": Write lock downgraded to read lock");
-            return object; // Return the current (possibly modified) object
+        Serializable result = null;
+        switch (lock) {
+            case W:
+                // W -> R
+                result = object;
+                lock = LockState.R;
+                break;
+            case WC:
+                // WC -> RC
+                result = object;
+                lock = LockState.RC;
+                break;
+            case RWC:
+                // RWC -> R
+                result = object;
+                lock = LockState.R;
+                break;
+            default:
+                break;
         }
-        return null; // No write lock to downgrade
+        return result;
     }
 
     @Override

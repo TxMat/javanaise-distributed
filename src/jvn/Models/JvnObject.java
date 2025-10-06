@@ -7,9 +7,9 @@
 
 package jvn.Models;
 
-import jvn.Exceptions.JvnException;
+import java.io.Serializable;
 
-import java.io.*;
+import jvn.Exceptions.JvnException;
 
 /**
  * Interface of a JVN object. 
@@ -18,7 +18,7 @@ import java.io.*;
 
 public interface JvnObject extends Serializable {
 	/* A JvnObject should be serializable in order to be able to transfer 
-       a reference to a JVN object remotely */
+       a reference to a JVN object remotely */	
 
 	/**
 	* Get a Read lock on the shared object 
