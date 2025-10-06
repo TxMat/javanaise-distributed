@@ -232,6 +232,19 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
             info.lockState = LockState.WC;
         }
         System.out.println("Coordinator: Updated object " + joi + " state from server");
+
+        // Propagate change to everyone
+        for (JvnRemoteServer reader : info.readers) {
+            if (!reader.equals(js)) { // Don't send update back to the updating server
+                try {
+                    System.out.println("Coordinator: Propagating update of object " + joi + " to reader");
+                    reader.jvnInvalidateReader(joi); // Invalidate their read lock
+                } catch (Exception e) {
+                    System.out.println("Coordinator: Failed to propagate update to a reader: " + e.getMessage());
+                }
+            }
+        }
+        info.readers.clear(); // All readers are invalidated
     }
 
     /**
