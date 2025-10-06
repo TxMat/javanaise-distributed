@@ -66,6 +66,7 @@ public class JvnObjectImpl implements JvnObject {
             case WC:
                 // WC -> RWC
                 lock = LockState.RWC;
+                break;
             case W:
                 throw new JvnException("Can't lock read: already write locked");
             case R:
