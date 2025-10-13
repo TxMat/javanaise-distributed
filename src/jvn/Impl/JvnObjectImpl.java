@@ -137,7 +137,6 @@ public class JvnObjectImpl implements JvnObject {
                 lockStatus = JvnObjectStatus.R;
             } else if (waitingForCoordAuto == WaitingCoordStatus.WAIT_FOR_WRITE) {
                 // pas besoin d'attendre la fin de lecture : Utilisation de l'enum pour fix interbloquage possible
-                ConsoleColor.magicLog(ConsoleColor.toRed("EZ DODGE"));
                 return;
             }
             String bf = "InvalidateReader : [ " + id + " ] lockStatus( " + lockStatus;
