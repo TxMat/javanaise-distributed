@@ -4,8 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="121dbfce-64e4-46d9-a543-2d549f40603e" name="Changes" comment="gradle working">
+    <list default="true" id="121dbfce-64e4-46d9-a543-2d549f40603e" name="Changes" comment="warn fix">
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/javanaise-chat.iws" beforeDir="false" afterPath="$PROJECT_DIR$/javanaise-chat.iws" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvn/JvnServerMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/JvnServerMain.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -165,6 +167,8 @@
     "Gradle.javanaise-distributed [:jvn.Impl.JvnCoordImpl.main()].executor": "Run",
     "Gradle.javanaise-distributed [:jvn.JvnCoordImpl.main()].executor": "Run",
     "Gradle.javanaise-distributed [:jvn.JvnServerMain.main()].executor": "Run",
+    "Gradle.javanaise-distributed [jar].executor": "Run",
+    "Gradle.javanaise-distributed [runCoordinator].executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
@@ -190,7 +194,7 @@
       <recent name="jvn" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.JvnServerMain">
+  <component name="RunManager" selected="Application.Irc">
     <configuration default="true" type="Applet" factoryName="Applet">
       <module name="" />
       <option name="MAIN_CLASS_NAME" />
@@ -211,7 +215,25 @@
       <Host>localhost</Host>
       <Port>5050</Port>
     </configuration>
-    <configuration name="JvnServerMain" type="Application" factoryName="Application" singleton="false" temporary="true" nameIsGenerated="true">
+    <configuration name="JvnCoordImpl" type="Application" factoryName="Application" nameIsGenerated="true">
+      <option name="ALTERNATIVE_JRE_PATH" value="openjdk-24" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="MAIN_CLASS_NAME" value="jvn.Impl.JvnCoordImpl" />
+      <module name="javanaise-chat.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="jvn.Impl.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="BuildArtifacts" enabled="false" />
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="JvnServerMain" type="Application" factoryName="Application" singleton="false" nameIsGenerated="true">
+      <option name="ALTERNATIVE_JRE_PATH" value="openjdk-24" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
       <option name="MAIN_CLASS_NAME" value="jvn.JvnServerMain" />
       <module name="javanaise-chat.main" />
       <extension name="coverage">
@@ -232,24 +254,53 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="jvn.Impl.JvnCoordImpl" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="jvn.Impl.JvnCoordImpl" />
-      <module name="javanaise-chat.main" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="jvn.Impl.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="BuildArtifacts" enabled="false" />
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="All" type="CompoundRunConfigurationType">
       <toRun name="Coordinator" type="Application" />
       <toRun name="Irc" type="Application" />
+      <method v="2" />
+    </configuration>
+    <configuration name="javanaise-distributed [jar]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="jar" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="javanaise-distributed [runCoordinator]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="runCoordinator" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
       <method v="2" />
     </configuration>
     <configuration default="true" type="JUnit" factoryName="JUnit">
@@ -263,6 +314,17 @@
         <option name="BuildArtifacts" enabled="false" />
         <option name="Make" enabled="true" />
       </method>
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="javanaise-chat" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="javanaise-chat" />
+      <option name="filePath" />
+      <method v="2" />
     </configuration>
     <configuration default="true" type="Remote">
       <option name="USE_SOCKET_TRANSPORT" value="true" />
@@ -279,13 +341,15 @@
       <item itemvalue="Application.Coordinator" />
       <item itemvalue="Application.Irc" />
       <item itemvalue="Application.JvnServerMain" />
-      <item itemvalue="Application.jvn.Impl.JvnCoordImpl" />
+      <item itemvalue="Application.JvnCoordImpl" />
       <item itemvalue="Compound.All" />
+      <item itemvalue="Gradle.javanaise-distributed [jar]" />
+      <item itemvalue="Gradle.javanaise-distributed [runCoordinator]" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.jvn.Impl.JvnCoordImpl" />
-        <item itemvalue="Application.JvnServerMain" />
+        <item itemvalue="Gradle.javanaise-distributed [runCoordinator]" />
+        <item itemvalue="Gradle.javanaise-distributed [jar]" />
       </list>
     </recent_temporary>
   </component>
@@ -321,7 +385,7 @@
       <workItem from="1759311128689" duration="3263000" />
       <workItem from="1759338747524" duration="2659000" />
       <workItem from="1759430612682" duration="6276000" />
-      <workItem from="1760335783836" duration="4056000" />
+      <workItem from="1760335783836" duration="6961000" />
     </task>
     <task id="LOCAL-00001" summary="basic start">
       <option name="closed" value="true" />
@@ -451,7 +515,15 @@
       <option name="project" value="LOCAL" />
       <updated>1760339116371</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="warn fix">
+      <option name="closed" value="true" />
+      <created>1760339857797</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1760339857797</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -485,7 +557,8 @@
     <MESSAGE value="invalidate writer for reader" />
     <MESSAGE value="packages + typo" />
     <MESSAGE value="gradle working" />
-    <option name="LAST_COMMIT_MESSAGE" value="gradle working" />
+    <MESSAGE value="warn fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="warn fix" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XDebuggerManager">
