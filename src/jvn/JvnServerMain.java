@@ -115,7 +115,6 @@ public class JvnServerMain {
         }
     }
 
-    @SuppressWarnings("CallToPrintStackTrace")
     public static void test(String[] args) {
         try {
             int nb = 1;

@@ -73,7 +73,6 @@ implements JvnLocalServer, JvnRemoteServer {
 	* The JVN service is not used anymore
 	* @throws JvnException
 	**/
-	@SuppressWarnings("CallToPrintStackTrace")
 	public void jvnTerminate()
 	throws JvnException {
 		try {
@@ -114,7 +113,6 @@ implements JvnLocalServer, JvnRemoteServer {
 	* @param jo : the JVN object 
 	* @throws JvnException
 	**/
-	@SuppressWarnings("CallToPrintStackTrace")
 	public void jvnRegisterObject(String jon, JvnObject jo)
 	throws JvnException {
 		try {
