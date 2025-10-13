@@ -21,7 +21,7 @@ public class JvnObjectImpl implements JvnObject {
     private final transient JvnLocalServer server; 
     
     public JvnObjectImpl(Serializable o, int id, JvnLocalServer server) {
-        this.proxy = JvnInterseptor.createInterseptor(o);
+        this.proxy = JvnInterceptor.createInterceptor(o);
         this.id = id;
         this.lockStatus = JvnObjectStatus.NL;
         this.server = server;
@@ -131,7 +131,7 @@ public class JvnObjectImpl implements JvnObject {
     
     @Override
     public void updateSerializable(Serializable s) {
-        ((JvnInterseptor) Proxy.getInvocationHandler(proxy)).updateObject(s);
+        ((JvnInterceptor) Proxy.getInvocationHandler(proxy)).updateObject(s);
     }
     
     @Override
@@ -141,7 +141,7 @@ public class JvnObjectImpl implements JvnObject {
     
     @Override
     public Serializable jvnGetSharedObject() throws JvnException {
-        return ((JvnInterseptor) Proxy.getInvocationHandler(proxy)).getSerializable();
+        return ((JvnInterceptor) Proxy.getInvocationHandler(proxy)).getSerializable();
     }
     
     @Override

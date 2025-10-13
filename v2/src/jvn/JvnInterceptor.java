@@ -5,19 +5,19 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
-public class JvnInterseptor implements InvocationHandler, Serializable {
+public class JvnInterceptor implements InvocationHandler, Serializable {
     
-    public static Object createInterseptor(Serializable o) {
+    public static Object createInterceptor(Serializable o) {
         return Proxy.newProxyInstance(
             o.getClass().getClassLoader(),
             o.getClass().getInterfaces(),
-            new JvnInterseptor(o)
+            new JvnInterceptor(o)
         );
     }
     
     private Serializable o;
     
-    private JvnInterseptor(Serializable o) {
+    private JvnInterceptor(Serializable o) {
         this.o = o;
     }
     
