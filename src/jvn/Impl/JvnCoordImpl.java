@@ -9,21 +9,21 @@
 
 package jvn.Impl;
 
-import jvn.Exceptions.JvnException;
-import jvn.Interfaces.JvnObject;
-import jvn.Interfaces.JvnRemoteCoord;
-import jvn.Interfaces.JvnRemoteServer;
-
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
+
+import jvn.Exceptions.JvnException;
+import jvn.Interfaces.JvnObject;
+import jvn.Interfaces.JvnRemoteCoord;
+import jvn.Interfaces.JvnRemoteServer;
 
 
 public class JvnCoordImpl 	
@@ -219,7 +219,7 @@ implements JvnRemoteCoord {
         
         final Object lock = new Object();
         
-        List<JvnRemoteServer> readLock;
+        Set<JvnRemoteServer> readLock;
         JvnRemoteServer writeLock;
         
         
@@ -230,7 +230,7 @@ implements JvnRemoteCoord {
         
         public JvnObjectInfo(JvnObject jo) {
             this.jo = jo;
-            this.readLock = new ArrayList<>();
+            this.readLock = new HashSet<>();
         }
         
         void addReader(JvnRemoteServer server) throws RemoteException, JvnException {
@@ -255,13 +255,15 @@ implements JvnRemoteCoord {
                 System.out.println("[ "+System.currentTimeMillis()+" ] Lock take on switchWriter");
                 
                 // TODO : possibel comme en C de lancer tout les truc en paralelle et de faire un waitBarrier ?
-                while(!readLock.isEmpty()) {
-                    JvnRemoteServer jrs = readLock.removeFirst();
+                
+                for(JvnRemoteServer jrs : readLock) {
                     if(jrs.equals(server)) {
+                        System.out.println("[ "+System.currentTimeMillis()+" ] J'ai 3 IQ");
                         continue;
                     }
                     jrs.jvnInvalidateReader(joi);
                 }
+                
                 String hash = "    Server : "+server.hashCode()+"\nold writer : "+(writeLock==null?null:writeLock.hashCode())+"\nNew Server : ";
                 if(writeLock != null) {
                     Serializable s = writeLock.jvnInvalidateWriter(joi);

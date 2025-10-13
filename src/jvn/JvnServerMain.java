@@ -1,15 +1,15 @@
 package jvn;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
 import Objects.A;
 import Objects.A_Impl;
 import jvn.Exceptions.JvnException;
 import jvn.Impl.JvnServerImpl;
 import jvn.Interfaces.JvnLocalServer;
 import jvn.Interfaces.JvnObject;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
 
 public class JvnServerMain {
     
@@ -44,6 +44,9 @@ public class JvnServerMain {
                     }
                     case "test" -> {
                         test(args);
+                    }
+                    case "cpt" -> {
+                        cpt(args);
                     }
                     case "RL", "LR" -> {
                         if(args.length != 2) break;
@@ -120,14 +123,14 @@ public class JvnServerMain {
                 do { 
                     String jon = "a"+i;
                     JvnObject jo = server.jvnLookupObject(jon);
-
+                    
                     System.out.println("i="+i+" jo==null="+(jo==null));
                     if(jo == null) break;
                     aaaaaaaa.put(jon, jo);
-
+                    
                     i++;
                 } while (true);
-
+                
                 trueLoop(nb);
             } else if(args.length == 3 && args[1].equals("c")) {
                 for(int i = Integer.parseInt(args[2])-1; i >= 0; i--){
@@ -178,7 +181,7 @@ public class JvnServerMain {
             }
             /*
             aaaaaaaa.forEach((k,v)->{
-                System.out.println("[ "+System.currentTimeMillis()+" ] "+k+" = "+v.toString());
+            System.out.println("[ "+System.currentTimeMillis()+" ] "+k+" = "+v.toString());
             });
             */
             try {
@@ -190,6 +193,39 @@ public class JvnServerMain {
                 System.out.println("error");
             }
             System.out.println("continue");
+        }
+    }
+    public static void cpt(String[] args) throws JvnException {
+        JvnObject cpt = server.jvnLookupObject("cpt");
+        if(cpt==null) {
+            A a = new A_Impl(0);
+            cpt = server.jvnCreateObject(a);
+            server.jvnRegisterObject("cpt", cpt);
+            for(int i = 5; i >= 0; i--) {
+                System.out.println(i);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    System.out.println("error : "+e.getMessage());
+                }
+            }
+        }
+        
+        int nb = Integer.parseInt(args[1]);
+        while(nb > 0) {
+            cpt.jvnLockWrite();
+            
+            int v1 = ((A)(cpt.jvnGetSharedObject())).getValue();
+            
+            ((A)(cpt.jvnGetSharedObject())).addValue(1);
+            
+            int v2 = ((A)(cpt.jvnGetSharedObject())).getValue();
+            
+            System.out.println("[ "+System.currentTimeMillis()+" ] cpt passe de "+v1+" à "+v2);
+            
+            cpt.jvnUnLock();
+            
+            nb--;
         }
     }
 }

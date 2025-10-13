@@ -1,14 +1,14 @@
 package jvn.Impl;
 
+import java.io.Serializable;
+import java.lang.reflect.Proxy;
+
 import jvn.Enums.ConsoleColor;
 import jvn.Enums.JvnObjectStatus;
 import jvn.Exceptions.JvnException;
 import jvn.Interfaces.JvnLocalServer;
 import jvn.Interfaces.JvnObject;
 import jvn.JvnInterceptor;
-
-import java.io.Serializable;
-import java.lang.reflect.Proxy;
 
 public class JvnObjectImpl implements JvnObject {
 
@@ -47,6 +47,7 @@ public class JvnObjectImpl implements JvnObject {
                     waitingForCoordAuto = WaitingCoordStatus.WAIT_FOR_READ;
                     needLockRead = true;
                 }
+                case JvnObjectStatus.W -> {}
                 default -> throw new JvnException("jvnLockRead -> lockStatus non attendu : " + lockStatus);
             }
         }
@@ -75,7 +76,7 @@ public class JvnObjectImpl implements JvnObject {
             System.out.println(bf);
             switch (lockStatus) {
                 case JvnObjectStatus.WC -> lockStatus = JvnObjectStatus.W;
-                case JvnObjectStatus.RC, JvnObjectStatus.NL -> {
+                case JvnObjectStatus.R, JvnObjectStatus.RC, JvnObjectStatus.NL -> {
                     // TODO : ^^^^^^^^ C'est ici le début de la merde avec l'interbloquage
                     // Récupère "fictivement" le WriteLock avant l'accord du server
                     /*
