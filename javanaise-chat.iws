@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="121dbfce-64e4-46d9-a543-2d549f40603e" name="Changes" comment="fix clear readers">
+    <list default="true" id="121dbfce-64e4-46d9-a543-2d549f40603e" name="Changes" comment="add annotate">
       <change beforePath="$PROJECT_DIR$/javanaise-chat.iws" beforeDir="false" afterPath="$PROJECT_DIR$/javanaise-chat.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvn/Impl/JvnCoordImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Impl/JvnCoordImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvn/Impl/JvnServerImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Impl/JvnServerImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvn/JvnInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/JvnInterceptor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/jvn/JvnServerMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/JvnServerMain.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -91,8 +90,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="Enum" />
+        <option value="AnnotationType" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -161,28 +161,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Gradle.javanaise-distributed [:irc.Irc.main()].executor": "Run",
-    "Gradle.javanaise-distributed [:jvn.Coordinator.main()].executor": "Run",
-    "Gradle.javanaise-distributed [:jvn.Impl.JvnCoordImpl.main()].executor": "Run",
-    "Gradle.javanaise-distributed [:jvn.JvnCoordImpl.main()].executor": "Run",
-    "Gradle.javanaise-distributed [:jvn.JvnServerMain.main()].executor": "Run",
-    "Gradle.javanaise-distributed [jar].executor": "Run",
-    "Gradle.javanaise-distributed [runCoordinator].executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "v2",
-    "junie.onboarding.icon.badge.shown": "true",
-    "kotlin-language-version-configured": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "to.speed.mode.migration.done": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Gradle.javanaise-distributed [:irc.Irc.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.javanaise-distributed [:jvn.Coordinator.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.javanaise-distributed [:jvn.Impl.JvnCoordImpl.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.javanaise-distributed [:jvn.JvnCoordImpl.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.javanaise-distributed [:jvn.JvnServerMain.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.javanaise-distributed [jar].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.javanaise-distributed [runCoordinator].executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;v2&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
@@ -195,7 +195,7 @@
       <recent name="jvn" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Irc">
+  <component name="RunManager" selected="Application.JvnServerMain">
     <configuration default="true" type="Applet" factoryName="Applet">
       <module name="" />
       <option name="MAIN_CLASS_NAME" />
@@ -386,7 +386,7 @@
       <workItem from="1759311128689" duration="3263000" />
       <workItem from="1759338747524" duration="2659000" />
       <workItem from="1759430612682" duration="6276000" />
-      <workItem from="1760335783836" duration="8304000" />
+      <workItem from="1760335783836" duration="11463000" />
     </task>
     <task id="LOCAL-00001" summary="basic start">
       <option name="closed" value="true" />
@@ -556,7 +556,23 @@
       <option name="project" value="LOCAL" />
       <updated>1760345004734</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="vive les warnings">
+      <option name="closed" value="true" />
+      <created>1760345766846</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1760345766846</updated>
+    </task>
+    <task id="LOCAL-00023" summary="add annotate">
+      <option name="closed" value="true" />
+      <created>1760347992485</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1760347992485</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -595,7 +611,9 @@
     <MESSAGE value="no delay on main" />
     <MESSAGE value="added idea conf" />
     <MESSAGE value="fix clear readers" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix clear readers" />
+    <MESSAGE value="vive les warnings" />
+    <MESSAGE value="add annotate" />
+    <option name="LAST_COMMIT_MESSAGE" value="add annotate" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XDebuggerManager">
