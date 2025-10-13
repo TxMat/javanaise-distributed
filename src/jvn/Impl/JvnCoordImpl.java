@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
+import jvn.Enums.ConsoleColor;
 import jvn.Exceptions.JvnException;
 import jvn.Interfaces.JvnObject;
 import jvn.Interfaces.JvnRemoteCoord;
@@ -49,7 +50,7 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
             Registry registry = LocateRegistry.createRegistry(5000);
             registry.rebind("coord", (JvnRemoteCoord) coord);
             
-            System.out.println("[ " + System.currentTimeMillis() + " ] > Coordinateur RMI prêt !");
+            ConsoleColor.magicLog("> Coordinateur RMI prêt !");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -60,7 +61,7 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
         Scanner scanner = new Scanner(System.in);
         origin:
         while (true) {
-            System.out.print("> ");
+            System.out.print(ConsoleColor.toGreen("<<<----===---->>> "));
             String line = scanner.nextLine();
             String[] args = line.trim().split("\\s+");
             
@@ -69,7 +70,7 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
             try {
                 switch (args[0]) {
                     case "exit", "q" -> {
-                        System.out.println("[ " + System.currentTimeMillis() + " ] EXIT...");
+                        ConsoleColor.magicLog("EXIT...");
                         scanner.close();
                         break origin;
                     }
@@ -84,12 +85,12 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
                         coord.jvnObjects.forEach((k, v) -> {
                             sb.append(k).append(" : ").append(v).append("\n");
                         });
-                        System.out.println(sb.toString());
+                        ConsoleColor.magicLog(sb.toString());
                     }
-                    default -> System.out.println("[ " + System.currentTimeMillis() + " ] Commande inconnue.");
+                    default -> ConsoleColor.magicLog("Commande inconnue.");
                 }
             } catch (Exception e) {
-                System.out.println("[ " + System.currentTimeMillis() + " ] Erreur : " + e.getMessage());
+                ConsoleColor.magicError(ConsoleColor.toRed("Erreur : " + e.getMessage()));
             }
         }
         scanner.close();
@@ -144,8 +145,7 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
     * @throws java.rmi.RemoteException,JvnException
     **/ 
     public void jvnRegisterObject(String jon, JvnObject jo, JvnRemoteServer js) throws java.rmi.RemoteException, JvnException {
-        if (jvnObjects.containsKey(jon))
-        throw new RuntimeException("Impossible de REGISTER un objet avec un nom déjà utilisé");
+        if(jvnObjects.containsKey(jon)) throw new RuntimeException("Impossible de REGISTER un objet avec un nom déjà utilisé");
         jvnObjects.put(jon, new JvnObjectInfo(jo));
         linkIdName.put(jo.jvnGetObjectId(), jon);
     }
@@ -228,60 +228,60 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
         }
         
         void addReader(JvnRemoteServer server) throws RemoteException, JvnException {
-            System.out.println("[ " + System.currentTimeMillis() + " ] Waiting lock on addReader");
+            ConsoleColor.magicLog("Waiting lock on addReader");
             synchronized (lock) {
-                System.out.println("[ " + System.currentTimeMillis() + " ] Lock take on addReader");
+                ConsoleColor.magicLog("Lock take on addReader");
                 
                 if (writeLock != null) {
                     Serializable s = writeLock.jvnInvalidateWriterForReader(jo.jvnGetObjectId());
-                    System.out.println(s.getClass());
                     jo.updateSerializable(s);
                     readLock.add(writeLock);
                     writeLock = null;
                 }
                 readLock.add(server);
-                System.out.println(this + "\n[ " + System.currentTimeMillis() + " ] Lock unlock :iq: on addReader");
+                ConsoleColor.magicLog(this);
+                ConsoleColor.magicLog("Lock unlock :iq: on addReader");
             }
         }
         
         void switchWriter(JvnRemoteServer server, int joi) throws RemoteException, JvnException {
-            System.out.println("[ " + System.currentTimeMillis() + " ] Waiting lock on switchWriter");
+            ConsoleColor.magicLog("Waiting lock on switchWriter");
             synchronized (lock) {
-                System.out.println("[ " + System.currentTimeMillis() + " ] Lock take on switchWriter");
+                ConsoleColor.magicLog("Lock take on switchWriter");
                 
                 // TODO : possibel comme en C de lancer tout les truc en paralelle et de faire un waitBarrier ?
                 
                 for (JvnRemoteServer jrs : readLock) {
                     if (jrs.equals(server)) {
-                        System.out.println("[ " + System.currentTimeMillis() + " ] J'ai 3 IQ");
+                        ConsoleColor.magicLog("J'ai 3 IQ");
                         continue;
                     }
                     jrs.jvnInvalidateReader(joi);
                 }
                 readLock.clear();
                 
-                String hash = "    Server : " + server.hashCode() + "\nold writer : " + (writeLock == null ? null : writeLock.hashCode()) + "\nNew Server : ";
+                String hash = "    Server : " + server.hashCode()+"\nold writer : " + (writeLock == null ? null : writeLock.hashCode())+"\nNew Server : ";
                 if (writeLock != null) {
                     Serializable s = writeLock.jvnInvalidateWriter(joi);
-                    System.out.println(s.getClass());
+                    ConsoleColor.magicLog(s.getClass());
                     jo.updateSerializable(s);
                 }
                 writeLock = server;
-                System.out.println(hash + writeLock.hashCode() + "\n" + this + "\n[ " + System.currentTimeMillis() + " ] Lock unlock :iq: on switchWriter");
+                ConsoleColor.magicLog(hash + writeLock.hashCode() + "\n" + this + "\nLock unlock :iq: on switchWriter");
             }
         }
         
         public JvnObject getLatestObject() throws RemoteException, JvnException {
-            System.out.println("[ " + System.currentTimeMillis() + " ] Waiting lock on getLatestObject");
+            ConsoleColor.magicLog("Waiting lock on getLatestObject");
             synchronized (lock) {
-                System.out.println("[ " + System.currentTimeMillis() + " ] Lock take on getLatestObject");
+                ConsoleColor.magicLog("Lock take on getLatestObject");
                 
                 if (writeLock != null) {
                     Serializable s = writeLock.jvnInvalidateWriter(jo.jvnGetObjectId());
                     jo.updateSerializable(s);
                 }
                 writeLock = null;
-                System.out.println("[ " + System.currentTimeMillis() + " ] Lock unlock :iq: on switchWriter");
+                ConsoleColor.magicLog("Lock unlock :iq: on switchWriter");
                 return jo;
             }
         }
@@ -289,13 +289,13 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
         
         
         void removeServer(JvnRemoteServer js) {
-            System.out.println("[ " + System.currentTimeMillis() + " ] Waiting lock on removeServer");
+            ConsoleColor.magicLog("Waiting lock on removeServer");
             synchronized (lock) {
-                System.out.println("[ " + System.currentTimeMillis() + " ] Lock take on removeServer");
+                ConsoleColor.magicLog("Lock take on removeServer");
                 
                 if (writeLock == js) writeLock = null;
                 readLock.remove(js);
-                System.out.println(this + "\n[ " + System.currentTimeMillis() + " ] Lock unlock :iq: on removeServer");
+                ConsoleColor.magicLog(this + "\nLock unlock :iq: on removeServer");
             }
         }
     }

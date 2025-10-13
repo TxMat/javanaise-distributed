@@ -17,6 +17,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import jvn.Enums.ConsoleColor;
 import jvn.Exceptions.JvnException;
 import jvn.Interfaces.JvnLocalServer;
 import jvn.Interfaces.JvnObject;
@@ -120,7 +121,7 @@ implements JvnLocalServer, JvnRemoteServer {
 	throws JvnException {
 		try {
 			coord.jvnRegisterObject(jon, jo, (JvnRemoteServer)js);
-			System.out.println("New JVN Object Registered : { jon: "+jon+", jos.toString(): { "+jo.jvnGetSharedObject().toString()+" } }");
+			ConsoleColor.magicLog("New JVN Object Registered : { jon: "+jon+", jos.toString(): { "+jo.jvnGetSharedObject().toString()+" } }");
 		} catch (JvnException e) {
 			throw e;
 		} catch (RemoteException e) {
