@@ -1,14 +1,14 @@
 /***
  * JAVANAISE API
  * JvnLocalServer interface
- * Defines the local interface provided by a JVN server 
- * An application uses the Javanaise service through the local interface provided by the Jvn server 
- * Contact: 
+ * Defines the local interface provided by a JVN server
+ * An application uses the Javanaise service through the local interface provided by the Jvn server
+ * Contact:
  *
- * Authors: 
+ * Authors:
  */
 
-package jvn.Models;
+package jvn.Interfaces;
 
 import jvn.Exceptions.JvnException;
 
@@ -29,8 +29,7 @@ public interface JvnLocalServer {
      * @return the JVN object
      * @throws JvnException
      **/
-    public JvnObject jvnCreateObject(Serializable jos)
-            throws JvnException;
+    public JvnObject jvnCreateObject(Serializable jos) throws JvnException;
 
     /**
      * Associate a symbolic name with a JVN object
@@ -39,8 +38,7 @@ public interface JvnLocalServer {
      * @param jo  : the JVN object
      * @throws JvnException
      **/
-    public void jvnRegisterObject(String jon, JvnObject jo)
-            throws JvnException;
+    public void jvnRegisterObject(String jon, JvnObject jo) throws JvnException;
 
     /**
      * Get the reference of a JVN object associated to a symbolic name
@@ -49,8 +47,7 @@ public interface JvnLocalServer {
      * @return the JVN object
      * @throws JvnException
      **/
-    public JvnObject jvnLookupObject(String jon)
-            throws JvnException;
+    public JvnObject jvnLookupObject(String jon) throws JvnException;
 
 
     /**
@@ -60,8 +57,7 @@ public interface JvnLocalServer {
      * @return the current JVN object state
      * @throws JvnException
      **/
-    public Serializable jvnLockRead(int joi)
-            throws JvnException;
+    public Serializable jvnLockRead(int joi) throws JvnException;
 
     /**
      * Get a Write lock on a JVN object
@@ -70,8 +66,7 @@ public interface JvnLocalServer {
      * @return the current JVN object state
      * @throws JvnException
      **/
-    public Serializable jvnLockWrite(int joi)
-            throws JvnException;
+    public Serializable jvnLockWrite(int joi) throws JvnException;
 
 
     /**
@@ -79,10 +74,7 @@ public interface JvnLocalServer {
      *
      * @throws JvnException
      **/
-    public void jvnTerminate()
-            throws JvnException;
-
-    void jvnUpdateObject(int objectId, Serializable object) throws JvnException;
+    public void jvnTerminate() throws JvnException;
 }
 
- 
+

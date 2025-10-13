@@ -2,17 +2,17 @@
  * JAVANAISE API
  * JvnRemoteCoord interface
  * This interface defines the remote interface provided by the Javanaise coordinator
- * Contact: 
+ * Contact:
  *
- * Authors: 
+ * Authors:
  */
 
-package jvn.Models;
+package jvn.Interfaces;
 
 import jvn.Exceptions.JvnException;
 
-import java.rmi.*;
-import java.io.*;
+import java.io.Serializable;
+import java.rmi.Remote;
 
 
 /**
@@ -27,8 +27,7 @@ public interface JvnRemoteCoord extends Remote {
      *
      * @throws java.rmi.RemoteException,JvnException
      **/
-    public int jvnGetObjectId()
-            throws java.rmi.RemoteException, JvnException;
+    public int jvnGetObjectId() throws java.rmi.RemoteException, JvnException;
 
     /**
      * Associate a symbolic name with a JVN object
@@ -39,8 +38,7 @@ public interface JvnRemoteCoord extends Remote {
      * @param js  : the remote reference of the JVNServer
      * @throws java.rmi.RemoteException,JvnException
      **/
-    public void jvnRegisterObject(String jon, JvnObject jo, JvnRemoteServer js)
-            throws java.rmi.RemoteException, JvnException;
+    public void jvnRegisterObject(String jon, JvnObject jo, JvnRemoteServer js) throws java.rmi.RemoteException, JvnException;
 
     /**
      * Get the reference of a JVN object managed by a given JVN server
@@ -49,8 +47,7 @@ public interface JvnRemoteCoord extends Remote {
      * @param js  : the remote reference of the JVNServer
      * @throws java.rmi.RemoteException,JvnException
      **/
-    public JvnObject jvnLookupObject(String jon, JvnRemoteServer js)
-            throws java.rmi.RemoteException, JvnException;
+    public JvnObject jvnLookupObject(String jon, JvnRemoteServer js) throws java.rmi.RemoteException, JvnException;
 
     /**
      * Get a Read lock on a JVN object managed by a given JVN server
@@ -60,8 +57,7 @@ public interface JvnRemoteCoord extends Remote {
      * @return the current JVN object state
      * @throws java.rmi.RemoteException, JvnException
      **/
-    public Serializable jvnLockRead(int joi, JvnRemoteServer js)
-            throws java.rmi.RemoteException, JvnException;
+    public Serializable jvnLockRead(int joi, JvnRemoteServer js) throws java.rmi.RemoteException, JvnException;
 
     /**
      * Get a Write lock on a JVN object managed by a given JVN server
@@ -71,8 +67,7 @@ public interface JvnRemoteCoord extends Remote {
      * @return the current JVN object state
      * @throws java.rmi.RemoteException, JvnException
      **/
-    public Serializable jvnLockWrite(int joi, JvnRemoteServer js)
-            throws java.rmi.RemoteException, JvnException;
+    public Serializable jvnLockWrite(int joi, JvnRemoteServer js) throws java.rmi.RemoteException, JvnException;
 
     /**
      * A JVN server terminates
@@ -80,9 +75,8 @@ public interface JvnRemoteCoord extends Remote {
      * @param js : the remote reference of the server
      * @throws java.rmi.RemoteException, JvnException
      **/
-    public void jvnTerminate(JvnRemoteServer js)
-            throws java.rmi.RemoteException, JvnException;
+    public void jvnTerminate(JvnRemoteServer js) throws java.rmi.RemoteException, JvnException;
 
-    public void jvnUpdateObject(int joi, Serializable newState, JvnRemoteServer js)
-            throws java.rmi.RemoteException, JvnException;
 }
+
+

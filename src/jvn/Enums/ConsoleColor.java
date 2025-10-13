@@ -1,4 +1,4 @@
-package jvn;
+package jvn.Enums;
 
 public class ConsoleColor {
 

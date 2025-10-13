@@ -20,7 +20,7 @@
       <entry name="!?*.groovy" />
       <entry name="!?*.java" />
     </wildcardResourcePatterns>
-    <bytecodeTargetLevel target="11" />
+    <bytecodeTargetLevel target="21" />
   </component>
   <component name="CopilotDiffPersistence">
     <option name="pendingDiffs">
@@ -56,6 +56,9 @@
     <option name="migrationStatus" value="COMPLETED" />
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="web" url="file://$PROJECT_DIR$" />
+  </component>
   <component name="GitToolBoxProjectSettings">
     <option name="commitMessageIssueKeyValidationOverride">
       <BoolValueOverride>
@@ -119,7 +122,7 @@
       <module fileurl="file://$PROJECT_DIR$/javanaise-chat.test.iml" filepath="$PROJECT_DIR$/javanaise-chat.test.iml" />
     </modules>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="21" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_21" default="true" project-jdk-name="21" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
   <component name="ProjectRunConfigurationManager">

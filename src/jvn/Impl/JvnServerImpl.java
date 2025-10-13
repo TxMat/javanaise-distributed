@@ -7,7 +7,13 @@
 * Authors: 
 */
 
-package jvn;
+package jvn.Impl;
+
+import jvn.Exceptions.JvnException;
+import jvn.Interfaces.JvnLocalServer;
+import jvn.Interfaces.JvnObject;
+import jvn.Interfaces.JvnRemoteCoord;
+import jvn.Interfaces.JvnRemoteServer;
 
 import java.io.*;
 import java.rmi.RemoteException;
@@ -19,7 +25,7 @@ import java.util.Map;
 
 public class JvnServerImpl 	
 extends UnicastRemoteObject 
-implements JvnLocalServer, JvnRemoteServer{ 
+implements JvnLocalServer, JvnRemoteServer {
 	
 	/**
 	* 
@@ -69,7 +75,7 @@ implements JvnLocalServer, JvnRemoteServer{
 	**/
 	@SuppressWarnings("CallToPrintStackTrace")
 	public void jvnTerminate()
-	throws jvn.JvnException {
+	throws JvnException {
 		try {
 			coord.jvnTerminate(js);
 		} catch (RemoteException e) {
@@ -85,7 +91,7 @@ implements JvnLocalServer, JvnRemoteServer{
 	* @throws JvnException
 	* @throws RemoteException 
 	**/
-	public JvnObject jvnCreateObject(Serializable o) throws jvn.JvnException { 
+	public JvnObject jvnCreateObject(Serializable o) throws JvnException {
 		try {
 			int id = coord.jvnGetObjectId();
 			JvnObject jo = new JvnObjectImpl(o, id, js);
@@ -95,7 +101,7 @@ implements JvnLocalServer, JvnRemoteServer{
 			throw new JvnException(e.getMessage());
 		} 
 	}
-	private JvnObject jvnLocalCreaObject(Serializable o, int id) throws jvn.JvnException { 
+	private JvnObject jvnLocalCreaObject(Serializable o, int id) throws JvnException {
 		JvnObject jo = new JvnObjectImpl(o, id, js );
 		jvnObjectsMap.put(id, jo);
 		return jo; 
@@ -110,7 +116,7 @@ implements JvnLocalServer, JvnRemoteServer{
 	**/
 	@SuppressWarnings("CallToPrintStackTrace")
 	public void jvnRegisterObject(String jon, JvnObject jo)
-	throws jvn.JvnException {
+	throws JvnException {
 		try {
 			coord.jvnRegisterObject(jon, jo, (JvnRemoteServer)js);
 			System.out.println("New JVN Object Registered : { jon: "+jon+", jos.toString(): { "+jo.jvnGetSharedObject().toString()+" } }");
@@ -129,7 +135,7 @@ implements JvnLocalServer, JvnRemoteServer{
 	* @throws JvnException
 	**/
 	public JvnObject jvnLookupObject(String jon)
-	throws jvn.JvnException {
+	throws JvnException {
 		try {
 			JvnObject jo = coord.jvnLookupObject(jon, js);
 			if(jo == null) return null;
@@ -194,7 +200,7 @@ implements JvnLocalServer, JvnRemoteServer{
 	* @throws java.rmi.RemoteException,JvnException
 	**/
 	public void jvnInvalidateReader(int joi)
-	throws java.rmi.RemoteException,jvn.JvnException {
+	throws java.rmi.RemoteException, JvnException {
 		JvnObject jo = jvnObjectsMap.get(joi);
 		if(jo == null) throw new JvnException("Le server ne contiend pas le JvnObject avec l'id "+joi);
 		jo.jvnInvalidateReader();
@@ -208,7 +214,7 @@ implements JvnLocalServer, JvnRemoteServer{
 	* @throws java.rmi.RemoteException,JvnException
 	**/
 	public Serializable jvnInvalidateWriter(int joi)
-	throws java.rmi.RemoteException,jvn.JvnException { 
+	throws java.rmi.RemoteException, JvnException {
 		JvnObject jo = jvnObjectsMap.get(joi);
 		if(jo == null) throw new JvnException("Le server ne contiend pas le JvnObject avec l'id "+joi);
 		return jo.jvnInvalidateWriter();
@@ -222,7 +228,7 @@ implements JvnLocalServer, JvnRemoteServer{
 	* @throws java.rmi.RemoteException,JvnException
 	**/
 	public Serializable jvnInvalidateWriterForReader(int joi)
-	throws java.rmi.RemoteException,jvn.JvnException { 
+	throws java.rmi.RemoteException, JvnException {
 		JvnObject jo = jvnObjectsMap.get(joi);
 		if(jo == null) throw new JvnException("Le server ne contiend pas le JvnObject avec l'id "+joi);
 		return jo.jvnInvalidateWriterForReader();

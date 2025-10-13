@@ -7,7 +7,12 @@
 * Authors: 
 */ 
 
-package jvn;
+package jvn.Impl;
+
+import jvn.Exceptions.JvnException;
+import jvn.Interfaces.JvnObject;
+import jvn.Interfaces.JvnRemoteCoord;
+import jvn.Interfaces.JvnRemoteServer;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
@@ -23,7 +28,7 @@ import java.util.Scanner;
 
 public class JvnCoordImpl 	
 extends UnicastRemoteObject 
-implements JvnRemoteCoord{
+implements JvnRemoteCoord {
     
     // ========== ========== ========== ========== ==========
     // ========== ========== ========== ========== ==========
@@ -127,7 +132,7 @@ implements JvnRemoteCoord{
     * @throws java.rmi.RemoteException,JvnException
     **/
     public int jvnGetObjectId()
-    throws java.rmi.RemoteException,jvn.JvnException {
+    throws java.rmi.RemoteException, JvnException {
         return nextObjectID++;
     }
     
@@ -141,7 +146,7 @@ implements JvnRemoteCoord{
     * @throws java.rmi.RemoteException,JvnException
     **/
     public void jvnRegisterObject(String jon, JvnObject jo, JvnRemoteServer js)
-    throws java.rmi.RemoteException,jvn.JvnException{
+    throws java.rmi.RemoteException, JvnException {
         if(jvnObjects.containsKey(jon)) throw new RuntimeException("Impossible de REGISTER un objet avec un nom déjà utilisé");
         jvnObjects.put(jon, new JvnObjectInfo(jo));
         linkIdName.put(jo.jvnGetObjectId(), jon);
@@ -155,7 +160,7 @@ implements JvnRemoteCoord{
     * @throws java.rmi.RemoteException,JvnException
     **/
     public JvnObject jvnLookupObject(String jon, JvnRemoteServer js)
-    throws java.rmi.RemoteException,jvn.JvnException{
+    throws java.rmi.RemoteException, JvnException {
         // TODO : utilité de js ?
         JvnObjectInfo info = jvnObjects.get(jon);
         if(info == null) return null;
