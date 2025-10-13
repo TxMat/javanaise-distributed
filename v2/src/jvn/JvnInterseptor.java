@@ -31,6 +31,7 @@ public class JvnInterseptor implements InvocationHandler, Serializable {
     }
 
     public void updateObject(Serializable o) {
+        System.out.println(o.getClass());
         this.o = o;
     }
 

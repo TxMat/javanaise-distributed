@@ -150,18 +150,26 @@ public class JvnServerMain {
     public static void trueLoop(int nb) throws JvnException{
         while(true) {
             String name = "a"+(int)(Math.random()*nb);
-            int to = (int)(Math.random()*500+1000);
+            // x ms
+            // +- y ms
+            int x = 1;
+            int y = 0;
+            int to = (int)(Math.random()*y+x);
             
             JvnObject a = aaaaaaaa.get(name);
             
             if (Math.random()<0.5) {
                 System.out.println("LR : ");
                 a.jvnLockRead();
-                System.out.println("[ "+System.currentTimeMillis()+" ] "+name+" : LockRead relaché dans "+to+"ms");
+                System.out.println("[ "+System.currentTimeMillis()+" ] "+name+" : LockRead relaché dans "+to+"ms. Lit la valeur : "+((A)(a.jvnGetSharedObject())).getValue());
             } else {
                 System.out.println("LW : ");
                 a.jvnLockWrite();
-                System.out.println("[ "+System.currentTimeMillis()+" ] "+name+" : LockWrite relaché dans "+to+"ms");
+                int v1 = ((A)(a.jvnGetSharedObject())).getValue();
+                int v = (int)(Math.random()*100-50);
+                ((A)(a.jvnGetSharedObject())).addValue(v); // [v-50 ; v+50]
+                int v2 = ((A)(a.jvnGetSharedObject())).getValue();
+                System.out.println("[ "+System.currentTimeMillis()+" ] "+name+" : LockWrite relaché dans "+to+"ms. Passe de "+v1+" à "+v2+" ("+v+")");
             }
             /*
             aaaaaaaa.forEach((k,v)->{

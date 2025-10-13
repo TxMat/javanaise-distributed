@@ -46,7 +46,7 @@ implements JvnRemoteCoord{
             Registry registry = LocateRegistry.createRegistry(5000);
             registry.rebind("coord", (JvnRemoteCoord)coord);
             
-            System.out.println("> Coordinateur RMI prêt !");
+            System.out.println("[ "+System.currentTimeMillis()+" ] > Coordinateur RMI prêt !");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -66,7 +66,7 @@ implements JvnRemoteCoord{
             try {
                 switch (args[0]) {
                     case "exit", "q" -> {
-                        System.out.println("EXIT...");
+                        System.out.println("[ "+System.currentTimeMillis()+" ] EXIT...");
                         scanner.close();
                         break origin;
                     }
@@ -83,10 +83,10 @@ implements JvnRemoteCoord{
                         });
                         System.out.println(sb.toString());
                     }
-                    default -> System.out.println("Commande inconnue.");
+                    default -> System.out.println("[ "+System.currentTimeMillis()+" ] Commande inconnue.");
                 }
             } catch (Exception e) {
-                System.out.println("Erreur : " + e.getMessage());
+                System.out.println("[ "+System.currentTimeMillis()+" ] Erreur : " + e.getMessage());
             }
         }
         scanner.close();
@@ -175,7 +175,7 @@ implements JvnRemoteCoord{
         String jon = linkIdName.get(joi);
         JvnObjectInfo info = jvnObjects.get(jon);
         info.addReader(js);
-        return info.jo;
+        return info.jo.jvnGetSharedObject();
     }
     
     @Override
@@ -213,7 +213,7 @@ implements JvnRemoteCoord{
         JvnObject jo;
         
         final Object lock = new Object();
-
+        
         List<JvnRemoteServer> readLock;
         JvnRemoteServer writeLock;
         
@@ -229,50 +229,52 @@ implements JvnRemoteCoord{
         }
         
         void addReader(JvnRemoteServer server) throws RemoteException, JvnException {
-            System.out.println("Waiting lock on addReader");
-synchronized (lock) {
-System.out.println("Lock take on addReader");
-
+            System.out.println("[ "+System.currentTimeMillis()+" ] Waiting lock on addReader");
+            synchronized (lock) {
+                System.out.println("[ "+System.currentTimeMillis()+" ] Lock take on addReader");
+                
                 if(writeLock != null) {
-                    writeLock.jvnInvalidateWriterForReader(jo.jvnGetObjectId());
+                    Serializable s = writeLock.jvnInvalidateWriterForReader(jo.jvnGetObjectId());
+                    System.out.println(s.getClass());
+                    jo.updateSerializable(s);
                     readLock.add(writeLock);
                     writeLock = null;
                 }
                 readLock.add(server);
-            System.out.println("Lock unlock :iq: on addReader");
+                System.out.println(this+"\n[ "+System.currentTimeMillis()+" ] Lock unlock :iq: on addReader");
             }
         }
         void switchWriter(JvnRemoteServer server, int joi) throws RemoteException, JvnException {
-            System.out.println("Waiting lock on switchWriter");
-synchronized (lock) {
-System.out.println("Lock take on switchWriter");
-
+            System.out.println("[ "+System.currentTimeMillis()+" ] Waiting lock on switchWriter");
+            synchronized (lock) {
+                System.out.println("[ "+System.currentTimeMillis()+" ] Lock take on switchWriter");
+                
                 // TODO : possibel comme en C de lancer tout les truc en paralelle et de faire un waitBarrier ?
                 while(!readLock.isEmpty()) {
                     JvnRemoteServer jrs = readLock.removeFirst();
                     if(jrs.equals(server)) {
-                        System.out.println("J'ai 3 IQ");
                         continue;
                     }
                     jrs.jvnInvalidateReader(joi);
                 }
-                
+                String hash = "    Server : "+server.hashCode()+"\nold writer : "+(writeLock==null?null:writeLock.hashCode())+"\nNew Server : ";
                 if(writeLock != null) {
-                    jo.updateSerializable
-                    (writeLock.jvnInvalidateWriter(joi));
+                    Serializable s = writeLock.jvnInvalidateWriter(joi);
+                    System.out.println(s.getClass());
+                    jo.updateSerializable(s);
                 }
                 writeLock = server;
-            System.out.println("Lock unlock :iq: on switchWriter");
+                System.out.println(hash+writeLock.hashCode()+"\n"+this+"\n[ "+System.currentTimeMillis()+" ] Lock unlock :iq: on switchWriter");
             }
         }
         void removeServer(JvnRemoteServer js) {
-            System.out.println("Waiting lock on removeServer");
+            System.out.println("[ "+System.currentTimeMillis()+" ] Waiting lock on removeServer");
             synchronized (lock) {
-            System.out.println("Lock take on removeServer");
-
+                System.out.println("[ "+System.currentTimeMillis()+" ] Lock take on removeServer");
+                
                 if(writeLock == js) writeLock = null;
                 readLock.remove(js);
-            System.out.println("Lock unlock :iq: on removeServer");
+                System.out.println(this+"\n[ "+System.currentTimeMillis()+" ] Lock unlock :iq: on removeServer");
             }
         }
     }
