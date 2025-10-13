@@ -1,19 +1,18 @@
 package jvn.Impl;
 
 import java.io.Serializable;
-import java.lang.reflect.Proxy;
 
 import jvn.Enums.ConsoleColor;
 import jvn.Enums.JvnObjectStatus;
 import jvn.Exceptions.JvnException;
 import jvn.Interfaces.JvnLocalServer;
 import jvn.Interfaces.JvnObject;
-import jvn.JvnInterceptor;
 
 public class JvnObjectImpl implements JvnObject {
 
-    private final Object proxy;
     private final int id;
+
+    private Serializable o;
 
     private enum WaitingCoordStatus {
         NOT_WAITING, WAIT_FOR_READ, WAIT_FOR_WRITE
@@ -27,7 +26,7 @@ public class JvnObjectImpl implements JvnObject {
     private final transient JvnLocalServer server;
 
     public JvnObjectImpl(Serializable o, int id, JvnLocalServer server) {
-        this.proxy = JvnInterceptor.createInterceptor(o);
+        this.o = o;
         this.id = id;
         this.lockStatus = JvnObjectStatus.NL;
         this.server = server;
@@ -138,7 +137,7 @@ public class JvnObjectImpl implements JvnObject {
 
     @Override
     public void updateSerializable(Serializable s) {
-        ((JvnInterceptor) Proxy.getInvocationHandler(proxy)).updateObject(s);
+        this.o = s;
     }
 
     @Override
@@ -148,7 +147,7 @@ public class JvnObjectImpl implements JvnObject {
 
     @Override
     public Serializable jvnGetSharedObject() throws JvnException {
-        return ((JvnInterceptor) Proxy.getInvocationHandler(proxy)).getSerializable();
+        return o;
     }
 
     @Override

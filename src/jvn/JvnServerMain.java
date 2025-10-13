@@ -12,30 +12,30 @@ import jvn.Interfaces.JvnLocalServer;
 import jvn.Interfaces.JvnObject;
 
 public class JvnServerMain {
-
+    
     public static JvnLocalServer server;
-
+    
     public static void main(String[] args) {
-
+        
         server = JvnServerImpl.jvnGetServer();
-
+        
         System.out.println("[ " + System.currentTimeMillis() + " ] " + "Local Server created !");
-
+        
         new Thread(JvnServerMain::runConsole).start();
-
+        
     }
-
+    
     private static final Map<String, JvnObject> aaaaaaaa = new HashMap<>();
-
+    
     public static void runConsole() {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             System.out.print("> ");
             String line = scanner.nextLine();
             String[] args = line.trim().split("\\s+");
-
+            
             if (args.length == 0 || args[0].isEmpty()) continue;
-
+            
             try {
                 switch (args[0]) {
                     case "exit", "q" -> {
@@ -45,6 +45,9 @@ public class JvnServerMain {
                     }
                     case "test" -> {
                         test(args);
+                    }
+                    case "t" -> {
+                        t(args);
                     }
                     case "cpt" -> {
                         cpt(args);
@@ -72,7 +75,7 @@ public class JvnServerMain {
                     case "meth", "m" -> {
                         // m <obj> <fun n°> <args>
                         if (args.length < 3) break;
-
+                        
                         A a = (A) aaaaaaaa.get(args[1]).jvnGetSharedObject();
                         int v = a.getValue();
                         switch (args[2]) {
@@ -94,18 +97,18 @@ public class JvnServerMain {
                     }
                     case "create", "c" -> {
                         if (args.length != 2) break;
-
+                        
                         JvnObject jo = server.jvnCreateObject(new A_Impl());
                         aaaaaaaa.put(args[1], jo);
-
+                        
                         server.jvnRegisterObject(args[1], jo);
                     }
                     case "lookup" -> {
                         if (args.length != 2) break;
-
+                        
                         JvnObject jo = server.jvnLookupObject(args[1]);
                         aaaaaaaa.put(args[1], jo);
-
+                        
                     }
                     default -> System.out.println("[ " + System.currentTimeMillis() + " ] " + "Commande inconnue.");
                 }
@@ -114,7 +117,7 @@ public class JvnServerMain {
             }
         }
     }
-
+    
     public static void test(String[] args) {
         try {
             int nb = 1;
@@ -156,7 +159,11 @@ public class JvnServerMain {
             e.printStackTrace();
         }
     }
-
+    
+    public static void t(String[] args) throws JvnException {
+        A a = (A)JvnInterceptor.createInterceptor(new A_Impl(), "a", server);
+    }
+    
     public static void trueLoop(int nb) throws JvnException {
         while (true) {
             String name = "a" + (int) (Math.random() * nb);
@@ -164,10 +171,10 @@ public class JvnServerMain {
             // +- y ms
             int x = 1;
             int y = 0;
-//            int to = (int) (Math.random() * y + x);
+            //            int to = (int) (Math.random() * y + x);
             int to = 0;
             JvnObject a = aaaaaaaa.get(name);
-
+            
             if (Math.random() < 0.5) {
                 System.out.println("LR : ");
                 a.jvnLockRead();

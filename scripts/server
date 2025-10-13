@@ -1,1 +1,1 @@
-java -cp ../build/classes/java/main jvn.JvnServerMain
+clear && java -cp ../build/classes/java/main jvn.JvnServerMain

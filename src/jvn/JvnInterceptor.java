@@ -5,34 +5,32 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
+import jvn.Exceptions.JvnException;
+import jvn.Interfaces.JvnLocalServer;
+import jvn.Interfaces.JvnObject;
+
 public class JvnInterceptor implements InvocationHandler, Serializable {
     
-    public static Object createInterceptor(Serializable o) {
+    public static Object createInterceptor(Serializable s, String jon, JvnLocalServer server) throws JvnException {
+        JvnObject jo = server.jvnCreateObject(s);
+        server.jvnRegisterObject(jon, jo);
         return Proxy.newProxyInstance(
-            o.getClass().getClassLoader(),
-            o.getClass().getInterfaces(),
-            new JvnInterceptor(o)
+            s.getClass().getClassLoader(),
+            s.getClass().getInterfaces(),
+            new JvnInterceptor(jo, server)
         );
     }
     
-    private Serializable o;
+    private JvnObject jo;
+    private JvnLocalServer server;
     
-    private JvnInterceptor(Serializable o) {
-        this.o = o;
+    private JvnInterceptor(JvnObject jo, JvnLocalServer server) {
+        this.jo = jo;
+        this.server = server;
     }
     
     @Override
     public Object invoke(Object proxy, Method m, Object[] args) throws Throwable {
-        return m.invoke(o, args);
+        return m.invoke(jo.jvnGetSharedObject(), args);
     }
-
-    public Serializable getSerializable() {
-        return o;
-    }
-
-    public void updateObject(Serializable o) {
-        System.out.println(o.getClass());
-        this.o = o;
-    }
-
 }
