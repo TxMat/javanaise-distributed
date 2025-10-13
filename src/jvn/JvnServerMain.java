@@ -195,18 +195,21 @@ public class JvnServerMain {
             System.out.println("continue");
         }
     }
+    private static JvnObject cpt;
     public static void cpt(String[] args) throws JvnException {
-        JvnObject cpt = server.jvnLookupObject("cpt");
         if(cpt==null) {
-            A a = new A_Impl(0);
-            cpt = server.jvnCreateObject(a);
-            server.jvnRegisterObject("cpt", cpt);
-            for(int i = 5; i >= 0; i--) {
-                System.out.println(i);
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    System.out.println("error : "+e.getMessage());
+            cpt = server.jvnLookupObject("cpt");
+            if(cpt==null) {
+                A a = new A_Impl(0);
+                cpt = server.jvnCreateObject(a);
+                server.jvnRegisterObject("cpt", cpt);
+                for(int i = 5; i >= 0; i--) {
+                    System.out.println(i);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        System.out.println("error : "+e.getMessage());
+                    }
                 }
             }
         }
