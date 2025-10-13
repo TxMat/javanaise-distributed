@@ -21,5 +21,3 @@ public @interface JvnAnnotate {
 
     LockType value();
 }
-
-

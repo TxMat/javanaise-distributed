@@ -9,29 +9,29 @@ import jvn.Interfaces.JvnLocalServer;
 import jvn.Interfaces.JvnObject;
 
 public class JvnObjectImpl implements JvnObject {
-
+    
     private final int id;
-
+    
     private Serializable o;
-
+    
     private enum WaitingCoordStatus {
         NOT_WAITING, WAIT_FOR_READ, WAIT_FOR_WRITE
     }
-
+    
     private transient WaitingCoordStatus waitingForCoordAuto = WaitingCoordStatus.NOT_WAITING;
-
+    
     private final transient Object lockLockStatus = new Object();
     private JvnObjectStatus lockStatus;
     // transient = n'est pas serialisé et est mis a "null" de l'autre coté. Merci les dev Java
     private final transient JvnLocalServer server;
-
+    
     public JvnObjectImpl(Serializable o, int id, JvnLocalServer server) {
         this.o = o;
         this.id = id;
         this.lockStatus = JvnObjectStatus.NL;
         this.server = server;
     }
-
+    
     @Override
     public void jvnLockRead() throws JvnException {
         boolean needLockRead = false;
@@ -54,10 +54,9 @@ public class JvnObjectImpl implements JvnObject {
             System.out.println("[ " + System.currentTimeMillis() + " ] " + bf + ">" + lockStatus + " )");
             return;
         }
-
-        this.updateSerializable
-                (server.jvnLockRead(id));
-
+        
+        this.updateSerializable(server.jvnLockRead(id));
+        
         synchronized (lockLockStatus) {
             waitingForCoordAuto = WaitingCoordStatus.NOT_WAITING;
             bf += (">" + lockStatus);
@@ -65,7 +64,7 @@ public class JvnObjectImpl implements JvnObject {
             System.out.println("[ " + System.currentTimeMillis() + " ] " + bf + ">" + lockStatus + " )");
         }
     }
-
+    
     @Override
     public void jvnLockWrite() throws JvnException {
         boolean needLockWrite = false;
@@ -76,29 +75,20 @@ public class JvnObjectImpl implements JvnObject {
             switch (lockStatus) {
                 case JvnObjectStatus.WC -> lockStatus = JvnObjectStatus.W;
                 case JvnObjectStatus.R, JvnObjectStatus.RC, JvnObjectStatus.NL -> {
-                    // TODO : ^^^^^^^^ C'est ici le début de la merde avec l'interbloquage
-                    // Récupère "fictivement" le WriteLock avant l'accord du server
-                    /*
-                     * Appel des jvnLockRead et jvnLockWrite en dehors du synchronized pour éviter des deadlock
-                     * MAIS du coup si je fais un sync après la réponse du server, je peux recevoir un invalidate avant que j'ai mis a jour mon lockStatus et avant que j'ai pu réellement faire mes action avec le lock>grosses incohérence
-                     * les invalidates sont obligé d'attendre le unlock = pas d'incohérence + pas de deadlock
-                     */
                     waitingForCoordAuto = WaitingCoordStatus.WAIT_FOR_WRITE;
                     needLockWrite = true;
-                    //lockStatus = JvnObjectStatus.W;
                 }
                 default -> throw new JvnException("jvnLockWrite -> lockStatus non attendu : " + lockStatus);
             }
-
+            
         }
         if (!needLockWrite) {
             System.out.println("[ " + System.currentTimeMillis() + " ] " + bf + ">" + lockStatus + " )");
             return;
         }
-
-        this.updateSerializable
-                (server.jvnLockWrite(id));
-
+        
+        this.updateSerializable(server.jvnLockWrite(id));
+        
         synchronized (lockLockStatus) {
             waitingForCoordAuto = WaitingCoordStatus.NOT_WAITING;
             bf += (">" + lockStatus);
@@ -106,26 +96,13 @@ public class JvnObjectImpl implements JvnObject {
             System.out.println("[ " + System.currentTimeMillis() + " ] " + bf + ">" + lockStatus + " )");
         }
     }
-
+    
     @Override
     public void jvnUnLock() throws JvnException {
         synchronized (lockLockStatus) {
             String bf = "jvnUnLock : [ " + id + " ] lockStatus( " + lockStatus;
             System.out.println(bf);
             switch (lockStatus) {
-                //  
-                /*
-                 * case JvnObjectStatus.RC : possible si
-                 *
-                 * lockStatus = W
-                 *          --------------------------------------> temps
-                 * COORD  : invWforR
-                 * SERV_1 :           invWforR
-                 * SERV_0 :                     Unlock
-                 *
-                 * SERV_0 = main thrad
-                 * SERV_1 = thread by coord (RMI)
-                 */
                 case JvnObjectStatus.R, JvnObjectStatus.RC -> lockStatus = JvnObjectStatus.RC;
                 case JvnObjectStatus.W, JvnObjectStatus.RWC -> lockStatus = JvnObjectStatus.WC;
                 default -> throw new AssertionError("Unknown case on jvnUnLock : lockStatus = " + lockStatus);
@@ -134,22 +111,24 @@ public class JvnObjectImpl implements JvnObject {
             lockLockStatus.notifyAll(); // Réveille les threads qui attendent sur un lock pour le Coord
         }
     }
-
+    
     @Override
     public void updateSerializable(Serializable s) {
+        // TODO : Besoin de sync ?
         this.o = s;
     }
-
+    
     @Override
     public int jvnGetObjectId() throws JvnException {
         return id;
     }
-
+    
     @Override
     public Serializable jvnGetSharedObject() throws JvnException {
+        // TODO : Besoin de sync ?
         return o;
     }
-
+    
     @Override
     public void jvnInvalidateReader() throws JvnException {
         synchronized (lockLockStatus) {
@@ -163,7 +142,7 @@ public class JvnObjectImpl implements JvnObject {
             }
             String bf = "InvalidateReader : [ " + id + " ] lockStatus( " + lockStatus;
             System.out.println(bf);
-
+            
             while (lockStatus == JvnObjectStatus.R) {
                 try {
                     System.out.println("[ " + System.currentTimeMillis() + " ] " + "WAITING FOR UNLOCK [ " + id + " ] lockStatus( " + lockStatus + " )");
@@ -174,23 +153,18 @@ public class JvnObjectImpl implements JvnObject {
                     throw new JvnException("Erreur en attendant le notify dans jvnInvalidateReader: " + e.getMessage());
                 }
             }
-
-            if (lockStatus != JvnObjectStatus.RC && lockStatus != JvnObjectStatus.R)
-                throw new JvnException("jvnInvalidateReader -> lockStatus non attendu : " + lockStatus);
+            
+            if (lockStatus != JvnObjectStatus.RC && lockStatus != JvnObjectStatus.R) throw new JvnException("jvnInvalidateReader -> lockStatus non attendu : " + lockStatus);
             lockStatus = JvnObjectStatus.NL;
             System.out.println("[ " + System.currentTimeMillis() + " ] " + bf + ">" + lockStatus + " )");
         }
     }
-
+    
     @Override
     public Serializable jvnInvalidateWriter() throws JvnException {
         String bf = "";
         synchronized (lockLockStatus) {
             if (waitingForCoordAuto == WaitingCoordStatus.WAIT_FOR_WRITE) {
-                // ici, cela veut dire que ce serv sur cette objet attend d'avoir un nouveau lock (R ou W) donc il n'a plus de lock -> plus besoin d'invalidate (dépassé)
-
-                // C FO (le return ci dessous) car ici, il attend le W dans jvnLockWriter (ne l'a pas encore eu et utilisé) -> donc il doit attendre qu'il le relache donc lockStatus = W ici mais pas encore a jour donc je l'update
-                // return jvnGetSharedObject();
                 lockStatus = JvnObjectStatus.W;
             } else if (waitingForCoordAuto == WaitingCoordStatus.WAIT_FOR_READ) {
                 // pas possible ?
@@ -198,7 +172,7 @@ public class JvnObjectImpl implements JvnObject {
             }
             bf = "InvalidateWriter : [ " + id + " ] lockStatus( " + lockStatus;
             System.out.println(bf);
-
+            
             // Aussi RWC car invalidateWriter = un autre serv dmd de Writer donc il ne doit plus y avoir de WL et de RL dans les autres server
             while (lockStatus == JvnObjectStatus.W || lockStatus == JvnObjectStatus.RWC) {
                 try {
@@ -210,38 +184,29 @@ public class JvnObjectImpl implements JvnObject {
                     throw new JvnException("Erreur en attendant le notify dans jvnInvalidateWriter: " + e.getMessage());
                 }
             }
-
+            
             if (lockStatus == JvnObjectStatus.WC) {
                 lockStatus = JvnObjectStatus.NL;
             } else throw new JvnException("jvnInvalidateWriter -> lockStatus non attendu : " + lockStatus);
-
+            
             System.out.println("[ " + System.currentTimeMillis() + " ] " + bf + ">" + lockStatus + " )");
         }
         return jvnGetSharedObject();
     }
-
+    
     @Override
     public Serializable jvnInvalidateWriterForReader() throws JvnException {
         String bf = "";
         synchronized (lockLockStatus) {
             if (waitingForCoordAuto == WaitingCoordStatus.WAIT_FOR_WRITE) {
-                // ici, cela veut dire que ce serv sur cette objet attend d'avoir un nouveau lock (R ou W) donc il n'a plus de lock -> plus besoin d'invalidate (dépassé)
-
-                // C FO (le return ci dessous) car ici, il attend le W dans jvnLockWriter (ne l'a pas encore eu et utilisé) -> donc il doit attendre qu'il le relache donc lockStatus = W ici mais pas encore a jour donc je l'update
-                // return jvnGetSharedObject();
                 lockStatus = JvnObjectStatus.W;
             } else if (waitingForCoordAuto == WaitingCoordStatus.WAIT_FOR_READ) {
                 // pas possible ?
                 throw new JvnException("Cas impossible ? waitingForCoordAuto == WaitingCoordStatus.WAIT_FOR_READ dans un jvnInvalidateWriter");
             }
-            /*
-            if(waitingForCoordAuto) {
-            // même chose que dans jvnInvalidateWriter
-            lockStatus = JvnObjectStatus.W;
-            }*/
             bf = "jvnInvalidateWriterForReader : [ " + id + " ] lockStatus( " + lockStatus;
             System.out.println(bf);
-
+            
             while (lockStatus == JvnObjectStatus.W) {
                 try {
                     System.out.println("[ " + System.currentTimeMillis() + " ] " + "WAITING FOR UNLOCK [ " + id + " ] lockStatus( " + lockStatus + " )");
@@ -252,19 +217,19 @@ public class JvnObjectImpl implements JvnObject {
                     throw new JvnException("Erreur en attendant le notify dans jvnInvalidateWriterForReader: " + e.getMessage());
                 }
             }
-
             switch (lockStatus) {
                 case JvnObjectStatus.RWC -> lockStatus = JvnObjectStatus.R;
                 case JvnObjectStatus.WC -> lockStatus = JvnObjectStatus.RC;
-                case JvnObjectStatus.R, JvnObjectStatus.RC -> {/* ok, rien a faire */}
-                default ->
-                        throw new JvnException("jvnInvalidateWriterForReader -> lockStatus non attendu : " + lockStatus);
+                case JvnObjectStatus.R, JvnObjectStatus.RC -> {
+                    // ok, rien a faire 
+                }
+                default -> throw new JvnException("jvnInvalidateWriterForReader -> lockStatus non attendu : " + lockStatus);
             }
             System.out.println("[ " + System.currentTimeMillis() + " ] " + bf + ">" + lockStatus + " )");
         }
         return jvnGetSharedObject();
     }
-
+    
     @Override
     public String toString() {
         try {
@@ -273,11 +238,11 @@ public class JvnObjectImpl implements JvnObject {
                 gls = lockStatus;
             }
             return
-                    "Class: " + jvnGetSharedObject().getClass().getName() +
-                            ", Obj : { " + jvnGetSharedObject().toString() + " }" +
-                            ", server: " + (server == null ? "null" : "ok") +
-                            ", id: " +
-                            ", lock-status: " + gls;
+                "Class: " + jvnGetSharedObject().getClass().getName() +
+                ", Obj : { " + jvnGetSharedObject().toString() + " }" +
+                ", server: " + (server == null ? "null" : "ok") +
+                ", id: " +
+                ", lock-status: " + gls;
         } catch (JvnException e) {
             return "ERROR";
         }

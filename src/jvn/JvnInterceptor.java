@@ -28,9 +28,9 @@ public class JvnInterceptor implements InvocationHandler, Serializable {
         }
         
         return Proxy.newProxyInstance(
-        s.getClass().getClassLoader(),
-        s.getClass().getInterfaces(),
-        new JvnInterceptor(jo)
+            s.getClass().getClassLoader(),
+            s.getClass().getInterfaces(),
+            new JvnInterceptor(jo)
         );
     }
     
