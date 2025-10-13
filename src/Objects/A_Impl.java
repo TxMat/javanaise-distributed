@@ -1,7 +1,5 @@
 package Objects;
 
-import jvn.Annotations.JvnAnnotate;
-
 public class A_Impl implements A {
 
     private int value;
@@ -12,27 +10,23 @@ public class A_Impl implements A {
     }
 
     @Override
-    @JvnAnnotate( JvnAnnotate.LockType.READ)
     public int getValue() {
         return this.value;
     }
 
     @Override
-    @JvnAnnotate( JvnAnnotate.LockType.WRITE)
     public void setValue(int n) {
         this.value = n;
     }
 
     @Override
-    @JvnAnnotate( JvnAnnotate.LockType.WRITE)
     public void addValue(int n) {
         this.value += n;
     }
 
     @Override
-    @JvnAnnotate( JvnAnnotate.LockType.READ)
     public String toString() {
-        return this.getClass().getName()+" : value = "+value;
+        return this.getClass().getName()+" : value = "+getValue();
     }
     
 }
