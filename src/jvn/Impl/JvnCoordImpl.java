@@ -263,6 +263,7 @@ implements JvnRemoteCoord {
                     }
                     jrs.jvnInvalidateReader(joi);
                 }
+                readLock.clear();
                 
                 String hash = "    Server : "+server.hashCode()+"\nold writer : "+(writeLock==null?null:writeLock.hashCode())+"\nNew Server : ";
                 if(writeLock != null) {

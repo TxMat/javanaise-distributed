@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="121dbfce-64e4-46d9-a543-2d549f40603e" name="Changes" comment="warn fix">
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+    <list default="true" id="121dbfce-64e4-46d9-a543-2d549f40603e" name="Changes" comment="added idea conf">
       <change beforePath="$PROJECT_DIR$/javanaise-chat.iws" beforeDir="false" afterPath="$PROJECT_DIR$/javanaise-chat.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvn/JvnServerMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/JvnServerMain.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvn/Impl/JvnCoordImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Impl/JvnCoordImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -385,7 +384,7 @@
       <workItem from="1759311128689" duration="3263000" />
       <workItem from="1759338747524" duration="2659000" />
       <workItem from="1759430612682" duration="6276000" />
-      <workItem from="1760335783836" duration="6961000" />
+      <workItem from="1760335783836" duration="7543000" />
     </task>
     <task id="LOCAL-00001" summary="basic start">
       <option name="closed" value="true" />
@@ -523,7 +522,31 @@
       <option name="project" value="LOCAL" />
       <updated>1760339857797</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="clean">
+      <option name="closed" value="true" />
+      <created>1760344506504</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1760344506504</updated>
+    </task>
+    <task id="LOCAL-00019" summary="no delay on main">
+      <option name="closed" value="true" />
+      <created>1760344512845</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1760344512845</updated>
+    </task>
+    <task id="LOCAL-00020" summary="added idea conf">
+      <option name="closed" value="true" />
+      <created>1760344520762</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1760344520762</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -558,7 +581,10 @@
     <MESSAGE value="packages + typo" />
     <MESSAGE value="gradle working" />
     <MESSAGE value="warn fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="warn fix" />
+    <MESSAGE value="clean" />
+    <MESSAGE value="no delay on main" />
+    <MESSAGE value="added idea conf" />
+    <option name="LAST_COMMIT_MESSAGE" value="added idea conf" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XDebuggerManager">
