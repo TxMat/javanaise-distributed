@@ -55,7 +55,7 @@ implements JvnRemoteCoord {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        new Thread(() -> runConsole()).start();
+        new Thread(JvnCoordImpl::runConsole).start();
     }
     
     @SuppressWarnings("ConvertToTryWithResources")

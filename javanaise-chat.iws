@@ -4,44 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="121dbfce-64e4-46d9-a543-2d549f40603e" name="Changes" comment="packages + typo">
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javanaise-chat.iml" beforeDir="false" afterPath="$PROJECT_DIR$/javanaise-chat.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javanaise-chat.ipr" beforeDir="false" afterPath="$PROJECT_DIR$/javanaise-chat.ipr" afterDir="false" />
+    <list default="true" id="121dbfce-64e4-46d9-a543-2d549f40603e" name="Changes" comment="gradle working">
       <change beforePath="$PROJECT_DIR$/javanaise-chat.iws" beforeDir="false" afterPath="$PROJECT_DIR$/javanaise-chat.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javanaise-chat.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/javanaise-chat.main.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javanaise-chat.test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/javanaise-chat.test.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/irc/Irc.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/irc/Irc.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvn/Coordinator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvn/Enums/LockState.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvn/Exceptions/JvnException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Exceptions/JvnException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvn/Implementations/JvnCoordImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvn/Implementations/JvnObjectImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvn/Implementations/JvnServerImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvn/Models/JvnLocalServer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvn/Models/JvnObject.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvn/Models/JvnRemoteCoord.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvn/Models/JvnRemoteServer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/v2/README" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/v2/compil" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/v2/coord" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/v2/server" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/v2/src/Objects/A.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/A.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/v2/src/Objects/A_Impl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/A_Impl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/v2/src/irc/Irc.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/v2/src/irc/Sentence.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/v2/src/jvn/Enums/ConsoleColor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Enums/ConsoleColor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/v2/src/jvn/Enums/JvnObjectStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Enums/JvnObjectStatus.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/v2/src/jvn/Exceptions/JvnException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/v2/src/jvn/Impl/JvnCoordImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Impl/JvnCoordImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/v2/src/jvn/Impl/JvnObjectImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Impl/JvnObjectImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/v2/src/jvn/Impl/JvnServerImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Impl/JvnServerImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/v2/src/jvn/Interfaces/JvnLocalServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Interfaces/JvnLocalServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/v2/src/jvn/Interfaces/JvnObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Interfaces/JvnObject.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/v2/src/jvn/Interfaces/JvnRemoteCoord.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Interfaces/JvnRemoteCoord.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/v2/src/jvn/Interfaces/JvnRemoteServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Interfaces/JvnRemoteServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/v2/src/jvn/JvnInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/JvnInterceptor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/v2/src/jvn/JvnServerMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/JvnServerMain.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -357,7 +321,7 @@
       <workItem from="1759311128689" duration="3263000" />
       <workItem from="1759338747524" duration="2659000" />
       <workItem from="1759430612682" duration="6276000" />
-      <workItem from="1760335783836" duration="3164000" />
+      <workItem from="1760335783836" duration="4056000" />
     </task>
     <task id="LOCAL-00001" summary="basic start">
       <option name="closed" value="true" />
@@ -479,7 +443,15 @@
       <option name="project" value="LOCAL" />
       <updated>1760338031382</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="gradle working">
+      <option name="closed" value="true" />
+      <created>1760339116371</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1760339116371</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -512,7 +484,8 @@
     <MESSAGE value="RC does not ask for the object to coor anymore" />
     <MESSAGE value="invalidate writer for reader" />
     <MESSAGE value="packages + typo" />
-    <option name="LAST_COMMIT_MESSAGE" value="packages + typo" />
+    <MESSAGE value="gradle working" />
+    <option name="LAST_COMMIT_MESSAGE" value="gradle working" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XDebuggerManager">
