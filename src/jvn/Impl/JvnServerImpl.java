@@ -9,19 +9,19 @@
 
 package jvn.Impl;
 
-import jvn.Exceptions.JvnException;
-import jvn.Interfaces.JvnLocalServer;
-import jvn.Interfaces.JvnObject;
-import jvn.Interfaces.JvnRemoteCoord;
-import jvn.Interfaces.JvnRemoteServer;
-
-import java.io.*;
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Map;
+
+import jvn.Exceptions.JvnException;
+import jvn.Interfaces.JvnLocalServer;
+import jvn.Interfaces.JvnObject;
+import jvn.Interfaces.JvnRemoteCoord;
+import jvn.Interfaces.JvnRemoteServer;
 
 public class JvnServerImpl 	
 extends UnicastRemoteObject 
@@ -92,6 +92,9 @@ implements JvnLocalServer, JvnRemoteServer {
 	**/
 	public JvnObject jvnCreateObject(Serializable o) throws JvnException {
 		try {
+			if(o instanceof JvnObject jo) {
+				return jvnLocalCreaObject(jo.jvnGetSharedObject(), jo.jvnGetObjectId());
+			}
 			int id = coord.jvnGetObjectId();
 			JvnObject jo = new JvnObjectImpl(o, id, js);
 			jvnObjectsMap.put(id, jo);
@@ -101,7 +104,7 @@ implements JvnLocalServer, JvnRemoteServer {
 		} 
 	}
 	private JvnObject jvnLocalCreaObject(Serializable o, int id) throws JvnException {
-		JvnObject jo = new JvnObjectImpl(o, id, js );
+		JvnObject jo = new JvnObjectImpl(o, id, js);
 		jvnObjectsMap.put(id, jo);
 		return jo; 
 	}
@@ -134,20 +137,23 @@ implements JvnLocalServer, JvnRemoteServer {
 	**/
 	public JvnObject jvnLookupObject(String jon)
 	throws JvnException {
+		// TODO : probable probleme de sync coté coord
 		try {
+			// TODO : le lookup du coord doit donner une version a jour de l'objet : invalidate le writer si il y en a un et donner le bon
 			JvnObject jo = coord.jvnLookupObject(jon, js);
 			if(jo == null) return null;
 			
 			int joi = jo.jvnGetObjectId();
 			JvnObject ljo = jvnObjectsMap.get(joi);
 			
-			if(ljo == null) { 
-				// Si j'ai pas le JO en local, le créer pour l'interceptor
-				ljo = jvnLocalCreaObject(jo.jvnGetSharedObject(), joi);
-			} else { 
-				// Sinon uste mettre a jour l'objet
-				ljo.updateSerializable(jo.jvnGetSharedObject());
-			}
+
+			
+			// Si j'ai pas le JO en local, le créer pour l'interceptor
+			if(ljo == null) return jo;
+
+			// Sinon juste mettre a jour l'objet
+			ljo.updateSerializable(jo.jvnGetSharedObject());
+			// Problème : si l'objet en local est plus récent que l'objet distant ?
 			
 			return ljo;
 		} catch (RemoteException | JvnException e) {

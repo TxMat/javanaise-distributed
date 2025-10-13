@@ -9,17 +9,22 @@
 
 package jvn.Impl;
 
-import jvn.Exceptions.JvnException;
-import jvn.Interfaces.JvnObject;
-import jvn.Interfaces.JvnRemoteCoord;
-import jvn.Interfaces.JvnRemoteServer;
-
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.Set;
+
+import jvn.Exceptions.JvnException;
+import jvn.Interfaces.JvnObject;
+import jvn.Interfaces.JvnRemoteCoord;
+import jvn.Interfaces.JvnRemoteServer;
+
 
 
 public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord {
@@ -153,7 +158,7 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
         // TODO : utilité de js ?
         JvnObjectInfo info = jvnObjects.get(jon);
         if (info == null) return null;
-        return info.jo;
+        return info.getLatestObject();
     }
 
     @Override
@@ -259,7 +264,24 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
                 System.out.println(hash + writeLock.hashCode() + "\n" + this + "\n[ " + System.currentTimeMillis() + " ] Lock unlock :iq: on switchWriter");
             }
         }
-
+        
+        public JvnObject getLatestObject() throws RemoteException, JvnException {
+            System.out.println("[ " + System.currentTimeMillis() + " ] Waiting lock on getLatestObject");
+            synchronized (lock) {
+                System.out.println("[ " + System.currentTimeMillis() + " ] Lock take on getLatestObject");
+                
+                if (writeLock != null) {
+                    Serializable s = writeLock.jvnInvalidateWriter(jo.jvnGetObjectId());
+                    jo.updateSerializable(s);
+                }
+                writeLock = null;
+                System.out.println("[ " + System.currentTimeMillis() + " ] Lock unlock :iq: on switchWriter");
+                return jo;
+            }
+        }
+        
+        
+        
         void removeServer(JvnRemoteServer js) {
             System.out.println("[ " + System.currentTimeMillis() + " ] Waiting lock on removeServer");
             synchronized (lock) {
