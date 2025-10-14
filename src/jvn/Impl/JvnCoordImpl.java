@@ -228,9 +228,9 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
         }
         
         void addReader(JvnRemoteServer server) throws RemoteException, JvnException {
-            ConsoleColor.magicLog("Waiting lock on addReader");
+            /*sysout*/ // ConsoleColor.magicLog("Waiting lock on addReader");
             synchronized (lock) {
-                ConsoleColor.magicLog("Lock take on addReader");
+                /*sysout*/ // ConsoleColor.magicLog("Lock take on addReader");
                 
                 if (writeLock != null) {
                     Serializable s = writeLock.jvnInvalidateWriterForReader(jo.jvnGetObjectId());
@@ -239,21 +239,21 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
                     writeLock = null;
                 }
                 readLock.add(server);
-                ConsoleColor.magicLog(this);
-                ConsoleColor.magicLog("Lock unlock :iq: on addReader");
+                /*sysout*/ // ConsoleColor.magicLog(this);
+                /*sysout*/ // ConsoleColor.magicLog("Lock unlock :iq: on addReader");
             }
         }
         
         void switchWriter(JvnRemoteServer server, int joi) throws RemoteException, JvnException {
-            ConsoleColor.magicLog("Waiting lock on switchWriter");
+            /*sysout*/ // ConsoleColor.magicLog("Waiting lock on switchWriter");
             synchronized (lock) {
-                ConsoleColor.magicLog("Lock take on switchWriter");
+                /*sysout*/ // ConsoleColor.magicLog("Lock take on switchWriter");
                 
                 // TODO : possibel comme en C de lancer tout les truc en paralelle et de faire un waitBarrier ?
                 
                 for (JvnRemoteServer jrs : readLock) {
                     if (jrs.equals(server)) {
-                        ConsoleColor.magicLog("J'ai 3 IQ");
+                        /*sysout*/ // ConsoleColor.magicLog("J'ai 3 IQ");
                         continue;
                     }
                     jrs.jvnInvalidateReader(joi);
@@ -263,25 +263,25 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
                 String hash = "    Server : " + server.hashCode()+"\nold writer : " + (writeLock == null ? null : writeLock.hashCode())+"\nNew Server : ";
                 if (writeLock != null) {
                     Serializable s = writeLock.jvnInvalidateWriter(joi);
-                    ConsoleColor.magicLog(s.getClass());
+                    /*sysout*/ // ConsoleColor.magicLog(s.getClass());
                     jo.updateSerializable(s);
                 }
                 writeLock = server;
-                ConsoleColor.magicLog(hash + writeLock.hashCode() + "\n" + this + "\nLock unlock :iq: on switchWriter");
+                /*sysout*/ // ConsoleColor.magicLog(hash + writeLock.hashCode() + "\n" + this + "\nLock unlock :iq: on switchWriter");
             }
         }
         
         public JvnObject getLatestObject() throws RemoteException, JvnException {
-            ConsoleColor.magicLog("Waiting lock on getLatestObject");
+            /*sysout*/ // ConsoleColor.magicLog("Waiting lock on getLatestObject");
             synchronized (lock) {
-                ConsoleColor.magicLog("Lock take on getLatestObject");
+                /*sysout*/ // ConsoleColor.magicLog("Lock take on getLatestObject");
                 
                 if (writeLock != null) {
                     Serializable s = writeLock.jvnInvalidateWriter(jo.jvnGetObjectId());
                     jo.updateSerializable(s);
                 }
                 writeLock = null;
-                ConsoleColor.magicLog("Lock unlock :iq: on switchWriter");
+                /*sysout*/ // ConsoleColor.magicLog("Lock unlock :iq: on switchWriter");
                 return jo;
             }
         }
@@ -289,13 +289,13 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
         
         
         void removeServer(JvnRemoteServer js) {
-            ConsoleColor.magicLog("Waiting lock on removeServer");
+            /*sysout*/ // ConsoleColor.magicLog("Waiting lock on removeServer");
             synchronized (lock) {
-                ConsoleColor.magicLog("Lock take on removeServer");
+                /*sysout*/ // ConsoleColor.magicLog("Lock take on removeServer");
                 
                 if (writeLock == js) writeLock = null;
                 readLock.remove(js);
-                ConsoleColor.magicLog(this + "\nLock unlock :iq: on removeServer");
+                /*sysout*/ // ConsoleColor.magicLog(this + "\nLock unlock :iq: on removeServer");
             }
         }
     }

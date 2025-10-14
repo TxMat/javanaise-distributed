@@ -128,7 +128,7 @@ public class JvnServerMain {
             }
             interceptors.put("cpt", cpt);
         }
-
+        
         long time_bf = System.currentTimeMillis();
         
         int nb = Integer.parseInt(args[1]);
@@ -139,11 +139,11 @@ public class JvnServerMain {
             cpt.addValue(1);
             int v2 = cpt.getValue();
             
-            ConsoleColor.magicLog("cpt passe de " + v1 + " à " + v2);
+            /*sysout*/ // ConsoleColor.magicLog("cpt passe de " + v1 + " à " + v2);
             
             nb--;
         }
-
+        
         long time_af = System.currentTimeMillis();
         long diff = time_af-time_bf;
         ConsoleColor.magicLog(diff+"ms pour augmenter le compteur de "+origin+" ( "+((float)origin/diff)+".ms^-1)");
