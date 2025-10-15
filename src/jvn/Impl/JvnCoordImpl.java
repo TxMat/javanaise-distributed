@@ -296,7 +296,7 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
             synchronized (lock) {
                 /*sysout*/ // ConsoleColor.magicLog("Lock take on removeServer");
                 
-                if (writeLock.equals(js)) {
+                if (writeLock != null && writeLock.equals(js)) {
                     Serializable s = writeLock.jvnInvalidateWriter(jo.jvnGetObjectId());
                     jo.updateSerializable(s);
                     writeLock = null;
