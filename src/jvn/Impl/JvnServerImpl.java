@@ -17,6 +17,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import jvn.Enums.ConsoleColor;
 import jvn.Exceptions.JvnException;
 import jvn.Interfaces.JvnLocalServer;
 import jvn.Interfaces.JvnObject;

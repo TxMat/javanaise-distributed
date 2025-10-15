@@ -201,9 +201,12 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
     * @throws java.rmi.RemoteException, JvnException
     **/ 
     public void jvnTerminate(JvnRemoteServer js) throws java.rmi.RemoteException, JvnException {
-        // TODO : idk lol
         jvnObjects.forEach((k, v) -> {
-            v.removeServer(js);
+            try {
+                v.removeServer(js);
+            } catch (RemoteException | JvnException e) {
+                e.printStackTrace();
+            }
         });
     }
     
@@ -240,7 +243,7 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
                 }
                 readLock.add(server);
                 /*sysout*/ // ConsoleColor.magicLog(this);
-                /*sysout*/ // ConsoleColor.magicLog("Lock unlock :iq: on addReader");
+                /*sysout*/ // ConsoleColor.magicLog("Lock unlock on addReader");
             }
         }
         
@@ -288,12 +291,16 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
         
         
         
-        void removeServer(JvnRemoteServer js) {
+        void removeServer(JvnRemoteServer js) throws RemoteException, JvnException {
             /*sysout*/ // ConsoleColor.magicLog("Waiting lock on removeServer");
             synchronized (lock) {
                 /*sysout*/ // ConsoleColor.magicLog("Lock take on removeServer");
                 
-                if (writeLock == js) writeLock = null;
+                if (writeLock.equals(js)) {
+                    Serializable s = writeLock.jvnInvalidateWriter(jo.jvnGetObjectId());
+                    jo.updateSerializable(s);
+                    writeLock = null;
+                }
                 readLock.remove(js);
                 /*sysout*/ // ConsoleColor.magicLog(this + "\nLock unlock :iq: on removeServer");
             }

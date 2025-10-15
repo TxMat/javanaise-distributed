@@ -32,25 +32,16 @@ public class JvnServerMain {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             System.out.print(ConsoleColor.toGreen("<<<----===---->>> "));
-            String line = scanner.nextLine();
-            String[] args = line.trim().split("\\s+");
+            String[] args = scanner.nextLine().trim().split("\\s+");
             
-            if (args.length == 0 || args[0].isEmpty()) continue;
+            if (args.length == 0) continue;
             
             try {
                 switch (args[0]) {
-                    case "exit", "q" -> {
-                        ConsoleColor.magicLog("EXIT...");
-                        scanner.close();
-                        System.exit(0);
-                    }
+                    case "exit", "q" -> exit(scanner);
                     case "test" -> test(args);
                     case "cpt" -> cpt(args);
-                    case "list", "ls" -> {
-                        interceptors.forEach((k, v) -> {
-                            ConsoleColor.magicLog(k + " = " + v.toString());
-                        });
-                    }
+                    case "list", "ls" -> ls();
                     case "create", "c" -> create(args);
                     case "lookup" -> lookup(args);
                     default -> ConsoleColor.magicLog("Commande inconnue.");
@@ -83,7 +74,23 @@ public class JvnServerMain {
         
         ConsoleColor.magicLog("AF : "+a);
     }
-    
+    public static void ls(){
+        interceptors.forEach((k, v) -> {
+            ConsoleColor.magicLog(k + " = " + v.toString());
+        });
+    }
+    public static void exit(Scanner scanner){
+        ConsoleColor.magicLog("EXIT...");
+        int exit_status = 0;
+        try {
+            server.jvnTerminate();
+        } catch (JvnException e) {
+            ConsoleColor.magicError(e.getMessage());
+            exit_status = 1;
+        }
+        scanner.close();
+        System.exit(exit_status);
+    }
     public static void lookup(String[] args) throws JvnException {
         if (args.length != 2) return;
         

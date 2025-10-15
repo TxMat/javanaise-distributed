@@ -2,6 +2,7 @@ package jvn.Impl;
 
 import java.io.Serializable;
 
+import jvn.Enums.ConsoleColor;
 import jvn.Enums.JvnObjectStatus;
 import jvn.Exceptions.JvnException;
 import jvn.Interfaces.JvnLocalServer;
