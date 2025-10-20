@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="121dbfce-64e4-46d9-a543-2d549f40603e" name="Changes" comment="add annotate">
+    <list default="true" id="121dbfce-64e4-46d9-a543-2d549f40603e" name="Changes" comment="failure resilience">
       <change beforePath="$PROJECT_DIR$/javanaise-chat.iws" beforeDir="false" afterPath="$PROJECT_DIR$/javanaise-chat.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvn/JvnInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/JvnInterceptor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/irc/Irc.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/irc/Irc.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvn/Impl/JvnCoordImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Impl/JvnCoordImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvn/Impl/JvnServerImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Impl/JvnServerImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/jvn/JvnServerMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/JvnServerMain.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -161,28 +163,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Gradle.javanaise-distributed [:irc.Irc.main()].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.javanaise-distributed [:jvn.Coordinator.main()].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.javanaise-distributed [:jvn.Impl.JvnCoordImpl.main()].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.javanaise-distributed [:jvn.JvnCoordImpl.main()].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.javanaise-distributed [:jvn.JvnServerMain.main()].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.javanaise-distributed [jar].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.javanaise-distributed [runCoordinator].executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;v2&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Gradle.javanaise-distributed [:irc.Irc.main()].executor": "Run",
+    "Gradle.javanaise-distributed [:jvn.Coordinator.main()].executor": "Run",
+    "Gradle.javanaise-distributed [:jvn.Impl.JvnCoordImpl.main()].executor": "Run",
+    "Gradle.javanaise-distributed [:jvn.JvnCoordImpl.main()].executor": "Run",
+    "Gradle.javanaise-distributed [:jvn.JvnServerMain.main()].executor": "Run",
+    "Gradle.javanaise-distributed [jar].executor": "Run",
+    "Gradle.javanaise-distributed [runCoordinator].executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "v2",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "to.speed.mode.migration.done": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
@@ -195,7 +197,7 @@
       <recent name="jvn" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.JvnServerMain">
+  <component name="RunManager" selected="Application.JvnCoordImpl">
     <configuration default="true" type="Applet" factoryName="Applet">
       <module name="" />
       <option name="MAIN_CLASS_NAME" />
@@ -316,17 +318,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="JetRunConfigurationType">
-      <module name="javanaise-chat" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-      <module name="javanaise-chat" />
-      <option name="filePath" />
-      <method v="2" />
-    </configuration>
     <configuration default="true" type="Remote">
       <option name="USE_SOCKET_TRANSPORT" value="true" />
       <option name="SERVER_MODE" value="false" />
@@ -387,6 +378,7 @@
       <workItem from="1759338747524" duration="2659000" />
       <workItem from="1759430612682" duration="6276000" />
       <workItem from="1760335783836" duration="11463000" />
+      <workItem from="1760940899596" duration="4786000" />
     </task>
     <task id="LOCAL-00001" summary="basic start">
       <option name="closed" value="true" />
@@ -572,7 +564,15 @@
       <option name="project" value="LOCAL" />
       <updated>1760347992485</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="failure resilience">
+      <option name="closed" value="true" />
+      <created>1760945285717</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1760945285717</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -613,7 +613,8 @@
     <MESSAGE value="fix clear readers" />
     <MESSAGE value="vive les warnings" />
     <MESSAGE value="add annotate" />
-    <option name="LAST_COMMIT_MESSAGE" value="add annotate" />
+    <MESSAGE value="failure resilience" />
+    <option name="LAST_COMMIT_MESSAGE" value="failure resilience" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -663,6 +664,26 @@
           <url>file://$PROJECT_DIR$/src/jvn/Implementations/JvnObjectImpl.java</url>
           <line>190</line>
           <option name="timeStamp" value="27" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/jvn/JvnServerMain.java</url>
+          <line>122</line>
+          <option name="timeStamp" value="28" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/jvn/Impl/JvnCoordImpl.java</url>
+          <line>161</line>
+          <option name="timeStamp" value="29" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/jvn/Impl/JvnServerImpl.java</url>
+          <line>153</line>
+          <option name="timeStamp" value="30" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/jvn/Impl/JvnCoordImpl.java</url>
+          <line>282</line>
+          <option name="timeStamp" value="31" />
         </line-breakpoint>
         <breakpoint enabled="true" type="java-exception">
           <properties class="java.lang.NullPointerException" package="java.lang" />

@@ -28,5 +28,16 @@ public class A_Impl implements A {
     public String toString() {
         return this.getClass().getName()+" : value = "+getValue();
     }
+
+    @Override
+    public void waitWrite(long seconds) {
+        try {
+            System.out.println("waitWrite Start");
+            Thread.sleep(seconds * 1000);
+            System.out.println("waitWrite Stop");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
     
 }

@@ -43,7 +43,7 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
     public static void main(String[] args) {
         try {
             // Important : forcer RMI à utiliser l'adresse locale explicite => Obligatoir a cause de WSL
-            System.setProperty("java.rmi.server.hostname", "127.0.0.1");
+            System.setProperty("java.rmi.server.hostname", args.length >=1 ? args[0] : "127.0.0.1");
             
             coord = new JvnCoordImpl();
             
@@ -236,7 +236,7 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
                 /*sysout*/ // ConsoleColor.magicLog("Lock take on addReader");
                 
                 if (writeLock != null) {
-                    Serializable s = writeLock.jvnInvalidateWriterForReader(jo.jvnGetObjectId());
+                    Serializable s = safeInvalidateWriter(writeLock);
                     jo.updateSerializable(s);
                     readLock.add(writeLock);
                     writeLock = null;
@@ -259,13 +259,17 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
                         /*sysout*/ // ConsoleColor.magicLog("J'ai 3 IQ");
                         continue;
                     }
-                    jrs.jvnInvalidateReader(joi);
+                    try {
+                        jrs.jvnInvalidateReader(joi);
+                    } catch (RemoteException e) {
+                        ConsoleColor.magicError("Le serveur possédant le lock de lecture est probablement mort, on l'ignore");
+                    }
                 }
                 readLock.clear();
                 
                 String hash = "    Server : " + server.hashCode()+"\nold writer : " + (writeLock == null ? null : writeLock.hashCode())+"\nNew Server : ";
                 if (writeLock != null) {
-                    Serializable s = writeLock.jvnInvalidateWriter(joi);
+                    Serializable s = safeInvalidateWriter(writeLock);
                     /*sysout*/ // ConsoleColor.magicLog(s.getClass());
                     jo.updateSerializable(s);
                 }
@@ -280,12 +284,22 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
                 /*sysout*/ // ConsoleColor.magicLog("Lock take on getLatestObject");
                 
                 if (writeLock != null) {
-                    Serializable s = writeLock.jvnInvalidateWriter(jo.jvnGetObjectId());
+                    Serializable s = safeInvalidateWriter(writeLock);
                     jo.updateSerializable(s);
                 }
                 writeLock = null;
                 /*sysout*/ // ConsoleColor.magicLog("Lock unlock :iq: on switchWriter");
                 return jo;
+            }
+        }
+
+        Serializable safeInvalidateWriter(JvnRemoteServer writelock) throws JvnException {
+            try {
+                return writelock.jvnInvalidateWriter(jo.jvnGetObjectId());
+            } catch (RemoteException e) {
+                ConsoleColor.magicError("Le serveur possédant le lock d'écriture est probablement mort, on l'ignore");
+                writeLock = null;
+                return jo.jvnGetSharedObject();
             }
         }
         
@@ -297,7 +311,7 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
                 /*sysout*/ // ConsoleColor.magicLog("Lock take on removeServer");
                 
                 if (writeLock != null && writeLock.equals(js)) {
-                    Serializable s = writeLock.jvnInvalidateWriter(jo.jvnGetObjectId());
+                    Serializable s = safeInvalidateWriter(writeLock);
                     jo.updateSerializable(s);
                     writeLock = null;
                 }

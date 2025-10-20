@@ -2,6 +2,7 @@ package jvn;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Scanner;
 
 import Objects.A;
@@ -20,7 +21,7 @@ public class JvnServerMain {
     
     public static void main(String[] args) {
         
-        server = JvnServerImpl.jvnGetServer();
+        server = JvnServerImpl.jvnGetServer(args.length >= 1 ? args[0] : "127.0.0.1");
         
         ConsoleColor.magicLog("Local Server created !");
         
@@ -46,6 +47,7 @@ public class JvnServerMain {
                     case "list", "ls" -> ls();
                     case "create", "c" -> create(args);
                     case "lookup" -> lookup(args);
+                    case "waitwrite", "ww" -> ww(args);
                     default -> ConsoleColor.magicLog("Commande inconnue.");
                 }
             } catch (NumberFormatException | JvnException e) {
@@ -117,6 +119,21 @@ public class JvnServerMain {
         interceptors.put(args[1], a);
         ConsoleColor.magicLog(a);
     }
+
+    public static void ww(String[] args) throws JvnException {
+        if (args.length != 1) return;
+
+        A wwrite = interceptors.get("wwrite");
+
+        if (wwrite == null) {
+            JvnObject jo = server.jvnLookupObject("wwrite");
+            wwrite = JvnInterceptor.createInterceptor(Objects.requireNonNullElseGet(jo, () -> new A_Impl(0)), "wwrite", server);
+            interceptors.put("wwrite", wwrite);
+        }
+
+        wwrite.waitWrite(20);
+    }
+
     public static void cpt(String[] args) throws JvnException {
         A cpt = interceptors.get("cpt");
         

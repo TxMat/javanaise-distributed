@@ -30,11 +30,11 @@ public class Irc {
   * main method
   * create a JVN object nammed IRC for representing the Chat application
   **/
-	public static void main(String argv[]) {
+	public static void main(String[] argv) {
 	   try {
 		   
 		// initialize JVN
-		JvnServerImpl js = JvnServerImpl.jvnGetServer();
+		JvnServerImpl js = JvnServerImpl.jvnGetServer(argv.length >= 1 ? argv[0] : "127.0.0.1");
 		
 		// look up the IRC object in the JVN server
 		// if not found, create it, and register it in the JVN server
