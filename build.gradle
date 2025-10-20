@@ -5,11 +5,11 @@ plugins {
 }
 
 group = 'javanaise'
-version = '1.0.0'
+version = '2.0.0'
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 repositories {
@@ -55,29 +55,3 @@ tasks.register('createSecurityPolicy') {
 // Ensure security policy is created before running
 run.dependsOn createSecurityPolicy
 compileJava.dependsOn createSecurityPolicy
-
-// Configure JAR task
-jar {
-    archiveBaseName = 'javanaise-chat'
-    
-    manifest {
-        attributes(
-            'Main-Class': 'irc.Irc'
-        )
-    }
-    
-    // Include all classes in the JAR
-    from sourceSets.main.output
-}
-
-// Task to run the coordinator (if needed separately)
-tasks.register('runCoordinator', JavaExec) {
-    classpath = sourceSets.main.runtimeClasspath
-    mainClass = 'jvn.JvnCoordImpl'
-    jvmArgs = [
-            '-Djava.security.policy=all.policy',
-            '-Djava.rmi.server.codebase=file://' + projectDir.absolutePath + '/build/classes/java/main/'
-    ]
-}
-
-runCoordinator.dependsOn createSecurityPolicy

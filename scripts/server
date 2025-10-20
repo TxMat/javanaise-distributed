@@ -1,0 +1,1 @@
+clear && java -cp ../build/classes/java/main jvn.JvnServerMain
