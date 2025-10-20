@@ -6,6 +6,8 @@ import java.util.Scanner;
 
 import Objects.A;
 import Objects.A_Impl;
+import Objects.MultiRepartisObject;
+import Objects.MultiRepartisObject_Impl;
 import jvn.Enums.ConsoleColor;
 import jvn.Exceptions.JvnException;
 import jvn.Impl.JvnServerImpl;
@@ -23,7 +25,6 @@ public class JvnServerMain {
         ConsoleColor.magicLog("Local Server created !");
         
         new Thread(JvnServerMain::runConsole).start();
-        
     }
     
     private static final Map<String, A> interceptors = new HashMap<>();
@@ -39,6 +40,7 @@ public class JvnServerMain {
             try {
                 switch (args[0]) {
                     case "exit", "q" -> exit(scanner);
+                    case "mro" -> mro(args);
                     case "test" -> test(args);
                     case "cpt" -> cpt(args);
                     case "list", "ls" -> ls();
@@ -78,6 +80,7 @@ public class JvnServerMain {
         interceptors.forEach((k, v) -> {
             ConsoleColor.magicLog(k + " = " + v.toString());
         });
+        ConsoleColor.magicLog("mro = "+(mro==null?"null":mro.toString()));
     }
     public static void exit(Scanner scanner){
         ConsoleColor.magicLog("EXIT...");
@@ -154,5 +157,99 @@ public class JvnServerMain {
         long time_af = System.currentTimeMillis();
         long diff = time_af-time_bf;
         ConsoleColor.magicLog(diff+"ms pour augmenter le compteur de "+origin+" ( "+((float)origin/diff)+".ms^-1)");
+    }
+
+    private static MultiRepartisObject mro;
+    private static void mro(String[] args) throws JvnException {
+        /*
+        * add <jon>
+        * remove <jon>
+        * <jon> <action>
+        */
+        int lg = args.length;
+        if(lg==1 || (lg==2 && args[1].equals("help"))) {
+            ConsoleColor.magicLog("mro init          : Créé / Récupère le MRO");
+            ConsoleColor.magicLog("mro add <new jon> : Créé et ajoute un JvnObject");
+            ConsoleColor.magicLog("mro remove <jon>  : Remove un JvnObject");
+            ConsoleColor.magicLog("mro <jon> r       : Lit la valeur de l'objet");
+            ConsoleColor.magicLog("mro <jon> s <nb>  : Set la valeur de l'objet");
+            ConsoleColor.magicLog("mro <jon> a <nb>  : Add la valeur à l'objet");
+        } else if(lg==2 && args[1].equals("init")) {
+            if(mro != null) return;
+            JvnObject jo = server.jvnLookupObject("mro");
+            mro = JvnInterceptor.createInterceptor(jo==null?new MultiRepartisObject_Impl():jo, "mro", server);
+            ConsoleColor.magicLog("MRO init");
+        } else if(lg==3) {
+            if(args[1].equals("add")) {
+                
+                // Créer un JvnObject + le register
+                JvnObject jo = server.jvnCreateObject(new A_Impl());
+                server.jvnRegisterObject(args[2], jo);
+                
+                mro.addJvnObject(args[2], jo);
+                
+                ConsoleColor.magicLog("MRO : "+mro.toString());
+            } else if(args[1].equals("remove")) {
+                
+                JvnObject jo = mro.removeJvnObject(args[2]);
+                if(jo==null) ConsoleColor.magicLog("L'objet suivant n'existe pas dans le MRO : "+args[2]);
+                else ConsoleColor.magicLog("L'objet suivant a été remove du MRO : "+args[2]);
+                
+            } else if(args[2].equals("r")) {
+                /*
+                * mro <jon> r => ReadValue
+                */
+                JvnObject jo = mro.getJvnObject(args[1]);
+                if(jo == null) { 
+                    // Objet qui n'est pas / plus dans le MRO
+                    ConsoleColor.magicLog("Le JvnObject suiavnt n'a pas été trouvé dans le MRO : "+args[1]);
+                    return;
+                }
+                // Récupération de l'interseptor local
+                A a = interceptors.get(args[1]);
+                if(a == null) { 
+                    // Ou le créer si il n'en a pas
+                    a = JvnInterceptor.createInterceptor(jo, args[1], server);
+                    interceptors.put(args[1], a);
+                }
+                ConsoleColor.magicLog("MRO : value of "+args[1]+" = "+a.getValue());
+            }
+        } else if(args.length == 4) {
+            /*
+            * mro <jon> s <nb> => SetValue
+            * mro <jon> a <nb> => AddValue
+            */
+            int v;
+            try {
+                v = Integer.parseInt(args[3]);
+            } catch (NumberFormatException e) { ConsoleColor.magicError("Nombre non reconnu : "+args[3]); return; }
+            
+            JvnObject jo = mro.getJvnObject(args[1]);
+            if(jo == null) { 
+                // Objet qui n'est pas / plus dans le MRO
+                ConsoleColor.magicLog("Le JvnObject suiavnt n'a pas été trouvé dans le MRO : "+args[1]);
+                return;
+            }
+            
+            // Récupération de l'interseptor local
+            A a = interceptors.get(args[1]);
+            if(a == null) { 
+                // Ou le créer si il n'en a pas
+                a = JvnInterceptor.createInterceptor(jo, args[1], server);
+                interceptors.put(args[1], a);
+            }
+            
+            switch (args[2]) {
+                case "s" -> {
+                    a.setValue(v);
+                    ConsoleColor.magicLog("MRO : value of "+args[1]+" set to "+v);
+                }
+                case "a" -> {
+                    a.addValue(v);
+                    ConsoleColor.magicLog("MRO : value of "+args[1]+" increas of "+v);
+                }
+                default -> { ConsoleColor.magicLog("MRO : unknown function "+args[2]); }
+            }
+        }
     }
 }
