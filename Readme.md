@@ -32,5 +32,5 @@ clear && ./compil && ./coord
 ```
 #### > server
 ```
-clear && ./server
+./server
 ```

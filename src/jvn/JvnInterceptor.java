@@ -12,7 +12,7 @@ import jvn.Interfaces.JvnObject;
 
 public class JvnInterceptor implements InvocationHandler, Serializable {
     
-    public static Object createInterceptor(Serializable s, String jon, JvnLocalServer server) throws JvnException {
+    public static <T> T createInterceptor(Serializable s, String jon, JvnLocalServer server) throws JvnException {
         if(s == null || jon == null || server == null || jon.isEmpty()) throw new JvnException("Impossible de créer un intersepteur : parametre null ou nom d'objet vide");
         
         JvnObject jo;
@@ -27,7 +27,7 @@ public class JvnInterceptor implements InvocationHandler, Serializable {
             server.jvnRegisterObject(jon, jo);
         }
         
-        return Proxy.newProxyInstance(
+        return (T) Proxy.newProxyInstance(
             s.getClass().getClassLoader(),
             s.getClass().getInterfaces(),
             new JvnInterceptor(jo)

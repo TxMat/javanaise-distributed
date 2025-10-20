@@ -61,7 +61,7 @@ public class JvnServerMain {
         if(a==null) {
             JvnObject jo = server.jvnLookupObject(args[1]);
             if(jo == null) return;
-            a = (A) JvnInterceptor.createInterceptor(jo, args[1], server);
+            a = JvnInterceptor.createInterceptor(jo, args[1], server);
         }
         
         ConsoleColor.magicLog("BF : "+a);
@@ -95,7 +95,7 @@ public class JvnServerMain {
         if (args.length != 2) return;
         
         JvnObject jo = server.jvnLookupObject(args[1]);
-        A a = (A) JvnInterceptor.createInterceptor(jo, args[1], server);
+        A a = JvnInterceptor.createInterceptor(jo, args[1], server);
         interceptors.put(args[1], a);
         ConsoleColor.magicLog(a);
     }
@@ -110,7 +110,7 @@ public class JvnServerMain {
                 ConsoleColor.magicLog("Nombre non reconnu : "+args[2]+", valeur par défaut pour l'objet \""+args[1]+"\": "+value);
             }
         }
-        A a = (A) JvnInterceptor.createInterceptor(new A_Impl(value), args[1], server);
+        A a = JvnInterceptor.createInterceptor(new A_Impl(value), args[1], server);
         interceptors.put(args[1], a);
         ConsoleColor.magicLog(a);
     }
@@ -121,7 +121,7 @@ public class JvnServerMain {
             JvnObject jo = server.jvnLookupObject("cpt");
             
             if (jo == null) {
-                cpt = (A) JvnInterceptor.createInterceptor(new A_Impl(0), "cpt", server);
+                cpt = JvnInterceptor.createInterceptor(new A_Impl(0), "cpt", server);
                 for (int i = 5; i > 0; i--) {
                     ConsoleColor.magicLog(i);
                     try {
@@ -131,7 +131,7 @@ public class JvnServerMain {
                     }
                 }
             } else {
-                cpt = (A) JvnInterceptor.createInterceptor(jo, "cpt", server);
+                cpt = JvnInterceptor.createInterceptor(jo, "cpt", server);
             }
             interceptors.put("cpt", cpt);
         }
