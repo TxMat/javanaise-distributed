@@ -46,6 +46,7 @@ public class JvnServerMain {
                     case "create", "c" -> create(args);
                     case "lookup" -> lookup(args);
                     case "waitwrite", "ww" -> ww(args);
+                    case "multithread", "mt" -> mt(args);
                     default -> ConsoleColor.magicLog("Commande inconnue.");
                 }
             } catch (NumberFormatException | JvnException e) {
@@ -53,7 +54,46 @@ public class JvnServerMain {
             }
         }
     }
-    
+
+    private static void mt(String[] args) throws JvnException {
+        if (args.length != 3) {
+            ConsoleColor.magicLog("test actuel : \n> mt <jon> <nb>\n- jon : Object Name\n- nb : Nombre de threads à créer");
+            ConsoleColor.magicLog("appel invalide");
+            return;
+        }
+        ConsoleColor.magicLog("mt : "+args[1]+" "+args[2]);
+        A a = interceptors.get(args[1]);
+
+        if(a==null) {
+            JvnObject jo = server.jvnLookupObject(args[1]);
+            a = JvnInterceptor.createInterceptor(Objects.requireNonNullElseGet(jo, () -> new A_Impl(0)), args[1], server);
+            interceptors.put(args[1], a);
+        }
+
+        ConsoleColor.magicLog("Object : "+a);
+
+        int nbThreads = 0;
+        nbThreads = Integer.parseInt(args[2]);
+
+        Thread[] threads = new Thread[nbThreads];
+        for (int i = 0; i < nbThreads; i++) {
+            A finalA = a;
+            threads[i] = new Thread(() -> {
+                finalA.addValue(1);
+            });
+            threads[i].start();
+        }
+        for (int i = 0; i < nbThreads; i++) {
+            try {
+                threads[i].join();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        ConsoleColor.magicLog("Final Object : "+a);
+    }
+
     public static void test(String[] args) throws JvnException {
         if (args.length != 3) {
             ConsoleColor.magicLog("test actuel : \n> test <jon> <nb>\n- jon : Object Name\n- nb : Valeur à ajouter");

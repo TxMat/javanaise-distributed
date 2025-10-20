@@ -9,29 +9,32 @@ import jvn.Interfaces.JvnLocalServer;
 import jvn.Interfaces.JvnObject;
 
 public class JvnObjectImpl implements JvnObject {
-    
+
     private final int id;
-    
+
     private Serializable o;
-    
+
     private enum WaitingCoordStatus {
         NOT_WAITING, WAIT_FOR_READ, WAIT_FOR_WRITE
     }
-    
+
     private transient WaitingCoordStatus waitingForCoordAuto = WaitingCoordStatus.NOT_WAITING;
-    
+
     private final transient Object lockLockStatus = new Object();
     private JvnObjectStatus lockStatus;
     // transient = n'est pas serialisé et est mis a "null" de l'autre coté. Merci les dev Java
     private final transient JvnLocalServer server;
-    
+
+    private transient Thread writeLockOwner = null;
+    private transient int writeLockCount = 0;
+
     public JvnObjectImpl(Serializable o, int id, JvnLocalServer server) {
         this.o = o;
         this.id = id;
         this.lockStatus = JvnObjectStatus.NL;
         this.server = server;
     }
-    
+
     @Override
     public void jvnLockRead() throws JvnException {
         boolean needLockRead = false;
@@ -46,7 +49,8 @@ public class JvnObjectImpl implements JvnObject {
                     waitingForCoordAuto = WaitingCoordStatus.WAIT_FOR_READ;
                     needLockRead = true;
                 }
-                case JvnObjectStatus.W -> {}
+                case JvnObjectStatus.W -> {
+                }
                 default -> throw new JvnException("jvnLockRead -> lockStatus non attendu : " + lockStatus);
             }
         }
@@ -54,9 +58,9 @@ public class JvnObjectImpl implements JvnObject {
             /*sysout*/ // ConsoleColor.magicLog(bf + ">" + lockStatus + " )");
             return;
         }
-        
+
         this.updateSerializable(server.jvnLockRead(id));
-        
+
         synchronized (lockLockStatus) {
             waitingForCoordAuto = WaitingCoordStatus.NOT_WAITING;
             bf += (">" + lockStatus);
@@ -64,71 +68,106 @@ public class JvnObjectImpl implements JvnObject {
             /*sysout*/ // ConsoleColor.magicLog(bf + ">" + lockStatus + " )");
         }
     }
-    
+
     @Override
     public void jvnLockWrite() throws JvnException {
         boolean needLockWrite = false;
         String bf = "jvnLockWrite : [ " + id + " ] lockStatus( ";
         synchronized (lockLockStatus) {
+
+            if (lockStatus == JvnObjectStatus.W && Thread.currentThread().equals(writeLockOwner)) {
+                writeLockCount++;
+                return;
+            }
+
             bf += lockStatus;
             /*sysout*/ // ConsoleColor.magicLog(bf);
             switch (lockStatus) {
-                case JvnObjectStatus.WC -> lockStatus = JvnObjectStatus.W;
+                case JvnObjectStatus.WC -> {
+                    lockStatus = JvnObjectStatus.W;
+                    writeLockOwner = Thread.currentThread();
+                    writeLockCount = 1;
+
+                }
                 case JvnObjectStatus.R, JvnObjectStatus.RC, JvnObjectStatus.NL -> {
                     waitingForCoordAuto = WaitingCoordStatus.WAIT_FOR_WRITE;
                     needLockWrite = true;
                 }
+                case JvnObjectStatus.W -> {
+                    // Another thread holds the write lock, wait
+                    while (lockStatus == JvnObjectStatus.W) {
+                        try {
+                            lockLockStatus.wait();
+                        } catch (InterruptedException e) {
+                            throw new JvnException("Interrupted while waiting for write lock: " + e.getMessage());
+                        }
+                    }
+                    // Retry after waking up
+                    jvnLockWrite();
+                    return;
+                }
                 default -> throw new JvnException("jvnLockWrite -> lockStatus non attendu : " + lockStatus);
             }
-            
+
         }
         if (!needLockWrite) {
             /*sysout*/ // ConsoleColor.magicLog(bf + ">" + lockStatus + " )");
             return;
         }
-        
+
         this.updateSerializable(server.jvnLockWrite(id));
-        
+
         synchronized (lockLockStatus) {
             waitingForCoordAuto = WaitingCoordStatus.NOT_WAITING;
             bf += (">" + lockStatus);
             lockStatus = JvnObjectStatus.W;
+            writeLockOwner = Thread.currentThread();
+            writeLockCount = 1;
             /*sysout*/ // ConsoleColor.magicLog(bf + ">" + lockStatus + " )");
         }
     }
-    
+
     @Override
     public void jvnUnLock() throws JvnException {
         synchronized (lockLockStatus) {
+            if (lockStatus == JvnObjectStatus.W && writeLockCount > 1) {
+                writeLockCount--;
+                return;
+            }
+
             String bf = "jvnUnLock : [ " + id + " ] lockStatus( " + lockStatus;
             /*sysout*/ // ConsoleColor.magicLog(bf);
             switch (lockStatus) {
                 case JvnObjectStatus.R, JvnObjectStatus.RC -> lockStatus = JvnObjectStatus.RC;
-                case JvnObjectStatus.W, JvnObjectStatus.RWC -> lockStatus = JvnObjectStatus.WC;
+                case JvnObjectStatus.W, JvnObjectStatus.RWC, JvnObjectStatus.WC -> {
+                    lockStatus = JvnObjectStatus.WC;
+                    writeLockOwner = null;
+                    writeLockCount = 0;
+                }
                 default -> throw new AssertionError("Unknown case on jvnUnLock : lockStatus = " + lockStatus);
             }
             /*sysout*/ // ConsoleColor.magicLog(bf + ">" + lockStatus + " )  & notifyAll");
             lockLockStatus.notifyAll(); // Réveille les threads qui attendent sur un lock pour le Coord
         }
     }
-    
+
     @Override
     public void updateSerializable(Serializable s) {
         // TODO : Besoin de sync ?
         this.o = s;
     }
-    
+
     @Override
     public int jvnGetObjectId() throws JvnException {
         return id;
     }
-    
+
     @Override
     public Serializable jvnGetSharedObject() throws JvnException {
         // TODO : Besoin de sync ?
         return o;
     }
-    
+
     @Override
     public void jvnInvalidateReader() throws JvnException {
         synchronized (lockLockStatus) {
@@ -141,7 +180,7 @@ public class JvnObjectImpl implements JvnObject {
             }
             String bf = "InvalidateReader : [ " + id + " ] lockStatus( " + lockStatus;
             /*sysout*/ // ConsoleColor.magicLog(bf);
-            
+
             while (lockStatus == JvnObjectStatus.R) {
                 try {
                     /*sysout*/ // ConsoleColor.magicLog("WAITING FOR UNLOCK [ " + id + " ] lockStatus( " + lockStatus + " )");
@@ -152,17 +191,21 @@ public class JvnObjectImpl implements JvnObject {
                     throw new JvnException("Erreur en attendant le notify dans jvnInvalidateReader: " + e.getMessage());
                 }
             }
-            
-            if (lockStatus != JvnObjectStatus.RC && lockStatus != JvnObjectStatus.R) throw new JvnException("jvnInvalidateReader -> lockStatus non attendu : " + lockStatus);
+
+            if (lockStatus != JvnObjectStatus.RC && lockStatus != JvnObjectStatus.R)
+                throw new JvnException("jvnInvalidateReader -> lockStatus non attendu : " + lockStatus);
             lockStatus = JvnObjectStatus.NL;
             /*sysout*/ // ConsoleColor.magicLog(bf + ">" + lockStatus + " )");
         }
     }
-    
+
     @Override
     public Serializable jvnInvalidateWriter() throws JvnException {
         String bf = "";
         synchronized (lockLockStatus) {
+            if (lockStatus == JvnObjectStatus.NL) {
+                return jvnGetSharedObject();
+            }
             if (waitingForCoordAuto == WaitingCoordStatus.WAIT_FOR_WRITE) {
                 lockStatus = JvnObjectStatus.W;
             } else if (waitingForCoordAuto == WaitingCoordStatus.WAIT_FOR_READ) {
@@ -171,7 +214,7 @@ public class JvnObjectImpl implements JvnObject {
             }
             bf = "InvalidateWriter : [ " + id + " ] lockStatus( " + lockStatus;
             /*sysout*/ // ConsoleColor.magicLog(bf);
-            
+
             // Aussi RWC car invalidateWriter = un autre serv dmd de Writer donc il ne doit plus y avoir de WL et de RL dans les autres server
             while (lockStatus == JvnObjectStatus.W || lockStatus == JvnObjectStatus.RWC) {
                 try {
@@ -183,16 +226,16 @@ public class JvnObjectImpl implements JvnObject {
                     throw new JvnException("Erreur en attendant le notify dans jvnInvalidateWriter: " + e.getMessage());
                 }
             }
-            
+
             if (lockStatus == JvnObjectStatus.WC) {
                 lockStatus = JvnObjectStatus.NL;
             } else throw new JvnException("jvnInvalidateWriter -> lockStatus non attendu : " + lockStatus);
-            
+
             /*sysout*/ // ConsoleColor.magicLog(bf + ">" + lockStatus + " )");
         }
         return jvnGetSharedObject();
     }
-    
+
     @Override
     public Serializable jvnInvalidateWriterForReader() throws JvnException {
         synchronized (lockLockStatus) {
@@ -204,7 +247,7 @@ public class JvnObjectImpl implements JvnObject {
             }
             String bf = "jvnInvalidateWriterForReader : [ " + id + " ] lockStatus( " + lockStatus;
             /*sysout*/ // ConsoleColor.magicLog(bf);
-            
+
             while (lockStatus == JvnObjectStatus.W) {
                 try {
                     /*sysout*/ // ConsoleColor.magicLog("WAITING FOR UNLOCK [ " + id + " ] lockStatus( " + lockStatus + " )");
@@ -221,13 +264,14 @@ public class JvnObjectImpl implements JvnObject {
                 case JvnObjectStatus.R, JvnObjectStatus.RC -> {
                     // ok, rien a faire 
                 }
-                default -> throw new JvnException("jvnInvalidateWriterForReader -> lockStatus non attendu : " + lockStatus);
+                default ->
+                        throw new JvnException("jvnInvalidateWriterForReader -> lockStatus non attendu : " + lockStatus);
             }
             /*sysout*/ // ConsoleColor.magicLog(bf + ">" + lockStatus + " )");
         }
         return jvnGetSharedObject();
     }
-    
+
     @Override
     public String toString() {
         try {
@@ -236,11 +280,11 @@ public class JvnObjectImpl implements JvnObject {
                 gls = lockStatus;
             }
             return
-                "Class: " + jvnGetSharedObject().getClass().getName() +
-                ", Obj : { " + jvnGetSharedObject().toString() + " }" +
-                ", server: " + (server == null ? "null" : "ok") +
-                ", id: " +
-                ", lock-status: " + gls;
+                    "Class: " + jvnGetSharedObject().getClass().getName() +
+                            ", Obj : { " + jvnGetSharedObject().toString() + " }" +
+                            ", server: " + (server == null ? "null" : "ok") +
+                            ", id: " +
+                            ", lock-status: " + gls;
         } catch (JvnException e) {
             return "ERROR";
         }

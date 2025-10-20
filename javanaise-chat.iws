@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="121dbfce-64e4-46d9-a543-2d549f40603e" name="Changes" comment="failure resilience">
+    <list default="true" id="121dbfce-64e4-46d9-a543-2d549f40603e" name="Changes" comment="custom host support">
       <change beforePath="$PROJECT_DIR$/javanaise-chat.iws" beforeDir="false" afterPath="$PROJECT_DIR$/javanaise-chat.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/irc/Irc.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/irc/Irc.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvn/Impl/JvnCoordImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Impl/JvnCoordImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvn/Impl/JvnServerImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Impl/JvnServerImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jvn/Impl/JvnObjectImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/Impl/JvnObjectImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/jvn/JvnServerMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/JvnServerMain.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -101,7 +99,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="v2" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -120,6 +118,10 @@
             <RecentBranchesForRepo>
               <option name="branches">
                 <list>
+                  <RecentBranch>
+                    <option name="branchName" value="multi-threading" />
+                    <option name="lastUsedInstant" value="1760949008" />
+                  </RecentBranch>
                   <RecentBranch>
                     <option name="branchName" value="v2" />
                     <option name="lastUsedInstant" value="1760335818" />
@@ -165,18 +167,19 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Gradle.Build javanaise-distributed.executor": "Run",
     "Gradle.javanaise-distributed [:irc.Irc.main()].executor": "Run",
     "Gradle.javanaise-distributed [:jvn.Coordinator.main()].executor": "Run",
-    "Gradle.javanaise-distributed [:jvn.Impl.JvnCoordImpl.main()].executor": "Run",
+    "Gradle.javanaise-distributed [:jvn.Impl.JvnCoordImpl.main()].executor": "Debug",
     "Gradle.javanaise-distributed [:jvn.JvnCoordImpl.main()].executor": "Run",
-    "Gradle.javanaise-distributed [:jvn.JvnServerMain.main()].executor": "Run",
+    "Gradle.javanaise-distributed [:jvn.JvnServerMain.main()].executor": "Debug",
     "Gradle.javanaise-distributed [jar].executor": "Run",
     "Gradle.javanaise-distributed [runCoordinator].executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "v2",
+    "git-widget-placeholder": "multi-threading",
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
     "node.js.detected.package.eslint": "true",
@@ -197,7 +200,7 @@
       <recent name="jvn" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.JvnCoordImpl">
+  <component name="RunManager" selected="Application.JvnServerMain">
     <configuration default="true" type="Applet" factoryName="Applet">
       <module name="" />
       <option name="MAIN_CLASS_NAME" />
@@ -378,7 +381,7 @@
       <workItem from="1759338747524" duration="2659000" />
       <workItem from="1759430612682" duration="6276000" />
       <workItem from="1760335783836" duration="11463000" />
-      <workItem from="1760940899596" duration="4786000" />
+      <workItem from="1760940899596" duration="8597000" />
     </task>
     <task id="LOCAL-00001" summary="basic start">
       <option name="closed" value="true" />
@@ -572,7 +575,15 @@
       <option name="project" value="LOCAL" />
       <updated>1760945285717</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="custom host support">
+      <option name="closed" value="true" />
+      <created>1760945778668</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1760945778668</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -614,7 +625,8 @@
     <MESSAGE value="vive les warnings" />
     <MESSAGE value="add annotate" />
     <MESSAGE value="failure resilience" />
-    <option name="LAST_COMMIT_MESSAGE" value="failure resilience" />
+    <MESSAGE value="custom host support" />
+    <option name="LAST_COMMIT_MESSAGE" value="custom host support" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -667,23 +679,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/jvn/JvnServerMain.java</url>
-          <line>122</line>
+          <line>162</line>
           <option name="timeStamp" value="28" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/jvn/Impl/JvnCoordImpl.java</url>
-          <line>161</line>
-          <option name="timeStamp" value="29" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/jvn/Impl/JvnServerImpl.java</url>
-          <line>153</line>
-          <option name="timeStamp" value="30" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/jvn/Impl/JvnCoordImpl.java</url>
-          <line>282</line>
-          <option name="timeStamp" value="31" />
         </line-breakpoint>
         <breakpoint enabled="true" type="java-exception">
           <properties class="java.lang.NullPointerException" package="java.lang" />
