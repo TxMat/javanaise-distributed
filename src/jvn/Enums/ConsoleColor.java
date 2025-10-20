@@ -4,13 +4,13 @@ public class ConsoleColor {
     
     private enum Color {
         GRAY("\033[0m"),
-        WHITE("\033[1m"),
-        RED("\033[31m"),
-        GREEN("\033[32m"),
-        YELLOW("\033[33m"),
-        BLUE("\033[34m"),
-        PURPLE("\033[35m"),
-        CYAN("\033[36m");
+        WHITE("\033[38;5;15m"),
+        RED("\033[38;5;1m"),
+        GREEN("\033[38;5;2m"),
+        YELLOW("\033[38;5;3m"),
+        BLUE("\033[38;5;4m"),
+        PURPLE("\033[38;5;5m"),
+        CYAN("\033[38;5;14m");
         
         private final String code;
         
