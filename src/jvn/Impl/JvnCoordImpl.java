@@ -236,9 +236,14 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
                 /*sysout*/ // ConsoleColor.magicLog("Lock take on addReader");
                 
                 if (writeLock != null) {
-                    Serializable s = safeInvalidateWriter(writeLock);
-                    jo.updateSerializable(s);
-                    readLock.add(writeLock);
+                    Serializable s;
+                    try {
+                        s = writeLock.jvnInvalidateWriterForReader(jo.jvnGetObjectId());
+                        jo.updateSerializable(s);
+                        readLock.add(writeLock);
+                    } catch (RemoteException e) {
+                        ConsoleColor.magicError("Le serveur possédant le lock d'écriture est probablement mort, on l'ignore");
+                    }
                     writeLock = null;
                 }
                 readLock.add(server);
