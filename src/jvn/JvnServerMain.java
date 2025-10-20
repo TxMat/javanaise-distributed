@@ -8,7 +8,7 @@ import Objects.A;
 import Objects.A_Impl;
 import jvn.Enums.ConsoleColor;
 import jvn.Exceptions.JvnException;
-import jvn.Impl.JvnServerImpl;
+import jvn.Impl.JvnMemoryEfficientServerImpl;
 import jvn.Interfaces.JvnLocalServer;
 import jvn.Interfaces.JvnObject;
 
@@ -18,7 +18,8 @@ public class JvnServerMain {
     
     public static void main(String[] args) {
         
-        server = JvnServerImpl.jvnGetServer();
+        // server = JvnServerImpl.jvnGetServer();
+        server = JvnMemoryEfficientServerImpl.jvnGetServer();
         
         ConsoleColor.magicLog("Local Server created !");
         

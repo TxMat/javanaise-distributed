@@ -17,7 +17,6 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import jvn.Enums.ConsoleColor;
 import jvn.Exceptions.JvnException;
 import jvn.Interfaces.JvnLocalServer;
 import jvn.Interfaces.JvnObject;
@@ -238,5 +237,28 @@ implements JvnLocalServer, JvnRemoteServer {
 		if(jo == null) throw new JvnException("Le server ne contiend pas le JvnObject avec l'id "+joi);
 		return jo.jvnInvalidateWriterForReader();
 	};
-	
+
+	// --- GETTERS / SETTERS ---
+	public static JvnRemoteCoord getCoord() {
+		return coord;
+	}
+
+	public static void putObjectInMap(int id, JvnObject jo) {
+		js.jvnObjectsMap.put(id, jo);
+	}
+
+	public static Object removeObjectFromMap(int id) {
+		return js.jvnObjectsMap.remove(id);
+	}
+
+	public static String showObjectsInMap() throws JvnException {
+		StringBuilder sb = new StringBuilder();
+		sb.append("JvnServerImpl Objects in Map:\n");
+		for (Map.Entry<Integer, JvnObject> entry : js.jvnObjectsMap.entrySet()) {
+			sb.append("ID: ").append(entry.getKey())
+			  .append(", Object: ").append(entry.getValue().jvnGetSharedObject().toString())
+			  .append("\n");
+		}
+		return sb.toString();
+	}
 }

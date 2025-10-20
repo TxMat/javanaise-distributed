@@ -7,16 +7,19 @@
 
 package irc;
 
-import java.awt.*;
-import java.awt.event.*; 
+import java.awt.Button;
+import java.awt.Color; 
+import java.awt.Frame;
+import java.awt.GridLayout;
+import java.awt.TextArea;
+import java.awt.TextField;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.Serializable;
 
-
-import jvn.*;
 import jvn.Exceptions.JvnException;
-import jvn.Impl.JvnServerImpl;
+import jvn.Impl.JvnMemoryEfficientServerImpl;
 import jvn.Interfaces.JvnObject;
-
-import java.io.*;
 
 
 public class Irc {
@@ -34,7 +37,8 @@ public class Irc {
 	   try {
 		   
 		// initialize JVN
-		JvnServerImpl js = JvnServerImpl.jvnGetServer();
+		// JvnServerImpl js = JvnServerImpl.jvnGetServer();
+		JvnMemoryEfficientServerImpl js = JvnMemoryEfficientServerImpl.jvnGetServer();
 		
 		// look up the IRC object in the JVN server
 		// if not found, create it, and register it in the JVN server
