@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentHashMap;
 
 import Objects.A;
 import Objects.A_Impl;
@@ -27,7 +28,7 @@ public class JvnServerMain {
         
     }
     
-    private static final Map<String, A> interceptors = new HashMap<>();
+    private static final Map<String, A> interceptors = new ConcurrentHashMap<>();
     
     public static void runConsole() {
         Scanner scanner = new Scanner(System.in);
