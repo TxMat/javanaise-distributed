@@ -68,16 +68,20 @@ implements JvnLocalServer, JvnRemoteServer {
 	* a JVN server instance
 	* @throws JvnException
 	**/
-    public static JvnServerImpl jvnGetServer(String host) {
-        if (js == null){
-            try {
-                js = new JvnServerImpl(host);
-            } catch (Exception e) {
-                return null;
-            }
-        }
-        return js;
-    }
+	public static JvnServerImpl jvnGetServer(String host) {
+		ConsoleColor.magicLog(ConsoleColor.toYellow("host: "+host+", js: "+(js==null?"null":js.toString())));
+		if(js!=null) return js;
+		if(host==null) return null;
+		
+		try {
+			js = new JvnServerImpl(host);
+		} catch (Exception e) {
+			ConsoleColor.magicError("ERROR : impossible de créer le JvnServerImpl : "+e.getMessage()+"\n"+ConsoleColor.toYellow("null"));
+			return null;
+		}
+		ConsoleColor.magicLog(ConsoleColor.toYellow("OK : "+js.toString()));
+		return js;
+	}
 	
 	@Override
 	/**

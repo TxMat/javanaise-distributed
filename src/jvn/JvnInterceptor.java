@@ -27,26 +27,31 @@ public class JvnInterceptor implements InvocationHandler, Serializable {
             server.jvnRegisterObject(jon, jo);
         }
         
-        return (T) createProxy(s, jo);
+        return (T) createProxy(s, jo, jon);
     }
-    private static <U> U createProxy(U s, JvnObject jo){
-         return (U) Proxy.newProxyInstance(
-            s.getClass().getClassLoader(),
-            s.getClass().getInterfaces(),
-            new JvnInterceptor(jo)
+    private static <U> U createProxy(U s, JvnObject jo, String jon){
+        return (U) Proxy.newProxyInstance(
+        s.getClass().getClassLoader(),
+        s.getClass().getInterfaces(),
+        new JvnInterceptor(jo, jon)
         );
     }
     
-    private final JvnObject jo;
+    private JvnObject jo;
+    private String jon;
     
-    private JvnInterceptor(JvnObject jo) {
+    private JvnInterceptor(JvnObject jo, String jon) {
         this.jo = jo;
+        this.jon = jon;
+    }
+    public JvnObject getJvnObejct() {
+        return jo;
     }
     
     @Override
     public Object invoke(Object proxy, Method m, Object[] args) throws Throwable {
         boolean needLock = m.isAnnotationPresent(JvnAnnotate.class);
-
+        
         if (needLock) {
             boolean isReader = m.getAnnotation(jvn.Annotations.JvnAnnotate.class).value() == JvnAnnotate.LockType.READ;
             if (isReader) {
@@ -55,10 +60,39 @@ public class JvnInterceptor implements InvocationHandler, Serializable {
                 jo.jvnLockWrite();
             }
         }
-
+        
+        if(m.getName().equals("toString") && jo == null) return "null";
+        
         Object res = m.invoke(jo.jvnGetSharedObject(), args);
         if (needLock) jo.jvnUnLock();
         
         return res;
+    }
+    /*
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+        // default serialization 
+        oos.defaultWriteObject();
+        
+        // oos.writeObject(jo==null?null:jon);
+    }
+    
+    private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException {
+        ois.defaultReadObject();
+        String jon = (String) ois.readObject();
+        if(jon != null) {
+            try {
+                JvnLocalServer server = JvnServerImpl.jvnGetServer(null);
+                this.jo = server==null?null:server.jvnLookupObject(jon);
+                this.jon = jon;
+            } catch (JvnException e) {
+                ConsoleColor.magicError("ERROR reading a JvnInterceptor : " + e.getMessage());
+            }
+        }
+        ConsoleColor.magicLog(ConsoleColor.toYellow(this.toString()));
+    }
+    */
+    @Override
+    public String toString(){
+        return "JvnInterseptor{ jon: "+jon+", jo:"+(jo==null?"null":jo.toString())+" }";
     }
 }
