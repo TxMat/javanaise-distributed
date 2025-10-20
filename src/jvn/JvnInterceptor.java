@@ -27,7 +27,10 @@ public class JvnInterceptor implements InvocationHandler, Serializable {
             server.jvnRegisterObject(jon, jo);
         }
         
-        return (T) Proxy.newProxyInstance(
+        return (T) createProxy(s, jo);
+    }
+    private static <U> U createProxy(U s, JvnObject jo){
+         return (U) Proxy.newProxyInstance(
             s.getClass().getClassLoader(),
             s.getClass().getInterfaces(),
             new JvnInterceptor(jo)
