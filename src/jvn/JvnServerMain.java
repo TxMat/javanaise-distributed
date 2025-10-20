@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 import Objects.A;
 import Objects.A_Impl;
+import Objects.Debug;
 import jvn.Enums.ConsoleColor;
 import jvn.Exceptions.JvnException;
 import jvn.Impl.JvnMemoryEfficientServerImpl;
@@ -147,7 +148,7 @@ public class JvnServerMain {
             cpt.addValue(1);
             int v2 = cpt.getValue();
             
-            /*sysout*/ // ConsoleColor.magicLog("cpt passe de " + v1 + " à " + v2);
+            if (Debug.DEBUG) ConsoleColor.magicLog("cpt passe de " + v1 + " à " + v2);
             
             nb--;
         }

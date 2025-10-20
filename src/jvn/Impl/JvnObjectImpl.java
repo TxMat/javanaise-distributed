@@ -2,6 +2,7 @@ package jvn.Impl;
 
 import java.io.Serializable;
 
+import Objects.Debug;
 import jvn.Enums.ConsoleColor;
 import jvn.Enums.JvnObjectStatus;
 import jvn.Exceptions.JvnException;
@@ -38,7 +39,7 @@ public class JvnObjectImpl implements JvnObject {
         String bf = "jvnLockRead : [ " + id + " ] lockStatus( ";
         synchronized (lockLockStatus) {
             bf += lockStatus;
-            /*sysout*/ // ConsoleColor.magicLog(bf);
+            if (Debug.DEBUG) ConsoleColor.magicLog(bf);
             switch (lockStatus) {
                 case JvnObjectStatus.WC -> lockStatus = JvnObjectStatus.RWC;
                 case JvnObjectStatus.RC -> lockStatus = JvnObjectStatus.R;
@@ -51,7 +52,7 @@ public class JvnObjectImpl implements JvnObject {
             }
         }
         if (!needLockRead) {
-            /*sysout*/ // ConsoleColor.magicLog(bf + ">" + lockStatus + " )");
+            if (Debug.DEBUG) ConsoleColor.magicLog(bf + ">" + lockStatus + " )");
             return;
         }
         
@@ -61,7 +62,7 @@ public class JvnObjectImpl implements JvnObject {
             waitingForCoordAuto = WaitingCoordStatus.NOT_WAITING;
             bf += (">" + lockStatus);
             lockStatus = JvnObjectStatus.R;
-            /*sysout*/ // ConsoleColor.magicLog(bf + ">" + lockStatus + " )");
+            if (Debug.DEBUG) ConsoleColor.magicLog(bf + ">" + lockStatus + " )");
         }
     }
     
@@ -71,7 +72,7 @@ public class JvnObjectImpl implements JvnObject {
         String bf = "jvnLockWrite : [ " + id + " ] lockStatus( ";
         synchronized (lockLockStatus) {
             bf += lockStatus;
-            /*sysout*/ // ConsoleColor.magicLog(bf);
+            if (Debug.DEBUG) ConsoleColor.magicLog(bf);
             switch (lockStatus) {
                 case JvnObjectStatus.WC -> lockStatus = JvnObjectStatus.W;
                 case JvnObjectStatus.R, JvnObjectStatus.RC, JvnObjectStatus.NL -> {
@@ -83,7 +84,7 @@ public class JvnObjectImpl implements JvnObject {
             
         }
         if (!needLockWrite) {
-            /*sysout*/ // ConsoleColor.magicLog(bf + ">" + lockStatus + " )");
+            if (Debug.DEBUG) ConsoleColor.magicLog(bf + ">" + lockStatus + " )");
             return;
         }
         
@@ -93,7 +94,7 @@ public class JvnObjectImpl implements JvnObject {
             waitingForCoordAuto = WaitingCoordStatus.NOT_WAITING;
             bf += (">" + lockStatus);
             lockStatus = JvnObjectStatus.W;
-            /*sysout*/ // ConsoleColor.magicLog(bf + ">" + lockStatus + " )");
+            if (Debug.DEBUG) ConsoleColor.magicLog(bf + ">" + lockStatus + " )");
         }
     }
     
@@ -101,13 +102,13 @@ public class JvnObjectImpl implements JvnObject {
     public void jvnUnLock() throws JvnException {
         synchronized (lockLockStatus) {
             String bf = "jvnUnLock : [ " + id + " ] lockStatus( " + lockStatus;
-            /*sysout*/ // ConsoleColor.magicLog(bf);
+            if (Debug.DEBUG) ConsoleColor.magicLog(bf);
             switch (lockStatus) {
                 case JvnObjectStatus.R, JvnObjectStatus.RC -> lockStatus = JvnObjectStatus.RC;
                 case JvnObjectStatus.W, JvnObjectStatus.RWC -> lockStatus = JvnObjectStatus.WC;
                 default -> throw new AssertionError("Unknown case on jvnUnLock : lockStatus = " + lockStatus);
             }
-            /*sysout*/ // ConsoleColor.magicLog(bf + ">" + lockStatus + " )  & notifyAll");
+            if (Debug.DEBUG) ConsoleColor.magicLog(bf + ">" + lockStatus + " )  & notifyAll");
             lockLockStatus.notifyAll(); // Réveille les threads qui attendent sur un lock pour le Coord
         }
     }
@@ -140,14 +141,14 @@ public class JvnObjectImpl implements JvnObject {
                 return;
             }
             String bf = "InvalidateReader : [ " + id + " ] lockStatus( " + lockStatus;
-            /*sysout*/ // ConsoleColor.magicLog(bf);
+            if (Debug.DEBUG) ConsoleColor.magicLog(bf);
             
             while (lockStatus == JvnObjectStatus.R) {
                 try {
-                    /*sysout*/ // ConsoleColor.magicLog("WAITING FOR UNLOCK [ " + id + " ] lockStatus( " + lockStatus + " )");
+                    if (Debug.DEBUG) ConsoleColor.magicLog("WAITING FOR UNLOCK [ " + id + " ] lockStatus( " + lockStatus + " )");
                     lockLockStatus.wait();
                     bf += (">" + lockStatus);
-                    /*sysout*/ // ConsoleColor.magicLog("WOKEN UP [ " + id + " ] lockStatus( " + lockStatus + " )");
+                    if (Debug.DEBUG) ConsoleColor.magicLog("WOKEN UP [ " + id + " ] lockStatus( " + lockStatus + " )");
                 } catch (InterruptedException e) {
                     throw new JvnException("Erreur en attendant le notify dans jvnInvalidateReader: " + e.getMessage());
                 }
@@ -155,7 +156,7 @@ public class JvnObjectImpl implements JvnObject {
             
             if (lockStatus != JvnObjectStatus.RC && lockStatus != JvnObjectStatus.R) throw new JvnException("jvnInvalidateReader -> lockStatus non attendu : " + lockStatus);
             lockStatus = JvnObjectStatus.NL;
-            /*sysout*/ // ConsoleColor.magicLog(bf + ">" + lockStatus + " )");
+            if (Debug.DEBUG) ConsoleColor.magicLog(bf + ">" + lockStatus + " )");
         }
     }
     
@@ -170,15 +171,15 @@ public class JvnObjectImpl implements JvnObject {
                 throw new JvnException("Cas impossible ? waitingForCoordAuto == WaitingCoordStatus.WAIT_FOR_READ dans un jvnInvalidateWriter");
             }
             bf = "InvalidateWriter : [ " + id + " ] lockStatus( " + lockStatus;
-            /*sysout*/ // ConsoleColor.magicLog(bf);
+            if (Debug.DEBUG) ConsoleColor.magicLog(bf);
             
             // Aussi RWC car invalidateWriter = un autre serv dmd de Writer donc il ne doit plus y avoir de WL et de RL dans les autres server
             while (lockStatus == JvnObjectStatus.W || lockStatus == JvnObjectStatus.RWC) {
                 try {
-                    /*sysout*/ // ConsoleColor.magicLog("WAITING FOR UNLOCK [ " + id + " ] lockStatus( " + lockStatus + " )");
+                    if (Debug.DEBUG) ConsoleColor.magicLog("WAITING FOR UNLOCK [ " + id + " ] lockStatus( " + lockStatus + " )");
                     lockLockStatus.wait();
                     bf += (">" + lockStatus);
-                    /*sysout*/ // ConsoleColor.magicLog("WOKEN UP [ " + id + " ] lockStatus( " + lockStatus + " )");
+                    if (Debug.DEBUG) ConsoleColor.magicLog("WOKEN UP [ " + id + " ] lockStatus( " + lockStatus + " )");
                 } catch (InterruptedException e) {
                     throw new JvnException("Erreur en attendant le notify dans jvnInvalidateWriter: " + e.getMessage());
                 }
@@ -188,7 +189,7 @@ public class JvnObjectImpl implements JvnObject {
                 lockStatus = JvnObjectStatus.NL;
             } else throw new JvnException("jvnInvalidateWriter -> lockStatus non attendu : " + lockStatus);
             
-            /*sysout*/ // ConsoleColor.magicLog(bf + ">" + lockStatus + " )");
+            if (Debug.DEBUG) ConsoleColor.magicLog(bf + ">" + lockStatus + " )");
         }
         return jvnGetSharedObject();
     }
@@ -203,14 +204,14 @@ public class JvnObjectImpl implements JvnObject {
                 throw new JvnException("Cas impossible ? waitingForCoordAuto == WaitingCoordStatus.WAIT_FOR_READ dans un jvnInvalidateWriter");
             }
             String bf = "jvnInvalidateWriterForReader : [ " + id + " ] lockStatus( " + lockStatus;
-            /*sysout*/ // ConsoleColor.magicLog(bf);
+            if (Debug.DEBUG) ConsoleColor.magicLog(bf);
             
             while (lockStatus == JvnObjectStatus.W) {
                 try {
-                    /*sysout*/ // ConsoleColor.magicLog("WAITING FOR UNLOCK [ " + id + " ] lockStatus( " + lockStatus + " )");
+                    if (Debug.DEBUG) ConsoleColor.magicLog("WAITING FOR UNLOCK [ " + id + " ] lockStatus( " + lockStatus + " )");
                     lockLockStatus.wait();
                     bf += (">" + lockStatus);
-                    /*sysout*/ // ConsoleColor.magicLog("WOKEN UP [ " + id + " ] lockStatus( " + lockStatus + " )");
+                    if (Debug.DEBUG) ConsoleColor.magicLog("WOKEN UP [ " + id + " ] lockStatus( " + lockStatus + " )");
                 } catch (InterruptedException e) {
                     throw new JvnException("Erreur en attendant le notify dans jvnInvalidateWriterForReader: " + e.getMessage());
                 }
@@ -223,7 +224,7 @@ public class JvnObjectImpl implements JvnObject {
                 }
                 default -> throw new JvnException("jvnInvalidateWriterForReader -> lockStatus non attendu : " + lockStatus);
             }
-            /*sysout*/ // ConsoleColor.magicLog(bf + ">" + lockStatus + " )");
+            if (Debug.DEBUG) ConsoleColor.magicLog(bf + ">" + lockStatus + " )");
         }
         return jvnGetSharedObject();
     }

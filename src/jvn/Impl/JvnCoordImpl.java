@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
+import Objects.Debug;
 import jvn.Enums.ConsoleColor;
 import jvn.Exceptions.JvnException;
 import jvn.Interfaces.JvnObject;
@@ -231,9 +232,9 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
         }
         
         void addReader(JvnRemoteServer server) throws RemoteException, JvnException {
-            /*sysout*/ // ConsoleColor.magicLog("Waiting lock on addReader");
+            if (Debug.DEBUG) ConsoleColor.magicLog("Waiting lock on addReader");
             synchronized (lock) {
-                /*sysout*/ // ConsoleColor.magicLog("Lock take on addReader");
+                if (Debug.DEBUG) ConsoleColor.magicLog("Lock take on addReader");
                 
                 if (writeLock != null) {
                     Serializable s = writeLock.jvnInvalidateWriterForReader(jo.jvnGetObjectId());
@@ -242,21 +243,21 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
                     writeLock = null;
                 }
                 readLock.add(server);
-                /*sysout*/ // ConsoleColor.magicLog(this);
-                /*sysout*/ // ConsoleColor.magicLog("Lock unlock on addReader");
+                if (Debug.DEBUG) ConsoleColor.magicLog(this);
+                if (Debug.DEBUG) ConsoleColor.magicLog("Lock unlock on addReader");
             }
         }
         
         void switchWriter(JvnRemoteServer server, int joi) throws RemoteException, JvnException {
-            /*sysout*/ // ConsoleColor.magicLog("Waiting lock on switchWriter");
+            if (Debug.DEBUG) ConsoleColor.magicLog("Waiting lock on switchWriter");
             synchronized (lock) {
-                /*sysout*/ // ConsoleColor.magicLog("Lock take on switchWriter");
+                if (Debug.DEBUG) ConsoleColor.magicLog("Lock take on switchWriter");
                 
                 // TODO : possibel comme en C de lancer tout les truc en paralelle et de faire un waitBarrier ?
                 
                 for (JvnRemoteServer jrs : readLock) {
                     if (jrs.equals(server)) {
-                        /*sysout*/ // ConsoleColor.magicLog("J'ai 3 IQ");
+                        if (Debug.DEBUG) ConsoleColor.magicLog("J'ai 3 IQ");
                         continue;
                     }
                     jrs.jvnInvalidateReader(joi);
@@ -266,25 +267,25 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
                 String hash = "    Server : " + server.hashCode()+"\nold writer : " + (writeLock == null ? null : writeLock.hashCode())+"\nNew Server : ";
                 if (writeLock != null) {
                     Serializable s = writeLock.jvnInvalidateWriter(joi);
-                    /*sysout*/ // ConsoleColor.magicLog(s.getClass());
+                    if (Debug.DEBUG) ConsoleColor.magicLog(s.getClass());
                     jo.updateSerializable(s);
                 }
                 writeLock = server;
-                /*sysout*/ // ConsoleColor.magicLog(hash + writeLock.hashCode() + "\n" + this + "\nLock unlock :iq: on switchWriter");
+                if (Debug.DEBUG) ConsoleColor.magicLog(hash + writeLock.hashCode() + "\n" + this + "\nLock unlock :iq: on switchWriter");
             }
         }
         
         public JvnObject getLatestObject() throws RemoteException, JvnException {
-            /*sysout*/ // ConsoleColor.magicLog("Waiting lock on getLatestObject");
+            if (Debug.DEBUG) ConsoleColor.magicLog("Waiting lock on getLatestObject");
             synchronized (lock) {
-                /*sysout*/ // ConsoleColor.magicLog("Lock take on getLatestObject");
+                if (Debug.DEBUG) ConsoleColor.magicLog("Lock take on getLatestObject");
                 
                 if (writeLock != null) {
                     Serializable s = writeLock.jvnInvalidateWriter(jo.jvnGetObjectId());
                     jo.updateSerializable(s);
                 }
                 writeLock = null;
-                /*sysout*/ // ConsoleColor.magicLog("Lock unlock :iq: on switchWriter");
+                if (Debug.DEBUG) ConsoleColor.magicLog("Lock unlock :iq: on switchWriter");
                 return jo;
             }
         }
@@ -292,9 +293,9 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
         
         
         void removeServer(JvnRemoteServer js) throws RemoteException, JvnException {
-            /*sysout*/ // ConsoleColor.magicLog("Waiting lock on removeServer");
+            if (Debug.DEBUG) ConsoleColor.magicLog("Waiting lock on removeServer");
             synchronized (lock) {
-                /*sysout*/ // ConsoleColor.magicLog("Lock take on removeServer");
+                if (Debug.DEBUG) ConsoleColor.magicLog("Lock take on removeServer");
                 
                 if (writeLock != null && writeLock.equals(js)) {
                     Serializable s = writeLock.jvnInvalidateWriter(jo.jvnGetObjectId());
@@ -302,7 +303,7 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
                     writeLock = null;
                 }
                 readLock.remove(js);
-                /*sysout*/ // ConsoleColor.magicLog(this + "\nLock unlock :iq: on removeServer");
+                if (Debug.DEBUG) ConsoleColor.magicLog(this + "\nLock unlock :iq: on removeServer");
             }
         }
     }

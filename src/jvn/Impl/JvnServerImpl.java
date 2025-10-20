@@ -17,6 +17,8 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import Objects.Debug;
+import jvn.Enums.ConsoleColor;
 import jvn.Exceptions.JvnException;
 import jvn.Interfaces.JvnLocalServer;
 import jvn.Interfaces.JvnObject;
@@ -38,6 +40,7 @@ implements JvnLocalServer, JvnRemoteServer {
 	
 	// TODO : probablment pas utile
 	private final Map<Integer, JvnObject> jvnObjectsMap;
+
 	/**
 	* Default constructor
 	* @throws JvnException
@@ -120,7 +123,7 @@ implements JvnLocalServer, JvnRemoteServer {
 	throws JvnException {
 		try {
 			coord.jvnRegisterObject(jon, jo, (JvnRemoteServer)js);
-			/*sysout*/ // ConsoleColor.magicLog("New JVN Object Registered : { jon: "+jon+", jos.toString(): { "+jo.jvnGetSharedObject().toString()+" } }");
+			if (Debug.DEBUG) ConsoleColor.magicLog("New JVN Object Registered : { jon: "+jon+", jos.toString(): { "+jo.jvnGetSharedObject().toString()+" } }");
 		} catch (JvnException e) {
 			throw e;
 		} catch (RemoteException e) {
@@ -255,7 +258,7 @@ implements JvnLocalServer, JvnRemoteServer {
 		StringBuilder sb = new StringBuilder();
 		sb.append("JvnServerImpl Objects in Map:\n");
 		for (Map.Entry<Integer, JvnObject> entry : js.jvnObjectsMap.entrySet()) {
-			sb.append("ID: ").append(entry.getKey())
+			sb.append("|_ ID: ").append(entry.getKey())
 			  .append(", Object: ").append(entry.getValue().jvnGetSharedObject().toString())
 			  .append("\n");
 		}

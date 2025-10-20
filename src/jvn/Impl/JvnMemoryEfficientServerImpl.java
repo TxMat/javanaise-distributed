@@ -16,6 +16,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.function.Function;
 
+import Objects.Debug;
 import jvn.Enums.ConsoleColor;
 import jvn.Exceptions.JvnException;
 import jvn.Interfaces.JvnLocalServer;
@@ -85,7 +86,6 @@ public class JvnMemoryEfficientServerImpl implements JvnLocalServer, JvnRemoteSe
 
     private JvnObject jvnLocalCreaObject(Serializable o, int id) throws JvnException {
         JvnObject jo = new JvnObjectImpl(o, id, jvnServer);
-        ConsoleColor.magicLog("New JVN Object Registered : { " + jo.jvnGetSharedObject().toString() + " }");
         RegisterObject(id, jo);
 
         return jo;
@@ -195,15 +195,15 @@ public class JvnMemoryEfficientServerImpl implements JvnLocalServer, JvnRemoteSe
         while (evictionCallbacks.size() >= MAX_OBJECTS) {
             EvictOldestObject();
         }
-        ConsoleColor.magicLog("Registering object ID: " + id);
+        if (Debug.DEBUG) ConsoleColor.magicLog("Registering object ID: " + id);
         JvnServerImpl.putObjectInMap(id, jo);
         RegisterEvictionCallback(JvnServerImpl::removeObjectFromMap, id);
 
-        ConsoleColor.magicLog("Map content: " + JvnServerImpl.showObjectsInMap());
+        if (Debug.DEBUG) ConsoleColor.magicLog("Map content: " + JvnServerImpl.showObjectsInMap());
     }
 
     private void RegisterEvictionCallback(Function<Integer, Object> callback, Integer id) {
-        ConsoleColor.magicLog("Registered eviction callback for object ID: " + id);
+        if (Debug.DEBUG) ConsoleColor.magicLog("Registered eviction callback for object ID: " + id);
         evictionCallbacks.add(new SimpleEntry<>(callback, id));
     }
 
@@ -212,7 +212,7 @@ public class JvnMemoryEfficientServerImpl implements JvnLocalServer, JvnRemoteSe
         if (callbackEntry != null) {
             Function<Integer, Object> callback = callbackEntry.getKey();
             Integer id = callbackEntry.getValue();
-            ConsoleColor.magicLog("Evicting object ID: " + id);
+            if (Debug.DEBUG) ConsoleColor.magicLog("Evicting object ID: " + id);
             callback.apply(id);
         }
     }
