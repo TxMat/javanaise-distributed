@@ -43,7 +43,7 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
     public static void main(String[] args) {
         try {
             // Important : forcer RMI à utiliser l'adresse locale explicite => Obligatoir a cause de WSL
-            System.setProperty("java.rmi.server.hostname", "127.0.0.1");
+            System.setProperty("java.rmi.server.hostname", args.length >=1 ? args[0] : "127.0.0.1");
             
             coord = new JvnCoordImpl();
             

@@ -52,22 +52,32 @@ implements JvnLocalServer, JvnRemoteServer {
 		
 		jvnObjectsMap = new HashMap<>();
 	}
+
+    private JvnServerImpl(String host) throws Exception {
+        super();
+        System.setProperty("java.rmi.server.hostname", host);
+
+        Registry registry = LocateRegistry.getRegistry(host, 5000);
+        coord = (JvnRemoteCoord) registry.lookup("coord");
+
+        jvnObjectsMap = new HashMap<>();
+    }
 	
 	/**
 	* Static method allowing an application to get a reference to 
 	* a JVN server instance
 	* @throws JvnException
 	**/
-	public static JvnServerImpl jvnGetServer() {
-		if (js == null){
-			try {
-				js = new JvnServerImpl();
-			} catch (Exception e) {
-				return null;
-			}
-		}
-		return js;
-	}
+    public static JvnServerImpl jvnGetServer(String host) {
+        if (js == null){
+            try {
+                js = new JvnServerImpl(host);
+            } catch (Exception e) {
+                return null;
+            }
+        }
+        return js;
+    }
 	
 	@Override
 	/**

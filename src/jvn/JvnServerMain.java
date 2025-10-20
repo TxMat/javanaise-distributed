@@ -19,7 +19,7 @@ public class JvnServerMain {
     
     public static void main(String[] args) {
         
-        server = JvnServerImpl.jvnGetServer();
+        server = JvnServerImpl.jvnGetServer(args.length >= 1 ? args[0] : "127.0.0.1");
         
         ConsoleColor.magicLog("Local Server created !");
         
