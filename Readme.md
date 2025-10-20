@@ -1,36 +1,114 @@
-# Utilisation
+# Javanaise - Distributed Shared Objects System
 
-Les commandes doivents etre executer depuis le dosier /scripts et le COordinateur doit être lancer avant les servers.
+A distributed shared objects system implementation in Java using RMI (Remote Method Invocation). This project implements a centralized coordinator pattern to manage shared objects across multiple distributed servers with read/write lock synchronization.
 
+## Getting Started
 
-### 1. Compilation des fichiers
-```
+### Prerequisites
+- SDK 21 or higher
+- Gradle (included via wrapper)
+
+### Build the Project
+
+From the `scripts` directory:
+
+```bash
+cd scripts
 ./compil
 ```
 
-### 2. Lancement du coordinateur :
+Or from the root directory:
+
+```bash
+./gradlew build
 ```
+
+## Usage
+
+the Coordinator must be launched **before** any servers.
+
+### 1. Start the Coordinator
+
+```bash
+cd scripts
 ./coord
 ```
 
-### 3. Lancement d'un server local
-```
+The coordinator will start on port 5000 and manage all shared objects.
+
+### 2. Start Local Server(s)
+
+In a separate terminal:
+
+```bash
+cd scripts
 ./server
 ```
 
-### 4. Pour tester avec 2 servers
+You can launch multiple servers in different terminals to test distributed synchronization.
 
-Le mieux est d'avoir 3 terminals pour : 
-- le Coordinateur
-- le Server 1
-- le Server 2
 
-Commandes recommendé : 
-#### > coord
+## Available Commands
+
+Once a server is running, you can interact with it using the following commands:
+
+### Object Management
+
+| Command         | Syntax                  | Description                                             |
+|-----------------|-------------------------|---------------------------------------------------------|
+| `create` or `c` | `create <name> [value]` | Create a new shared object with optional initial value  |
+| `lookup`        | `lookup <name>`         | Retrieve an existing shared object from the coordinator |
+| `list` or `ls`  | `ls`                    | List all local objects and their current values         |
+
+**Examples:**
+```bash
+create myObject 42      # Create object "myObject" with value 42
+create counter          # Create object "counter" with random value
+lookup myObject         # Lookup object "myObject" from coordinator
+ls                      # List all local objects
 ```
-clear && ./compil && ./coord
+
+### Testing Commands
+
+| Command               | Syntax                | Description                                         |
+|-----------------------|-----------------------|-----------------------------------------------------|
+| `test`                | `test <name> <value>` | Add a value to an object and display before/after   |
+| `cpt`                 | `cpt <count>`         | Increment counter object N times (performance test) |
+| `waitwrite` or `ww`   | `ww`                  | Test write lock with 20-second delay                |
+| `multithread` or `mt` | `mt <name> <threads>` | Test concurrent access with N threads               |
+
+**Examples:**
+```bash
+test myObject 5         # Add 5 to myObject, show before/after
+cpt 100                 # Increment "cpt" object 100 times (measures performance)
+mt counter 10           # Create 10 threads that increment "counter" simultaneously
+ww                      # Test long write lock (blocks for 20 seconds)
 ```
-#### > server
-```
-./server
-```
+
+### System Commands
+
+| Command       | Syntax | Description                      |
+|---------------|--------|----------------------------------|
+| `exit` or `q` | `exit` | Terminate the server and cleanup |
+
+
+## Testing Scenarios
+
+### Scenario 1: Basic Object Sharing
+1. Start coordinator and two servers
+2. On Server 1: `create counter 0`
+3. On Server 2: `lookup counter`
+4. On Server 1: `test counter 10` → should show 10
+5. On Server 2: `test counter 5` → should show 15 (synchronized!)
+
+### Scenario 2: Concurrent Access
+1. Start coordinator and one server
+2. Run multithread test: `mt shared 100`
+3. Final value should be 100 (all increments synchronized)
+
+### Scenario 3: Lock Contention
+1. Start coordinator and two servers
+2. On Server 1: `ww` (locks for 20 seconds)
+3. On Server 2: try `ww`
+4. Server 2 will wait until Server 1's lock is released
+

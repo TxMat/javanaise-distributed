@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="121dbfce-64e4-46d9-a543-2d549f40603e" name="Changes" comment="started multi-threading">
+    <list default="true" id="121dbfce-64e4-46d9-a543-2d549f40603e" name="Changes" comment="concurrent hashmap">
+      <change beforePath="$PROJECT_DIR$/Readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/Readme.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/javanaise-chat.iws" beforeDir="false" afterPath="$PROJECT_DIR$/javanaise-chat.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/jvn/JvnServerMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jvn/JvnServerMain.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -184,6 +184,9 @@
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
     "to.speed.mode.migration.done": "true"
   }
 }]]></component>
@@ -380,7 +383,7 @@
       <workItem from="1759338747524" duration="2659000" />
       <workItem from="1759430612682" duration="6276000" />
       <workItem from="1760335783836" duration="11463000" />
-      <workItem from="1760940899596" duration="8861000" />
+      <workItem from="1760940899596" duration="10799000" />
     </task>
     <task id="LOCAL-00001" summary="basic start">
       <option name="closed" value="true" />
@@ -590,7 +593,15 @@
       <option name="project" value="LOCAL" />
       <updated>1760949598738</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="concurrent hashmap">
+      <option name="closed" value="true" />
+      <created>1760949864097</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1760949864097</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -608,7 +619,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="java stuff i guess" />
     <MESSAGE value="stuff" />
     <MESSAGE value="run configs" />
     <MESSAGE value="communication with the local server" />
@@ -633,7 +643,8 @@
     <MESSAGE value="failure resilience" />
     <MESSAGE value="custom host support" />
     <MESSAGE value="started multi-threading" />
-    <option name="LAST_COMMIT_MESSAGE" value="started multi-threading" />
+    <MESSAGE value="concurrent hashmap" />
+    <option name="LAST_COMMIT_MESSAGE" value="concurrent hashmap" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XDebuggerManager">
