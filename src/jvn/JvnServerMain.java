@@ -64,6 +64,7 @@ public class JvnServerMain {
                     case "create", "c" -> create(args);
                     case "lookup" -> lookup(args);
                     case "waitwrite", "ww" -> ww(args);
+                    case "cycle" -> cycle();
                     case "sm" -> sm(args);
                     case "help" -> help();
                     default -> ConsoleColor.magicLog("Commande inconnue.");
@@ -75,6 +76,7 @@ public class JvnServerMain {
     }
     
     public static void help(){
+        ConsoleColor.magicLog("cycle");
         ConsoleColor.magicLog("sm                         : sm help");
         ConsoleColor.magicLog("mro                        : mro help");
         ConsoleColor.magicLog("test2                      : test2 help");
@@ -84,9 +86,29 @@ public class JvnServerMain {
         ConsoleColor.magicLog("create <A/S> <jon> [value] : Créer un JvnObject de type A ou S1");
         ConsoleColor.magicLog("lookup <A/S/S3> <jon>      : Récupérer un objet déjà créé et sur le Coord (de type A, S ou S3)");
         ConsoleColor.magicLog("waitwrite                  : ");
-        
     }
     
+    public static void cycle() throws JvnException {
+
+        S3<S3> s3_1 = JvnInterceptor.createInterceptor(new S3_Impl(), "cycle", server);
+        S3<S3> s3_2 = JvnInterceptor.createInterceptor(new S3_Impl(), "_s3_2", server);
+        S3<S3> s3_3 = JvnInterceptor.createInterceptor(new S3_Impl(), "_s3_3", server);
+        S3<S3> s3_4 = JvnInterceptor.createInterceptor(new S3_Impl(), "_s3_4", server);
+
+        s_interceptors.put("cycle", s3_1);
+        s_interceptors.put("_s3_2", s3_2);
+        s_interceptors.put("_s3_3", s3_3);
+        s_interceptors.put("_s3_4", s3_4);
+
+        s3_1.setObj(s3_2);
+        s3_2.setObj(s3_3);
+        s3_3.setObj(s3_4);
+
+        ls();
+        s3_4.setObj(s3_1);
+        ConsoleColor.magicLog("CYCLE DONE - "+ConsoleColor.toRed("NE PAS ls OU AFFICHER !!!"));
+    }
+
     public static void test2(String[] args) throws JvnException{
         /* C'est pété
         S2 s = JvnInterceptor.createInterceptor(new S2_Impl(server), args[1], server);

@@ -17,6 +17,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import Objects.SerializedInterceptor;
 import jvn.Enums.ConsoleColor;
 import jvn.Exceptions.JvnException;
 import jvn.Interfaces.JvnLocalServer;
@@ -161,6 +162,7 @@ implements JvnLocalServer, JvnRemoteServer {
 	throws JvnException {
 		try {
 			JvnObject jo = coord.jvnLookupObject(jon, js);
+			SerializedInterceptor.deserializedObject.clear(); // Sert a éviter les cycles, mais il faut le clear après chauqe readResolve() complet 
 			if(jo == null) return null;
 			
 			JvnObjectCapsule joc = jvnObjectsNameMap.get(jon);
@@ -193,7 +195,9 @@ implements JvnLocalServer, JvnRemoteServer {
 	public Serializable jvnLockRead(int joi)
 	throws JvnException {
 		try {
-			return coord.jvnLockRead(joi, js);
+			Serializable s = coord.jvnLockRead(joi, js);
+			SerializedInterceptor.deserializedObject.clear(); // Sert a éviter les cycles, mais il faut le clear après chauqe readResolve() complet 
+			return s;
 		} catch (RemoteException e) {
 			throw new JvnException("Erreur lors de la récupération du LockRead vers le Coord : "+e.getMessage());
 		}
@@ -209,7 +213,9 @@ implements JvnLocalServer, JvnRemoteServer {
 	public Serializable jvnLockWrite(int joi)
 	throws JvnException {
 		try {
-			return coord.jvnLockWrite(joi, js);
+			Serializable s = coord.jvnLockWrite(joi, js);
+			SerializedInterceptor.deserializedObject.clear(); // Sert a éviter les cycles, mais il faut le clear après chauqe readResolve() complet 
+			return s;
 		} catch (RemoteException e) {
 			throw new JvnException("Erreur lors de la récupération du LockWrite vers le Coord : "+e.getMessage());
 		}

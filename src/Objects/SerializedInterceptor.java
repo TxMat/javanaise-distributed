@@ -6,6 +6,8 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.HashMap;
+import java.util.Map;
 
 import jvn.Enums.ConsoleColor;
 import jvn.Exceptions.JvnException;
@@ -17,10 +19,14 @@ import jvn.JvnInterceptor;
 public class SerializedInterceptor implements Serializable, InvocationHandler /* Pour éviter une java.lang.ClassCastException */ {
     
     private final String jon;
+    private static int cpt = 0;
+    private int id=-1;
+    public static final Map<String, Serializable> deserializedObject = new HashMap<>();
     
     public SerializedInterceptor(String jon) {
         this.jon = jon;
-        ConsoleColor.magicLog(ConsoleColor.toCyan("SerializedInterceptor créé avec jon="+jon));
+        this.id = cpt++;
+        ConsoleColor.magicLog(ConsoleColor.toCyan("SerializedInterceptor créé avec jon="+jon+" [id:"+id+"]"));
     }
     
     private Object readResolve() throws ObjectStreamException {
@@ -34,10 +40,20 @@ public class SerializedInterceptor implements Serializable, InvocationHandler /*
                 return this;
             }
             
-            ConsoleColor.magicLog("Try JO lookup "+jon);
-            JvnObject jo = server.jvnLookupObject(jon);
-            ConsoleColor.magicLog("JO lookup "+jo);
+            if(deserializedObject.containsKey(jon)) {
+                ConsoleColor.magicLog(ConsoleColor.toPurple("Objet déjà deserialisé : "+jon));
+                Object o = deserializedObject.get(jon);
+                return o==null?this:o;
+            }
             
+            deserializedObject.put(jon, null);
+            ConsoleColor.magicLog(ConsoleColor.toPurple(deserializedObject.keySet()));
+
+            ConsoleColor.magicLog("Try JO lookup "+jon+" "+id+" "+cpt);
+            JvnObject jo = server.jvnLookupObject(jon);
+            ConsoleColor.magicLog("JO lookup ("+jon+") "+jo);
+
+            deserializedObject.put(jon, jo);
             if (jo == null) throw new InvalidObjectException("Objet partagé '" + jon + "' non trouvé via lookup.");
             
             ConsoleColor.magicLog(ConsoleColor.toBlue("SerializedInterceptor changer lors de readResolve (appel sur un server)"));
