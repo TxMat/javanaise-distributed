@@ -2,10 +2,8 @@ package jvn.Impl;
 
 import java.io.Serializable;
 
-import jvn.Enums.ConsoleColor;
 import jvn.Enums.JvnObjectStatus;
 import jvn.Exceptions.JvnException;
-import jvn.Interfaces.JvnLocalServer;
 import jvn.Interfaces.JvnObject;
 
 public class JvnObjectImpl implements JvnObject {
@@ -23,13 +21,11 @@ public class JvnObjectImpl implements JvnObject {
     private final transient Object lockLockStatus = new Object();
     private JvnObjectStatus lockStatus;
     // transient = n'est pas serialisé et est mis a "null" de l'autre coté. Merci les dev Java
-    private final transient JvnLocalServer server;
     
-    public JvnObjectImpl(Serializable o, int id, JvnLocalServer server) {
+    public JvnObjectImpl(Serializable o, int id) {
         this.o = o;
         this.id = id;
         this.lockStatus = JvnObjectStatus.NL;
-        this.server = server;
     }
     
     @Override
@@ -55,7 +51,7 @@ public class JvnObjectImpl implements JvnObject {
             return;
         }
         
-        this.updateSerializable(server.jvnLockRead(id));
+        this.updateSerializable(JvnServerImpl.jvnGetServer().jvnLockRead(id));
         
         synchronized (lockLockStatus) {
             waitingForCoordAuto = WaitingCoordStatus.NOT_WAITING;
@@ -87,7 +83,7 @@ public class JvnObjectImpl implements JvnObject {
             return;
         }
         
-        this.updateSerializable(server.jvnLockWrite(id));
+        this.updateSerializable(JvnServerImpl.jvnGetServer().jvnLockWrite(id));
         
         synchronized (lockLockStatus) {
             waitingForCoordAuto = WaitingCoordStatus.NOT_WAITING;
@@ -238,8 +234,8 @@ public class JvnObjectImpl implements JvnObject {
             return
                 "Class: " + jvnGetSharedObject().getClass().getName() +
                 ", Obj : { " + jvnGetSharedObject().toString() + " }" +
-                ", server: " + (server == null ? "null" : "ok") +
-                ", id: " +
+                ", server: " + (JvnServerImpl.jvnGetServer() == null ? "null" : "ok") +
+                ", id: " + id + 
                 ", lock-status: " + gls;
         } catch (JvnException e) {
             return "ERROR";

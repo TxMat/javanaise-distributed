@@ -38,30 +38,24 @@ implements JvnLocalServer, JvnRemoteServer {
 	private static JvnRemoteCoord coord;
 	
 	// TODO : probablment pas utile
-	private final Map<Integer, JvnObject> jvnObjectsMap;
+	private final Map<String, JvnObjectCapsule> jvnObjectsNameMap;
+	private final Map<Integer, JvnObjectCapsule> jvnObjectsIdMap;
 	/**
 	* Default constructor
 	* @throws JvnException
 	**/
 	private JvnServerImpl() throws Exception {
-		super();
-		System.setProperty("java.rmi.server.hostname", "127.0.0.1");
+		this("127.0.0.1");
+	}
+	private JvnServerImpl(String host) throws Exception {
+		System.setProperty("java.rmi.server.hostname", host);
 		
-		Registry registry = LocateRegistry.getRegistry("127.0.0.1", 5000);
+		Registry registry = LocateRegistry.getRegistry(host, 5000);
 		coord = (JvnRemoteCoord) registry.lookup("coord");
 		
-		jvnObjectsMap = new HashMap<>();
+		jvnObjectsNameMap = new HashMap<>();
+		jvnObjectsIdMap = new HashMap<>();
 	}
-
-    private JvnServerImpl(String host) throws Exception {
-        super();
-        System.setProperty("java.rmi.server.hostname", host);
-
-        Registry registry = LocateRegistry.getRegistry(host, 5000);
-        coord = (JvnRemoteCoord) registry.lookup("coord");
-
-        jvnObjectsMap = new HashMap<>();
-    }
 	
 	/**
 	* Static method allowing an application to get a reference to 
@@ -80,6 +74,9 @@ implements JvnLocalServer, JvnRemoteServer {
 			return null;
 		}
 		ConsoleColor.magicLog(ConsoleColor.toYellow("OK : "+js.toString()));
+		return js;
+	}	
+	public static JvnServerImpl jvnGetServer() {
 		return js;
 	}
 	
@@ -107,20 +104,21 @@ implements JvnLocalServer, JvnRemoteServer {
 	**/
 	public JvnObject jvnCreateObject(Serializable o) throws JvnException {
 		try {
-			if(o instanceof JvnObject jo) {
-				return jvnLocalCreaObject(jo.jvnGetSharedObject(), jo.jvnGetObjectId());
+			int id;
+			if(o instanceof JvnObject ojo) {
+				id = ojo.jvnGetObjectId();
+				o = ojo.jvnGetSharedObject();
+			} else {
+				id = coord.jvnGetObjectId();
 			}
-			int id = coord.jvnGetObjectId();
-			JvnObject jo = new JvnObjectImpl(o, id, js);
-			jvnObjectsMap.put(id, jo);
-			return jo;
+			return jvnLocalCreaObject(o, id);
 		} catch (RemoteException | JvnException e) {
 			throw new JvnException(e.getMessage());
 		} 
 	}
 	private JvnObject jvnLocalCreaObject(Serializable o, int id) throws JvnException {
-		JvnObject jo = new JvnObjectImpl(o, id, js);
-		jvnObjectsMap.put(id, jo);
+		JvnObject jo = new JvnObjectImpl(o, id);
+		jvnObjectsIdMap.put(id, new JvnObjectCapsule(jo));
 		return jo; 
 	}
 	
@@ -134,7 +132,16 @@ implements JvnLocalServer, JvnRemoteServer {
 	public void jvnRegisterObject(String jon, JvnObject jo)
 	throws JvnException {
 		try {
-			coord.jvnRegisterObject(jon, jo, (JvnRemoteServer)js);
+			int id = jo.jvnGetObjectId();
+			if(jvnObjectsIdMap.get(id)!=null) {
+				jvnObjectsNameMap.put(jon, jvnObjectsIdMap.get(id));
+			} else {
+				JvnObjectCapsule joc = new JvnObjectCapsule(jo);
+				jvnObjectsNameMap.put(jon, joc);
+				jvnObjectsIdMap.put(jo.jvnGetObjectId(), joc);
+			}
+			
+			coord.jvnRegisterObject(jon, jo, js);
 			/*sysout*/ // ConsoleColor.magicLog("New JVN Object Registered : { jon: "+jon+", jos.toString(): { "+jo.jvnGetSharedObject().toString()+" } }");
 		} catch (JvnException e) {
 			throw e;
@@ -158,17 +165,19 @@ implements JvnLocalServer, JvnRemoteServer {
 			JvnObject jo = coord.jvnLookupObject(jon, js);
 			if(jo == null) return null;
 			
-			int joi = jo.jvnGetObjectId();
-			JvnObject ljo = jvnObjectsMap.get(joi);
-			
-
+			JvnObjectCapsule joc = jvnObjectsNameMap.get(jon);
 			
 			// Si j'ai pas le JO en local, le créer pour l'interceptor
-			if(ljo == null) return jo;
-
+			if(joc == null) {
+				joc = new JvnObjectCapsule(jo);
+				jvnObjectsIdMap.put(jo.jvnGetObjectId(), joc);
+				jvnObjectsNameMap.put(jon, joc);
+				return jo;
+			}
+			JvnObject ljo = joc.get();
+			
 			// Sinon juste mettre a jour l'objet
 			ljo.updateSerializable(jo.jvnGetSharedObject());
-			// Problème : si l'objet en local est plus récent que l'objet distant ?
 			
 			return ljo;
 		} catch (RemoteException | JvnException e) {
@@ -190,8 +199,6 @@ implements JvnLocalServer, JvnRemoteServer {
 		} catch (RemoteException e) {
 			throw new JvnException("Erreur lors de la récupération du LockRead vers le Coord : "+e.getMessage());
 		}
-		// to be completed 
-		
 	}	
 	
 	@Override
@@ -220,9 +227,9 @@ implements JvnLocalServer, JvnRemoteServer {
 	**/
 	public void jvnInvalidateReader(int joi)
 	throws java.rmi.RemoteException, JvnException {
-		JvnObject jo = jvnObjectsMap.get(joi);
-		if(jo == null) throw new JvnException("Le server ne contiend pas le JvnObject avec l'id "+joi);
-		jo.jvnInvalidateReader();
+		JvnObjectCapsule joc = jvnObjectsIdMap.get(joi);
+		if(joc == null) throw new JvnException("Le server ne contiend pas le JvnObject avec l'id "+joi);
+		joc.get().jvnInvalidateReader();
 	};
 	
 	@Override
@@ -234,9 +241,9 @@ implements JvnLocalServer, JvnRemoteServer {
 	**/
 	public Serializable jvnInvalidateWriter(int joi)
 	throws java.rmi.RemoteException, JvnException {
-		JvnObject jo = jvnObjectsMap.get(joi);
-		if(jo == null) throw new JvnException("Le server ne contiend pas le JvnObject avec l'id "+joi);
-		return jo.jvnInvalidateWriter();
+		JvnObjectCapsule joc = jvnObjectsIdMap.get(joi);
+		if(joc == null) throw new JvnException("Le server ne contiend pas le JvnObject avec l'id "+joi);
+		return joc.get().jvnInvalidateWriter();
 	};
 	
 	@Override
@@ -248,9 +255,21 @@ implements JvnLocalServer, JvnRemoteServer {
 	**/
 	public Serializable jvnInvalidateWriterForReader(int joi)
 	throws java.rmi.RemoteException, JvnException {
-		JvnObject jo = jvnObjectsMap.get(joi);
-		if(jo == null) throw new JvnException("Le server ne contiend pas le JvnObject avec l'id "+joi);
-		return jo.jvnInvalidateWriterForReader();
+		JvnObjectCapsule joc = jvnObjectsIdMap.get(joi);
+		if(joc == null) throw new JvnException("Le server ne contiend pas le JvnObject avec l'id "+joi);
+		return joc.get().jvnInvalidateWriterForReader();
 	};
 	
+	private class JvnObjectCapsule {
+		JvnObject jo;
+		JvnObjectCapsule(JvnObject jo) {
+			this.jo = jo;
+		}
+		JvnObject get() { return jo; };
+
+		@Override
+		public String toString(){
+			return jo==null?"null":jo.toString();
+		}
+	}
 }

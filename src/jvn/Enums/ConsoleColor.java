@@ -36,9 +36,13 @@ public class ConsoleColor {
         magicLog(msg, true);
     }
     public static void magicLog(Object msg, boolean ln) {
-        String[] lines = msg.toString().split("\n");
-
         String time = toPurple("[ "+System.currentTimeMillis()+" ] ");
+        if(msg == null) {
+            System.out.println(time+"null");
+            return;
+        }
+        
+        String[] lines = msg.toString().split("\n");
         int end = lines.length-1;
         for(int i = 0; i < end; i++){
             System.out.println(time+lines[i]);
@@ -47,19 +51,23 @@ public class ConsoleColor {
         if(ln) System.out.println(time+lines[end]);
         else System.out.print(time+lines[end]);
     }
-
+    
     public static void magicError(Object msg) {
         magicLog(msg, true);
     }
     public static void magicError(Object msg, boolean ln) {
-        String[] lines = msg.toString().split("\n");
-        
         String time = toPurple("[ "+System.currentTimeMillis()+" ] ");
+        if(msg == null) {
+            System.out.println(time+toRed("null"));
+            return;
+        }
+
+        String[] lines = msg.toString().split("\n");
         int end = lines.length-1;
         for(int i = 0; i < end; i++){
             System.out.println(time+toRed(lines[i]));
         }
-
+        
         if(ln) System.out.println(time+toRed(lines[end]));
         else System.out.print(time+toRed(lines[end]));
     }

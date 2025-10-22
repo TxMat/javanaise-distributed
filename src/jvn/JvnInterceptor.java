@@ -1,11 +1,14 @@
 package jvn;
 
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
+import Objects.SerializedInterceptor;
 import jvn.Annotations.JvnAnnotate;
+import jvn.Enums.ConsoleColor;
 import jvn.Exceptions.JvnException;
 import jvn.Interfaces.JvnLocalServer;
 import jvn.Interfaces.JvnObject;
@@ -91,6 +94,17 @@ public class JvnInterceptor implements InvocationHandler, Serializable {
         ConsoleColor.magicLog(ConsoleColor.toYellow(this.toString()));
     }
     */
+    
+    private Object writeReplace() throws ObjectStreamException {
+        // Ne jamais serialiser le JvnInterceptor (pas besoin de readObejct car il est jamais réelement serialisé en tant que JvnInterceptor)
+        // On garde que le nom pour le recréer quand il est sur un server
+        ConsoleColor.magicLog("writeReplace : "+jon);
+        SerializedInterceptor si = new SerializedInterceptor(jon);
+        ConsoleColor.magicLog(ConsoleColor.toYellow(si.toString()));
+        return si;
+    }
+    
+    
     @Override
     public String toString(){
         return "JvnInterseptor{ jon: "+jon+", jo:"+(jo==null?"null":jo.toString())+" }";

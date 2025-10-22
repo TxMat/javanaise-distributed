@@ -1,5 +1,10 @@
 package jvn;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -27,8 +32,6 @@ public class JvnServerMain {
         
         server = JvnServerImpl.jvnGetServer(args.length >= 1 ? args[0] : "127.0.0.1");
         
-        ConsoleColor.magicLog(server==null);
-        ConsoleColor.magicLog(JvnServerImpl.jvnGetServer(null)==null);
         ConsoleColor.magicLog("Local Server created !");
         
         new Thread(JvnServerMain::runConsole).start();
@@ -136,6 +139,49 @@ public class JvnServerMain {
                 ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("ls();"));
                 ls();
             }
+            case "auto2" -> {
+                ConsoleColor.magicLog("Création de 'a'");
+                A a = JvnInterceptor.createInterceptor(new A_Impl(1111), "_a", server);
+                interceptors.put("_a", a);
+                ConsoleColor.magicLog(a);
+                
+                ConsoleColor.magicLog("Création de 's3'");
+                S3<A> s3 = JvnInterceptor.createInterceptor(new S3_Impl<A>(), "_s3", server);
+                s_interceptors.put("_s3", s3);
+                ConsoleColor.magicLog(s3);
+                
+                ConsoleColor.magicLog("Set de 'a' dans 's3'");
+                s3.setObj(a);
+                ConsoleColor.magicLog(s3);
+                
+                ConsoleColor.magicLog("START SERIALIZATION");
+                
+                byte[] b;
+                try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+                    oos.writeObject(s3);
+                    b = baos.toByteArray();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return;
+                }
+                
+                ConsoleColor.magicLog("SERIALIZATION OK");
+                
+                Object o;
+                try (ByteArrayInputStream bais = new ByteArrayInputStream(b); ObjectInputStream ois = new ObjectInputStream(bais)) {
+                    ConsoleColor.magicLog("A");
+                    o = ois.readObject();
+                    ConsoleColor.magicLog("B");
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                    return;
+                }
+                ConsoleColor.magicLog("DESERIALIZATION OK");
+                
+                ConsoleColor.magicLog(o);
+                
+            }
             case "create", "c" -> {
                 if(args.length !=4) {
                     ConsoleColor.magicLog("USAGE : test2 create <name> <A/S1>");
@@ -187,7 +233,7 @@ public class JvnServerMain {
 
                 S3<?> s = s_interceptors.get(args[4]);
                 if(s==null) {
-                    ConsoleColor.magicError("Objet S3 non trouvé : "+args[2]);
+                    ConsoleColor.magicError("Objet S3 non trouvé : "+args[4]);
                     return;
                 }
 
@@ -222,7 +268,6 @@ public class JvnServerMain {
     }
     
     public static void test(String[] args) throws JvnException {
-        ConsoleColor.magicLog(JvnServerImpl.jvnGetServer(null)==null);
         if (args.length != 3) {
             ConsoleColor.magicLog("test actuel : \n> test <jon> <nb>\n- jon : Object Name\n- nb : Valeur à ajouter");
             return;
