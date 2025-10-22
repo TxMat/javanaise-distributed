@@ -159,9 +159,7 @@ implements JvnLocalServer, JvnRemoteServer {
 	**/
 	public JvnObject jvnLookupObject(String jon)
 	throws JvnException {
-		// TODO : probable probleme de sync coté coord
 		try {
-			// TODO : le lookup du coord doit donner une version a jour de l'objet : invalidate le writer si il y en a un et donner le bon
 			JvnObject jo = coord.jvnLookupObject(jon, js);
 			if(jo == null) return null;
 			

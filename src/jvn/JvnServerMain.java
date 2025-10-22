@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -14,6 +15,8 @@ import Objects.A;
 import Objects.A_Impl;
 import Objects.MultiRepartisObject;
 import Objects.MultiRepartisObject_Impl;
+import Objects.SerializableMap;
+import Objects.SerializableMap_Impl;
 import jvn.Enums.ConsoleColor;
 import jvn.Exceptions.JvnException;
 import jvn.Impl.JvnServerImpl;
@@ -39,7 +42,8 @@ public class JvnServerMain {
     
     private static final Map<String, A> interceptors = new HashMap<>();
     private static final Map<String, S1> s1_interceptors = new HashMap<>();
-    private static final Map<String, S3> s_interceptors = new HashMap<>();
+    private static final Map<String, S3<?>> s_interceptors = new HashMap<>();
+    private static final Map<String, SerializableMap<?>> sm = new HashMap<>();
     
     public static void runConsole() {
         Scanner scanner = new Scanner(System.in);
@@ -60,6 +64,7 @@ public class JvnServerMain {
                     case "create", "c" -> create(args);
                     case "lookup" -> lookup(args);
                     case "waitwrite", "ww" -> ww(args);
+                    case "sm" -> sm(args);
                     case "help" -> help();
                     default -> ConsoleColor.magicLog("Commande inconnue.");
                 }
@@ -70,6 +75,7 @@ public class JvnServerMain {
     }
     
     public static void help(){
+        ConsoleColor.magicLog("sm                         : sm help");
         ConsoleColor.magicLog("mro                        : mro help");
         ConsoleColor.magicLog("test2                      : test2 help");
         ConsoleColor.magicLog("test                       : test des truc");
@@ -210,14 +216,14 @@ public class JvnServerMain {
                     ConsoleColor.magicError("Objet A/S1 non trouvé : "+args[2]);
                     return;
                 }   if(a!=null) {
-                    S3<A> s = s_interceptors.get(args[4]);
+                    S3<A> s = (S3<A>) s_interceptors.get(args[4]);
                     if(s==null) {
                         ConsoleColor.magicError("Objet S3 non trouvé : "+args[2]);
                         return;
                     }
                     s.setObj(a);
                 } else {
-                    S3<S1> s = s_interceptors.get(args[4]);
+                    S3<S1> s = (S3<S1>) s_interceptors.get(args[4]);
                     if(s==null) {
                         ConsoleColor.magicError("Objet S3 non trouvé : "+args[2]);
                         return;
@@ -230,13 +236,13 @@ public class JvnServerMain {
                     ConsoleColor.magicLog("USAGE : test2 meth <meth name> under <s3 name>");
                     return;
                 }       
-
+                
                 S3<?> s = s_interceptors.get(args[4]);
                 if(s==null) {
                     ConsoleColor.magicError("Objet S3 non trouvé : "+args[4]);
                     return;
                 }
-
+                
                 Object o = s.getObj();
                 int value = 0;
                 if(args[2].equals("add") || args[2].equals("set")) {
@@ -507,6 +513,187 @@ public class JvnServerMain {
                     ConsoleColor.magicLog("MRO : value of "+args[1]+" increas of "+v);
                 }
                 default -> { ConsoleColor.magicLog("MRO : unknown function "+args[2]); }
+            }
+        }
+    }
+    private static void sm(String[] args) throws JvnException {
+        if (args.length == 1 || args[1].equals("help")) {
+            ConsoleColor.magicLog("sm help");
+            ConsoleColor.magicLog("sm new <name> <type>                 : crée une nouvelle SerializableMap (de A, S1, S3)");
+            ConsoleColor.magicLog("sm addto <sm name> <type> <name>     : ajoute un objet déjà existant dans une sm");
+            ConsoleColor.magicLog("sm addto <sm name> new <type> <name> : crée puis ajoute un objet dans une sm");
+            ConsoleColor.magicLog("sm ls                                : liste les SerializableMap existantes");
+            ConsoleColor.magicLog("sm <sm name>                         : affiche le contenu et la taille d'une SerializableMap");
+            ConsoleColor.magicLog("sm meth <sm name> <elem> <type> <method> [param] : appelle une méthode sur un objet dans une SerializableMap");
+
+            return;
+        }
+        
+        
+        switch (args[1]) {
+            case "new" -> {
+                if (args.length != 4) {
+                    ConsoleColor.magicError("Usage: sm new <name> <type>");
+                    return;
+                }
+                
+                String smn = args[2];
+                String type = args[3];
+                
+                SerializableMap<?> map;
+                
+                switch (type) {
+                    case "A" -> map = new SerializableMap_Impl<A>();
+                    case "S1" -> map = new SerializableMap_Impl<S1>();
+                    case "S3" -> map = new SerializableMap_Impl<S3<?>>();
+                    default -> {
+                        ConsoleColor.magicError("Type non supporté : " + type);
+                        return;
+                    }
+                }
+                
+                sm.put(smn, map);
+                ConsoleColor.magicLog("SerializableMap '" + smn + "' de type " + type + " créée.");
+            }
+            case "addto" -> {
+                if (args.length != 5 && args.length != 6) {
+                    ConsoleColor.magicError("Usage: sm addto <sm name> <type> <name>");
+                    ConsoleColor.magicError("Usage: sm addto <sm name> new <type> <name>");
+                    return;
+                }
+                boolean withNew = args.length == 6;
+                
+                String smn = args[2];
+                String type = args[withNew?3:4];
+                String jon = args[withNew?4:5];
+                
+                SerializableMap map = sm.get(smn);
+                if (map == null) {
+                    ConsoleColor.magicError("SerializableMap '" + smn + "' non trouvée.");
+                    return;
+                }
+                
+                Serializable s;
+                if(withNew) {
+                    switch (type) {
+                        case "A" -> {
+                            s = JvnInterceptor.createInterceptor(new A_Impl((int)(Math.random()*101-50)), jon, server);
+                        }
+                        case "S1" -> {
+                            s = JvnInterceptor.createInterceptor(new S1_Impl((int)(Math.random()*101-50)), jon, server);
+                        }
+                        case "S3" -> {
+                            s = JvnInterceptor.createInterceptor(new S3_Impl<>(), jon, server);
+                        }
+                        default -> throw new AssertionError();
+                    }
+                    ConsoleColor.magicLog("Objet "+type+" '" + jon + "' créé et sera ajouté au sm '" + smn + "'\n"+s);
+                } else {
+                    switch (type) {
+                        case "A" -> {
+                            s = interceptors.get(jon);
+                        }
+                        case "S1" -> {
+                            s = s1_interceptors.get(jon);
+                        }
+                        case "S3" -> {
+                            s = s_interceptors.get(jon);
+                        }
+                        default -> throw new AssertionError();
+                    }
+                    ConsoleColor.magicLog("Objet "+type+" '" + jon + "' récupéré et sera ajouté au sm '" + smn + "'\n"+s);
+                }
+                map.put(jon, s);
+                ConsoleColor.magicLog("Objet ajouté au sm.");
+            }
+            case "ls" -> {
+                if (sm.isEmpty()) {
+                    ConsoleColor.magicLog("Aucune SerializableMap.");
+                    return;
+                }
+                
+                sm.forEach((name, map) -> ConsoleColor.magicLog(name + " = " + map));
+            }
+            case "math" -> {
+                
+                if (args.length != 6 && args.length != 7) {
+                    ConsoleColor.magicError("Usage: sm meth <sm name> <elem name> <type> <method name> [arg]");
+                    return;
+                }
+                
+                String smn = args[2];
+                String jon = args[3];
+                String type = args[4];
+                String meth = args[5];
+                String param = args.length == 7 ? args[6] : null;
+                
+                SerializableMap map = sm.get(smn);
+                if (map == null) {
+                    ConsoleColor.magicError("SerializableMap '" + smn + "' non trouvée.");
+                    return;
+                }
+                
+                Object obj = map.get(jon);
+                if (obj == null) {
+                    ConsoleColor.magicError("Element '" + jon + "' non trouvé dans le sm '" + smn + "'");
+                    return;
+                }
+                
+                switch (type) {
+                    case "A" -> {
+                        A a = (A) obj;
+                        switch (meth) {
+                            case "addValue" -> a.addValue(param != null ? Integer.parseInt(param) : 10);
+                            case "setValue" -> a.setValue(param != null ? Integer.parseInt(param) : 0);
+                            case "getValue" -> ConsoleColor.magicLog("VALUE: " + a.getValue());
+                            case "waitWrite" -> ConsoleColor.magicLog("... non, pas cette methode");
+                            default -> ConsoleColor.magicError("Méthode inconnue pour A: " + meth);
+                        }
+                    }
+                    case "S1" -> {
+                        S1 s1 = (S1) obj;
+                        switch (meth) {
+                            case "addValue" -> s1.addValue(param != null ? Integer.parseInt(param) : 10);
+                            case "setValue" -> s1.setValue(param != null ? Integer.parseInt(param) : 0);
+                            case "getValue" -> ConsoleColor.magicLog("Résultat: " + s1.getValue());
+                            default -> ConsoleColor.magicError("Méthode inconnue pour S1: " + meth);
+                        }
+                    }
+                    case "S3" -> {
+                        S3 s3 = (S3) obj;
+                        switch (meth) {
+                            case "setObj" -> {
+                                if (param == null) {
+                                    ConsoleColor.magicError("setObj attend un nom d’objet à utiliser.");
+                                    return;
+                                }
+                                Serializable s = server.jvnLookupObject(param);
+                                if (s == null) {
+                                    ConsoleColor.magicError("Objet '" + param + "' introuvable via lookup.");
+                                    return;
+                                }
+                                s3.setObj(s);
+                                ConsoleColor.magicLog("Objet '" + param + "' assigné à S3.");
+                            }
+                            case "getObj" -> ConsoleColor.magicLog("Résultat: " + s3.getObj());
+                            case "toString" -> ConsoleColor.magicLog(s3.toString());
+                            default -> ConsoleColor.magicError("Méthode inconnue pour S3: " + meth);
+                        }
+                    }
+                    default -> ConsoleColor.magicError("Type inconnu : " + type);
+                }
+                
+                ConsoleColor.magicLog("Méthode " + meth + " appelée avec succès.");
+                
+            }
+            default -> {
+                String smn = args[1];
+                SerializableMap map = sm.get(smn);
+                if (map == null) {
+                    ConsoleColor.magicError("SerializableMap '" + smn + "' non trouvée.");
+                } else {
+                    ConsoleColor.magicLog("smn '" + smn + "' (size of " + map.size() + ") \n"+map.toString());
+                }
             }
         }
     }

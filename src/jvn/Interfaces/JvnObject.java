@@ -7,9 +7,9 @@
 
 package jvn.Interfaces;
 
-import jvn.Exceptions.JvnException;
-
 import java.io.Serializable;
+
+import jvn.Exceptions.JvnException;
 
 /**
  * Interface of a JVN object.
@@ -19,13 +19,6 @@ import java.io.Serializable;
 public interface JvnObject extends Serializable {
 	/* A JvnObject should be serializable in order to be able to transfer 
 	a reference to a JVN object remotely */
-
-    int NL = 0;
-    int W = 1;
-    int R = 2;
-    int WC = 3;
-    int RC = 4;
-    int RWC = 5;
 
     void updateSerializable(Serializable s);
 

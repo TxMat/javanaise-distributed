@@ -110,7 +110,6 @@ public class JvnObjectImpl implements JvnObject {
     
     @Override
     public void updateSerializable(Serializable s) {
-        // TODO : Besoin de sync ?
         this.o = s;
     }
     
