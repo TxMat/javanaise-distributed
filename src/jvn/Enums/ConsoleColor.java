@@ -18,19 +18,19 @@ public class ConsoleColor {
             this.code = code;
         }
         
-        public String apply(String str) {
+        public String apply(Object str) {
             return code + str + GRAY.code;
         }
     }
     
-    public static String toGray(String str)   { return Color.GRAY.apply(str); }
-    public static String toWhite(String str)  { return Color.WHITE.apply(str); }
-    public static String toRed(String str)    { return Color.RED.apply(str); }
-    public static String toGreen(String str)  { return Color.GREEN.apply(str); }
-    public static String toYellow(String str) { return Color.YELLOW.apply(str); }
-    public static String toBlue(String str)   { return Color.BLUE.apply(str); }
-    public static String toPurple(String str) { return Color.PURPLE.apply(str); }
-    public static String toCyan(String str)   { return Color.CYAN.apply(str); }
+    public static String toGray(Object str)   { return Color.GRAY.apply(str); }
+    public static String toWhite(Object str)  { return Color.WHITE.apply(str); }
+    public static String toRed(Object str)    { return Color.RED.apply(str); }
+    public static String toGreen(Object str)  { return Color.GREEN.apply(str); }
+    public static String toYellow(Object str) { return Color.YELLOW.apply(str); }
+    public static String toBlue(Object str)   { return Color.BLUE.apply(str); }
+    public static String toPurple(Object str) { return Color.PURPLE.apply(str); }
+    public static String toCyan(Object str)   { return Color.CYAN.apply(str); }
     
     public static void magicLog(Object msg) {
         magicLog(msg, true);

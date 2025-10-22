@@ -12,8 +12,11 @@ public interface MultiRepartisObject extends Serializable {
     
     @JvnAnnotate( JvnAnnotate.LockType.WRITE )
     void addJvnObject(String jon, JvnObject jo);
-
+    
     @JvnAnnotate( JvnAnnotate.LockType.WRITE )
     JvnObject removeJvnObject(String jon);
     
+    @JvnAnnotate(JvnAnnotate.LockType.READ)
+    @Override
+    public String toString();
 }

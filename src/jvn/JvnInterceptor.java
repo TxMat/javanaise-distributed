@@ -53,18 +53,23 @@ public class JvnInterceptor implements InvocationHandler, Serializable {
     
     @Override
     public Object invoke(Object proxy, Method m, Object[] args) throws Throwable {
+        /*sysout*/ // ConsoleColor.magicLog(ConsoleColor.toGreen(m.getName()+" "+Arrays.toString(args)), false);
         boolean needLock = m.isAnnotationPresent(JvnAnnotate.class);
+        /*sysout*/ // System.out.print(ConsoleColor.toGreen(", needLock : "+needLock));
         
         if (needLock) {
             boolean isReader = m.getAnnotation(jvn.Annotations.JvnAnnotate.class).value() == JvnAnnotate.LockType.READ;
+            /*sysout*/ // System.out.print(ConsoleColor.toGreen(", isReader : "+isReader));
             if (isReader) {
                 jo.jvnLockRead();
             } else {
                 jo.jvnLockWrite();
             }
         }
+        /*sysout*/ // System.out.println();
         
-        if(m.getName().equals("toString") && jo == null) return "null";
+        // il y avais une erreur mais je sais plus pk j'avais mis ca, donc je remet tant que j'ai pas d'erreur, elle a peut etre été corrigé "naturlmement" depuis avec mes modif de code
+        // if(m.getName().equals("toString") && jo == null) return "null";
         
         Object res = m.invoke(jo.jvnGetSharedObject(), args);
         if (needLock) jo.jvnUnLock();

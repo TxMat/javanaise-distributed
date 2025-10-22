@@ -104,7 +104,7 @@ public class JvnServerMain {
         // test2 create <name>
         
         /*
-        * test2 create <name> <A/S1>
+        * test2 create <name> <A/S>
         * test2 set <jon> in <s3 name>
         * test2 meth <meth name> under <s3 name>
         */
@@ -190,7 +190,7 @@ public class JvnServerMain {
             }
             case "create", "c" -> {
                 if(args.length !=4) {
-                    ConsoleColor.magicLog("USAGE : test2 create <name> <A/S1>");
+                    ConsoleColor.magicLog("USAGE : test2 create <name> <A/S>");
                     return;
                 }
                 
@@ -339,6 +339,11 @@ public class JvnServerMain {
             case "S3" -> {
                 S3<?> s = JvnInterceptor.createInterceptor(jo, args[2], server);
                 s_interceptors.put(args[2], s);
+                ConsoleColor.magicLog(s);
+            }
+            case "SM" -> {
+                SerializableMap s = JvnInterceptor.createInterceptor(jo, args[2], server);
+                sm.put(args[2], s);
                 ConsoleColor.magicLog(s);
             }
             default -> {}
@@ -516,21 +521,75 @@ public class JvnServerMain {
             }
         }
     }
+    private static void sm(String[] args, Object o) throws JvnException {
+        ConsoleColor.magicLog(ConsoleColor.toCyan(String.join(" ", args)));
+        sm(args);
+    }
     private static void sm(String[] args) throws JvnException {
         if (args.length == 1 || args[1].equals("help")) {
             ConsoleColor.magicLog("sm help");
+            ConsoleColor.magicLog("sm auto [call]                       : Création auto de plueisurs SM, call = get value sur un 'a' profond ('auto' seul obligatoir avant)");
             ConsoleColor.magicLog("sm new <name> <type>                 : crée une nouvelle SerializableMap (de A, S1, S3)");
             ConsoleColor.magicLog("sm addto <sm name> <type> <name>     : ajoute un objet déjà existant dans une sm");
             ConsoleColor.magicLog("sm addto <sm name> new <type> <name> : crée puis ajoute un objet dans une sm");
             ConsoleColor.magicLog("sm ls                                : liste les SerializableMap existantes");
             ConsoleColor.magicLog("sm <sm name>                         : affiche le contenu et la taille d'une SerializableMap");
             ConsoleColor.magicLog("sm meth <sm name> <elem> <type> <method> [param] : appelle une méthode sur un objet dans une SerializableMap");
-
+            
             return;
         }
         
         
         switch (args[1]) {
+            case "auto" -> {
+                if(args.length != 2) {
+                    if(args.length!=3 || !args[2].equals("call")) return;
+
+                    SerializableMap<S3> sm_s3 = (SerializableMap<S3>)sm.get("sm_s3");
+                    S3<A> s3_a0 = (S3<A>)sm_s3.get("_s3_a0");
+                    A a = s3_a0.getObj();
+                    ConsoleColor.magicLog(ConsoleColor.toYellow("sm_s3 => _s3_a0 => a . getValue : "+a.toString()));
+                    ConsoleColor.magicLog(ConsoleColor.toYellow("sm_s3 => _s3_a0 => a . getValue : "+a.getValue()));
+                    return;
+                }
+                // INIT SM
+                sm(new String[]{"sm","new","sm_a","A"}, null);
+                sm(new String[]{"sm","new","sm_s1","S1"}, null);
+                sm(new String[]{"sm","new","sm_s3","S3"}, null);
+                sm(new String[]{"sm","ls"}, null);
+                
+                ConsoleColor.magicLog(ConsoleColor.toCyan("CREATE   _a0,    _s0,    _s3_a0,   _s3_s0"));
+                // CREATE pour les tests
+                create(new String[]{"sm","A","_a0","10"});
+                create(new String[]{"sm","S","_s0","20"});
+                //create <A/S> <jon> [value]
+                test2 (new String[]{"test2", "create", "_s3_a0", "A"});
+                test2 (new String[]{"test2", "create", "_s3_s0", "S"});
+                ConsoleColor.magicLog(ConsoleColor.toCyan("ls"));
+                ls();
+                
+                // ADDTO sur les SM
+                sm(new String[]{"sm","addto","sm_a" ,"A" ,"_a0"}, null);
+                sm(new String[]{"sm","addto","sm_s1","S1","_s0"}, null);
+                sm(new String[]{"sm","addto","sm_s3","S3","_s3_a0"}, null);
+                sm(new String[]{"sm","addto","sm_s3","S3","_s3_s0"}, null);
+                sm(new String[]{"sm","ls"}, null);
+                
+                // ADDTO - NEW : sur les SM
+                sm(new String[]{"sm","addto","sm_a" ,"new","A" , "_a1" }, null);
+                sm(new String[]{"sm","addto","sm_s1","new","S1", "_s1" }, null);
+                sm(new String[]{"sm","addto","sm_s3","new","S3","_s3_a1"}, null);
+                sm(new String[]{"sm","addto","sm_s3","new","S3","_s3_s1"}, null);
+                sm(new String[]{"sm","ls"}, null);
+                
+                ConsoleColor.magicLog(ConsoleColor.toCyan("Triple imbrication ( sm_s3 => _s3_a0 => a )"));
+                create(new String[]{"sm","A","a","50"});
+                // test2 set a in _s3_a0
+                test2 (new String[]{"test2", "set", "a", "in", "_s3_a0"});
+                ls();
+                sm(new String[]{"sm","sm_s3"}, null);
+                
+            }
             case "new" -> {
                 if (args.length != 4) {
                     ConsoleColor.magicError("Usage: sm new <name> <type>");
@@ -552,7 +611,7 @@ public class JvnServerMain {
                     }
                 }
                 
-                sm.put(smn, map);
+                sm.put(smn, JvnInterceptor.createInterceptor(map, smn, server));
                 ConsoleColor.magicLog("SerializableMap '" + smn + "' de type " + type + " créée.");
             }
             case "addto" -> {
@@ -564,8 +623,8 @@ public class JvnServerMain {
                 boolean withNew = args.length == 6;
                 
                 String smn = args[2];
-                String type = args[withNew?3:4];
-                String jon = args[withNew?4:5];
+                String type = args[withNew?4:3];
+                String jon = args[withNew?5:4];
                 
                 SerializableMap map = sm.get(smn);
                 if (map == null) {
