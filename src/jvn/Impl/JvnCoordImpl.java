@@ -50,7 +50,7 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
             Registry registry = LocateRegistry.createRegistry(5000);
             registry.rebind("coord", (JvnRemoteCoord) coord);
             
-            ConsoleColor.magicLog("> Coordinateur RMI prêt !");
+            ConsoleColor.magicLog("> Coordinateur RMI prêt !", true);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -70,33 +70,42 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
             try {
                 switch (args[0]) {
                     case "exit", "q" -> {
-                        ConsoleColor.magicLog("EXIT...");
+                        ConsoleColor.magicLog("EXIT...", true);
                         scanner.close();
                         break origin;
                     }
-                    case "list", "ls" -> {
-                        StringBuilder sb = new StringBuilder();
-                        
-                        sb.append("Links ID - Name : \n");
-                        coord.linkIdName.forEach((k, v) -> {
-                            sb.append(k).append(" : ").append(v).append("\n");
-                        });
-                        sb.append("\nJvnObject Info : \n");
-                        coord.jvnObjects.forEach((k, v) -> {
-                            sb.append(k).append(" : ").append(v).append("\n");
-                        });
-                        ConsoleColor.magicLog(sb.toString());
-                    }
-                    default -> ConsoleColor.magicLog("Commande inconnue.");
+                    case "list", "ls" -> ls();
+                    case "print_all" -> printAll(args);
+                    default -> ConsoleColor.magicLog("Commande inconnue.", true);
                 }
             } catch (Exception e) {
-                ConsoleColor.magicError(ConsoleColor.toRed("Erreur : " + e.getMessage()));
+                ConsoleColor.magicError(ConsoleColor.toRed("Erreur : " + e.getMessage()), true);
             }
         }
         scanner.close();
         System.exit(0);
     }
-    
+    private static void printAll(String[] args){
+        if (args.length!=2) return;
+        if(args[1].equals("y")) {
+            ConsoleColor.activeLogsOn();
+        } else if(args[1].equals("n")) {
+            ConsoleColor.activeLogsOff();
+        }
+    }
+    private static void ls() {
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append("Links ID - Name : \n");
+        coord.linkIdName.forEach((k, v) -> {
+            sb.append(k).append(" : ").append(v).append("\n");
+        });
+        sb.append("\nJvnObject Info : \n");
+        coord.jvnObjects.forEach((k, v) -> {
+            sb.append(k).append(" : ").append(v).append("\n");
+        });
+        ConsoleColor.magicLog(sb.toString(), true);
+    }
     // ========== ========== ========== ========== ==========
     // ========== ========== ========== ========== ==========
     // 
@@ -231,9 +240,9 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
         }
         
         void addReader(JvnRemoteServer server) throws RemoteException, JvnException {
-            /*sysout*/ // ConsoleColor.magicLog("Waiting lock on addReader");
+            ConsoleColor.magicLog("Waiting lock on addReader");
             synchronized (lock) {
-                /*sysout*/ // ConsoleColor.magicLog("Lock take on addReader");
+                ConsoleColor.magicLog("Lock take on addReader");
                 
                 if (writeLock != null) {
                     Serializable s;
@@ -242,32 +251,32 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
                         jo.updateSerializable(s);
                         readLock.add(writeLock);
                     } catch (RemoteException e) {
-                        ConsoleColor.magicError("Le serveur possédant le lock d'écriture est probablement mort, on l'ignore");
+                        ConsoleColor.magicError("Le serveur possédant le lock d'écriture est probablement mort, on l'ignore", true);
                     }
                     writeLock = null;
                 }
                 readLock.add(server);
-                /*sysout*/ // ConsoleColor.magicLog(this);
-                /*sysout*/ // ConsoleColor.magicLog("Lock unlock on addReader");
+                ConsoleColor.magicLog(this);
+                ConsoleColor.magicLog("Lock unlock on addReader");
             }
         }
         
         void switchWriter(JvnRemoteServer server, int joi) throws RemoteException, JvnException {
-            /*sysout*/ // ConsoleColor.magicLog("Waiting lock on switchWriter");
+            ConsoleColor.magicLog("Waiting lock on switchWriter");
             synchronized (lock) {
-                /*sysout*/ // ConsoleColor.magicLog("Lock take on switchWriter");
+                ConsoleColor.magicLog("Lock take on switchWriter");
                 
                 // TODO : possibel comme en C de lancer tout les truc en paralelle et de faire un waitBarrier ?
                 
                 for (JvnRemoteServer jrs : readLock) {
                     if (jrs.equals(server)) {
-                        /*sysout*/ // ConsoleColor.magicLog("J'ai 3 IQ");
+                        ConsoleColor.magicLog("J'ai 3 IQ");
                         continue;
                     }
                     try {
                         jrs.jvnInvalidateReader(joi);
                     } catch (RemoteException e) {
-                        ConsoleColor.magicError("Le serveur possédant le lock de lecture est probablement mort, on l'ignore");
+                        ConsoleColor.magicError("Le serveur possédant le lock de lecture est probablement mort, on l'ignore", true);
                     }
                 }
                 readLock.clear();
@@ -275,45 +284,43 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
                 String hash = "    Server : " + server.hashCode()+"\nold writer : " + (writeLock == null ? null : writeLock.hashCode())+"\nNew Server : ";
                 if (writeLock != null) {
                     Serializable s = safeInvalidateWriter(writeLock);
-                    /*sysout*/ // ConsoleColor.magicLog(s.getClass());
+                    ConsoleColor.magicLog(s.getClass());
                     jo.updateSerializable(s);
                 }
                 writeLock = server;
-                /*sysout*/ // ConsoleColor.magicLog(hash + writeLock.hashCode() + "\n" + this + "\nLock unlock :iq: on switchWriter");
+                ConsoleColor.magicLog(hash + writeLock.hashCode() + "\n" + this + "\nLock unlock :iq: on switchWriter");
             }
         }
         
         public JvnObject getLatestObject() throws RemoteException, JvnException {
-            /*sysout*/ // ConsoleColor.magicLog("Waiting lock on getLatestObject");
+            ConsoleColor.magicLog("Waiting lock on getLatestObject");
             synchronized (lock) {
-                /*sysout*/ // ConsoleColor.magicLog("Lock take on getLatestObject");
+                ConsoleColor.magicLog("Lock take on getLatestObject");
                 
                 if (writeLock != null) {
                     Serializable s = safeInvalidateWriter(writeLock);
                     jo.updateSerializable(s);
                 }
                 writeLock = null;
-                /*sysout*/ // ConsoleColor.magicLog("Lock unlock :iq: on switchWriter");
+                ConsoleColor.magicLog("Lock unlock :iq: on switchWriter");
                 return jo;
             }
         }
-
+        
         Serializable safeInvalidateWriter(JvnRemoteServer writelock) throws JvnException {
             try {
                 return writelock.jvnInvalidateWriter(jo.jvnGetObjectId());
             } catch (RemoteException e) {
-                ConsoleColor.magicError("Le serveur possédant le lock d'écriture est probablement mort, on l'ignore");
+                ConsoleColor.magicError("Le serveur possédant le lock d'écriture est probablement mort, on l'ignore", true);
                 writeLock = null;
                 return jo.jvnGetSharedObject();
             }
         }
         
-        
-        
         void removeServer(JvnRemoteServer js) throws RemoteException, JvnException {
-            /*sysout*/ // ConsoleColor.magicLog("Waiting lock on removeServer");
+            ConsoleColor.magicLog("Waiting lock on removeServer");
             synchronized (lock) {
-                /*sysout*/ // ConsoleColor.magicLog("Lock take on removeServer");
+                ConsoleColor.magicLog("Lock take on removeServer");
                 
                 if (writeLock != null && writeLock.equals(js)) {
                     Serializable s = safeInvalidateWriter(writeLock);
@@ -321,7 +328,7 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
                     writeLock = null;
                 }
                 readLock.remove(js);
-                /*sysout*/ // ConsoleColor.magicLog(this + "\nLock unlock :iq: on removeServer");
+                ConsoleColor.magicLog(this + "\nLock unlock :iq: on removeServer");
             }
         }
     }

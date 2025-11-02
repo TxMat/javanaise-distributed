@@ -2,6 +2,14 @@ package jvn.Enums;
 
 public class ConsoleColor {
     
+    private static boolean activeLogs = false;
+    public static void activeLogsOn() {
+        activeLogs = true;
+    } 
+    public static void activeLogsOff() {
+        activeLogs = false;
+    }
+    
     private enum Color {
         GRAY("\033[0m"),
         WHITE("\033[38;5;15m"),
@@ -33,16 +41,28 @@ public class ConsoleColor {
     public static String toCyan(Object str)   { return Color.CYAN.apply(str); }
     
     public static void magicLog(Object msg) {
-        magicLog(msg, true);
+        magicLog(msg, true, false);
+    }    
+    public static void magicLog(Object msg, boolean constantLog) {
+        magicLog(msg, true, constantLog);
     }
-    public static void magicLog(Object msg, boolean ln) {
+    public static void magicLogNoLn(Object msg) {
+        magicLog(msg, false, false);
+    }
+    public static void magicLogNoLn(Object msg, boolean constantLog) {
+        magicLog(msg, false, constantLog);
+    }
+    public static void magicLog(Object msg, boolean ln, boolean constantLog) {
+        if(!constantLog && !activeLogs) return;
+        
         String time = toPurple("[ "+System.currentTimeMillis()+" ] ");
         if(msg == null) {
             System.out.println(time+"null");
             return;
         }
-        
+
         String[] lines = msg.toString().split("\n");
+        
         int end = lines.length-1;
         for(int i = 0; i < end; i++){
             System.out.println(time+lines[i]);
@@ -53,9 +73,20 @@ public class ConsoleColor {
     }
     
     public static void magicError(Object msg) {
-        magicLog(msg, true);
+        magicError(msg, true, false);
     }
-    public static void magicError(Object msg, boolean ln) {
+    public static void magicError(Object msg, boolean constantLog) {
+        magicError(msg, true, constantLog);
+    }
+    public static void magicErrorNoLn(Object msg) {
+        magicError(msg, false, false);
+    }
+    public static void magicErrorNoLn(Object msg, boolean constantLog) {
+        magicError(msg, false, constantLog);
+    }
+    public static void magicError(Object msg, boolean ln, boolean  constantLog) {
+        if(!constantLog && !activeLogs) return;
+        
         String time = toPurple("[ "+System.currentTimeMillis()+" ] ");
         if(msg == null) {
             System.out.println(time+toRed("null"));
@@ -63,6 +94,7 @@ public class ConsoleColor {
         }
 
         String[] lines = msg.toString().split("\n");
+
         int end = lines.length-1;
         for(int i = 0; i < end; i++){
             System.out.println(time+toRed(lines[i]));

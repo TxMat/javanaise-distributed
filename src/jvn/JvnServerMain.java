@@ -35,7 +35,7 @@ public class JvnServerMain {
         
         server = JvnServerImpl.jvnGetServer(args.length >= 1 ? args[0] : "127.0.0.1");
         
-        ConsoleColor.magicLog("Local Server created !");
+        ConsoleColor.magicLog("Local Server created !", true);
         
         new Thread(JvnServerMain::runConsole).start();
     }
@@ -67,25 +67,28 @@ public class JvnServerMain {
                     case "cycle" -> cycle();
                     case "sm" -> sm(args);
                     case "help" -> help();
-                    default -> ConsoleColor.magicLog("Commande inconnue.");
+                    case "print_all" -> printAll(args);
+                    default -> ConsoleColor.magicLog("Commande inconnue.", true);
                 }
             } catch (NumberFormatException | JvnException e) {
-                ConsoleColor.magicError("Erreur : " + e.getMessage());
+                ConsoleColor.magicError("Erreur : " + e.getMessage(), true);
             }
         }
     }
     
-    public static void help(){
+    public static void help() {
+        ConsoleColor.magicLog("create <A/S> <jon> [value] : Créer un JvnObject de type A ou S1", true);
+        ConsoleColor.magicLog("lookup <A/S/S3> <jon>      : Récupérer un objet déjà créé et sur le Coord (de type A, S ou S3)", true);
+        ConsoleColor.magicLog("list                       : liste des objets locaux", true);
+        ConsoleColor.magicLog("mro                        : mro help", true);
+        ConsoleColor.magicLog("test                       : test des truc", true);
+        ConsoleColor.magicLog("cpt <nb>                   : Pour un stress test de compteur", true);
+        ConsoleColor.magicLog("print_all <y/n>            : Affiche toutes les logs (yes / no)", true);
+        ConsoleColor.magicLog("==------===", true);
         ConsoleColor.magicLog("cycle");
-        ConsoleColor.magicLog("sm                         : sm help");
-        ConsoleColor.magicLog("mro                        : mro help");
-        ConsoleColor.magicLog("test2                      : test2 help");
-        ConsoleColor.magicLog("test                       : test des truc");
-        ConsoleColor.magicLog("cpt <nb>                   : Pour un stress test de compteur");
-        ConsoleColor.magicLog("list                       :");
-        ConsoleColor.magicLog("create <A/S> <jon> [value] : Créer un JvnObject de type A ou S1");
-        ConsoleColor.magicLog("lookup <A/S/S3> <jon>      : Récupérer un objet déjà créé et sur le Coord (de type A, S ou S3)");
-        ConsoleColor.magicLog("waitwrite                  : ");
+        ConsoleColor.magicLog("sm                         : sm help", true);
+        ConsoleColor.magicLog("test2                      : test2 help", true);
+        ConsoleColor.magicLog("waitwrite                  : ", true);
     }
     
     public static void cycle() throws JvnException {
@@ -294,10 +297,20 @@ public class JvnServerMain {
             default -> {}
         }
     }
-    
+
+
+    public static void printAll(String[] args){
+        if (args.length!=2) return;
+        if(args[1].equals("y")) {
+            ConsoleColor.activeLogsOn();
+        } else if(args[1].equals("n")) {
+            ConsoleColor.activeLogsOff();
+        }
+    }
+        
     public static void test(String[] args) throws JvnException {
         if (args.length != 3) {
-            ConsoleColor.magicLog("test actuel : \n> test <jon> <nb>\n- jon : Object Name\n- nb : Valeur à ajouter");
+            ConsoleColor.magicLog("test actuel : \n> test <jon> <nb>\n- jon : Object Name\n- nb : Valeur à ajouter", true);
             return;
         }
         A a = interceptors.get(args[1]);
@@ -308,7 +321,7 @@ public class JvnServerMain {
             a = JvnInterceptor.createInterceptor(jo, args[1], server);
         }
         
-        ConsoleColor.magicLog("BF : "+a);
+        ConsoleColor.magicLog("BF : "+a, true);
         
         int v = 0;
         try {
@@ -316,11 +329,11 @@ public class JvnServerMain {
         } catch(NumberFormatException e) {}
         a.addValue(v);
         
-        ConsoleColor.magicLog("AF : "+a);
+        ConsoleColor.magicLog("AF : "+a, true);
     }
     public static void ls() {
         interceptors.forEach((k, v) -> {
-            ConsoleColor.magicLog(k + " = " + v.toString());
+            ConsoleColor.magicLog(k + " = " + v.toString(), true);
         });
         s1_interceptors.forEach((k, v) -> {
             ConsoleColor.magicLog(k + " = " + v.toString());
@@ -328,15 +341,16 @@ public class JvnServerMain {
         s_interceptors.forEach((k, v) -> {
             ConsoleColor.magicLog(k + " = " + v.toString());
         });
-        ConsoleColor.magicLog("mro = "+(mro==null?"null":mro.toString()));
+        ConsoleColor.magicLog("mro = "+(mro==null?"null":mro.toString()), true);
+
     }
     public static void exit(Scanner scanner){
-        ConsoleColor.magicLog("EXIT...");
+        ConsoleColor.magicLog("EXIT...", true);
         int exit_status = 0;
         try {
             server.jvnTerminate();
         } catch (JvnException e) {
-            ConsoleColor.magicError(e.getMessage());
+            ConsoleColor.magicError(e.getMessage(), true);
             exit_status = 1;
         }
         scanner.close();
@@ -351,22 +365,22 @@ public class JvnServerMain {
             case "A" -> {
                 A a = JvnInterceptor.createInterceptor(jo, args[2], server);
                 interceptors.put(args[2], a);
-                ConsoleColor.magicLog(a);
+                ConsoleColor.magicLog(a, true);
             }
             case "S" -> {
                 S1 s1 = JvnInterceptor.createInterceptor(jo, args[2], server);
                 s1_interceptors.put(args[2], s1);
-                ConsoleColor.magicLog(s1);
+                ConsoleColor.magicLog(s1, true);
             }
             case "S3" -> {
                 S3<?> s = JvnInterceptor.createInterceptor(jo, args[2], server);
                 s_interceptors.put(args[2], s);
-                ConsoleColor.magicLog(s);
+                ConsoleColor.magicLog(s, true);
             }
             case "SM" -> {
                 SerializableMap s = JvnInterceptor.createInterceptor(jo, args[2], server);
                 sm.put(args[2], s);
-                ConsoleColor.magicLog(s);
+                ConsoleColor.magicLog(s, true);
             }
             default -> {}
         }
@@ -379,18 +393,18 @@ public class JvnServerMain {
                 value = Integer.parseInt(args[3]);
             } catch (NumberFormatException e) {
                 value = (int)(Math.random()*200-100);
-                ConsoleColor.magicLog("Nombre non reconnu : "+args[2]+", valeur par défaut pour l'objet \""+args[1]+"\": "+value);
+                ConsoleColor.magicLog("Nombre non reconnu : "+args[2]+", valeur par défaut pour l'objet \""+args[1]+"\": "+value, true);
             }
         }
         if(args[1].equals("A")) {
             A a = JvnInterceptor.createInterceptor(new A_Impl(value), args[2], server);
             interceptors.put(args[2], a);
-            ConsoleColor.magicLog(a);
+            ConsoleColor.magicLog(a, true);
             
         } else if(args[1].equals("S")) {
             S1 s = JvnInterceptor.createInterceptor(new S1_Impl(value), args[2], server);
             s1_interceptors.put(args[2], s);
-            ConsoleColor.magicLog(s);
+            ConsoleColor.magicLog(s, true);
         }
     }
     
@@ -409,6 +423,10 @@ public class JvnServerMain {
     }
     
     public static void cpt(String[] args) throws JvnException {
+        if(args.length == 1) {
+            ConsoleColor.magicError("Utilisation de la commande `cpt` : `cpt <nb>`", true);
+            return;
+        }
         A cpt = interceptors.get("cpt");
         
         if (cpt == null) {
@@ -417,11 +435,11 @@ public class JvnServerMain {
             if (jo == null) {
                 cpt = JvnInterceptor.createInterceptor(new A_Impl(0), "cpt", server);
                 for (int i = 5; i > 0; i--) {
-                    ConsoleColor.magicLog(i);
+                    ConsoleColor.magicLog(i, true);
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
-                        ConsoleColor.magicError("error : " + e.getMessage());
+                        ConsoleColor.magicError("error : " + e.getMessage(), true);
                     }
                 }
             } else {
@@ -440,14 +458,14 @@ public class JvnServerMain {
             cpt.addValue(1);
             int v2 = cpt.getValue();
             
-            /*sysout*/ // ConsoleColor.magicLog("cpt passe de " + v1 + " à " + v2);
+            ConsoleColor.magicLog("cpt passe de " + v1 + " à " + v2);
             
             nb--;
         }
         
         long time_af = System.currentTimeMillis();
         long diff = time_af-time_bf;
-        ConsoleColor.magicLog(diff+"ms pour augmenter le compteur de "+origin+" ( "+((float)origin/diff)+".ms^-1)");
+        ConsoleColor.magicLog(diff+"ms pour augmenter le compteur de "+origin+" ( "+((float)origin/diff)+".ms^-1)", true);
     }
     
     private static MultiRepartisObject mro;
@@ -459,17 +477,18 @@ public class JvnServerMain {
         */
         int lg = args.length;
         if(lg==1 || (lg==2 && args[1].equals("help"))) {
-            ConsoleColor.magicLog("mro init          : Créé / Récupère le MRO");
-            ConsoleColor.magicLog("mro add <new jon> : Créé et ajoute un JvnObject");
-            ConsoleColor.magicLog("mro remove <jon>  : Remove un JvnObject");
-            ConsoleColor.magicLog("mro <jon> r       : Lit la valeur de l'objet");
-            ConsoleColor.magicLog("mro <jon> s <nb>  : Set la valeur de l'objet");
-            ConsoleColor.magicLog("mro <jon> a <nb>  : Add la valeur à l'objet");
+            ConsoleColor.magicLog("mro est une Map<String, JvnObject> simple ou l'on peut ajouter, retirer ou obtenir des couples Key-Value", true);
+            ConsoleColor.magicLog("mro init          : Créé / Récupère le MRO (1 seul MRO possible pour simplifier)", true);
+            ConsoleColor.magicLog("mro add <new jon> : Créé et ajoute un JvnObject", true);
+            ConsoleColor.magicLog("mro remove <jon>  : Remove un JvnObject", true);
+            ConsoleColor.magicLog("mro <jon> r       : Lit la valeur de l'objet ( r =    READ   )", true);
+            ConsoleColor.magicLog("mro <jon> s <nb>  : Set la valeur de l'objet ( s =    SET    )", true);
+            ConsoleColor.magicLog("mro <jon> a <nb>  : Add la valeur à l'objet  ( a = ADD_VALUE )", true);
         } else if(lg==2 && args[1].equals("init")) {
             if(mro != null) return;
             JvnObject jo = server.jvnLookupObject("mro");
             mro = JvnInterceptor.createInterceptor(jo==null?new MultiRepartisObject_Impl():jo, "mro", server);
-            ConsoleColor.magicLog("MRO init");
+            ConsoleColor.magicLog("MRO init", true);
         } else if(lg==3) {
             if(args[1].equals("add")) {
                 
@@ -479,12 +498,12 @@ public class JvnServerMain {
                 
                 mro.addJvnObject(args[2], jo);
                 
-                ConsoleColor.magicLog("MRO : "+mro.toString());
+                ConsoleColor.magicLog("MRO : "+mro.toString(), true);
             } else if(args[1].equals("remove")) {
                 
                 JvnObject jo = mro.removeJvnObject(args[2]);
-                if(jo==null) ConsoleColor.magicLog("L'objet suivant n'existe pas dans le MRO : "+args[2]);
-                else ConsoleColor.magicLog("L'objet suivant a été remove du MRO : "+args[2]);
+                if(jo==null) ConsoleColor.magicLog("L'objet suivant n'existe pas dans le MRO : "+args[2], true);
+                else ConsoleColor.magicLog("L'objet suivant a été remove du MRO : "+args[2], true);
                 
             } else if(args[2].equals("r")) {
                 /*
@@ -493,7 +512,7 @@ public class JvnServerMain {
                 JvnObject jo = mro.getJvnObject(args[1]);
                 if(jo == null) { 
                     // Objet qui n'est pas / plus dans le MRO
-                    ConsoleColor.magicLog("Le JvnObject suiavnt n'a pas été trouvé dans le MRO : "+args[1]);
+                    ConsoleColor.magicLog("Le JvnObject suiavnt n'a pas été trouvé dans le MRO : "+args[1], true);
                     return;
                 }
                 // Récupération de l'interseptor local
@@ -503,7 +522,7 @@ public class JvnServerMain {
                     a = JvnInterceptor.createInterceptor(jo, args[1], server);
                     interceptors.put(args[1], a);
                 }
-                ConsoleColor.magicLog("MRO : value of "+args[1]+" = "+a.getValue());
+                ConsoleColor.magicLog("MRO : value of "+args[1]+" = "+a.getValue(), true);
             }
         } else if(args.length == 4) {
             /*
@@ -513,12 +532,12 @@ public class JvnServerMain {
             int v;
             try {
                 v = Integer.parseInt(args[3]);
-            } catch (NumberFormatException e) { ConsoleColor.magicError("Nombre non reconnu : "+args[3]); return; }
+            } catch (NumberFormatException e) { ConsoleColor.magicError("Nombre non reconnu : "+args[3], true); return; }
             
             JvnObject jo = mro.getJvnObject(args[1]);
             if(jo == null) { 
                 // Objet qui n'est pas / plus dans le MRO
-                ConsoleColor.magicLog("Le JvnObject suiavnt n'a pas été trouvé dans le MRO : "+args[1]);
+                ConsoleColor.magicLog("Le JvnObject suiavnt n'a pas été trouvé dans le MRO : "+args[1], true);
                 return;
             }
             
@@ -533,13 +552,13 @@ public class JvnServerMain {
             switch (args[2]) {
                 case "s" -> {
                     a.setValue(v);
-                    ConsoleColor.magicLog("MRO : value of "+args[1]+" set to "+v);
+                    ConsoleColor.magicLog("MRO : value of "+args[1]+" set to "+v, true);
                 }
                 case "a" -> {
                     a.addValue(v);
-                    ConsoleColor.magicLog("MRO : value of "+args[1]+" increas of "+v);
+                    ConsoleColor.magicLog("MRO : value of "+args[1]+" increas of "+v, true);
                 }
-                default -> { ConsoleColor.magicLog("MRO : unknown function "+args[2]); }
+                default -> { ConsoleColor.magicLog("MRO : unknown function "+args[2], true); }
             }
         }
     }
