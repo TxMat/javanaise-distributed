@@ -1,114 +1,223 @@
-# Javanaise - Distributed Shared Objects System
+# Utilisation
 
-A distributed shared objects system implementation in Java using RMI (Remote Method Invocation). This project implements a centralized coordinator pattern to manage shared objects across multiple distributed servers with read/write lock synchronization.
+Les commandes doivent être exécutées depuis le dossier /scripts et le Coordinateur doit être lancé avant les serveurs.
 
-## Getting Started
-
-### Prerequisites
-- SDK 21 or higher
-- Gradle (included via wrapper)
-
-### Build the Project
-
-From the `scripts` directory:
-
-```bash
-cd scripts
+### 1. Compilation des fichiers
+```
 ./compil
 ```
 
-Or from the root directory:
-
-```bash
-./gradlew build
+### 2. Lancement du coordinateur :
 ```
-
-## Usage
-
-the Coordinator must be launched **before** any servers.
-
-### 1. Start the Coordinator
-
-```bash
-cd scripts
 ./coord
 ```
 
-The coordinator will start on port 5000 and manage all shared objects.
-
-### 2. Start Local Server(s)
-
-In a separate terminal:
-
-```bash
-cd scripts
+### 3. Lancement d'un serveur local
+```
 ./server
 ```
 
-You can launch multiple servers in different terminals to test distributed synchronization.
+### 4. Pour tester avec 2 serveurs
 
+Le mieux est d'avoir 3 terminaux pour : 
+- le Coordinateur
+- le Serveur 1
+- le Serveur 2
 
-## Available Commands
-
-Once a server is running, you can interact with it using the following commands:
-
-### Object Management
-
-| Command         | Syntax                  | Description                                             |
-|-----------------|-------------------------|---------------------------------------------------------|
-| `create` or `c` | `create <name> [value]` | Create a new shared object with optional initial value  |
-| `lookup`        | `lookup <name>`         | Retrieve an existing shared object from the coordinator |
-| `list` or `ls`  | `ls`                    | List all local objects and their current values         |
-
-**Examples:**
-```bash
-create myObject 42      # Create object "myObject" with value 42
-create counter          # Create object "counter" with random value
-lookup myObject         # Lookup object "myObject" from coordinator
-ls                      # List all local objects
+Commandes recommandées : 
+#### > coord
+```
+clear && ./compil && ./coord
+```
+#### > server
+```
+./server
 ```
 
-### Testing Commands
+# Test :
 
-| Command               | Syntax                | Description                                         |
-|-----------------------|-----------------------|-----------------------------------------------------|
-| `test`                | `test <name> <value>` | Add a value to an object and display before/after   |
-| `cpt`                 | `cpt <count>`         | Increment counter object N times (performance test) |
-| `waitwrite` or `ww`   | `ww`                  | Test write lock with 20-second delay                |
-| `multithread` or `mt` | `mt <name> <threads>` | Test concurrent access with N threads               |
+## 1. Créer/Lookup des objets classiques
 
-**Examples:**
-```bash
-test myObject 5         # Add 5 to myObject, show before/after
-cpt 100                 # Increment "cpt" object 100 times (measures performance)
-mt counter 10           # Create 10 threads that increment "counter" simultaneously
-ww                      # Test long write lock (blocks for 20 seconds)
+Pour créer des objets il existe deux commandes : 
+
+### A. Créer un nouvel objet
+Pour créer un nouvel objet classique :
+```
+create <type> <jon> [value]
+```
+Avec comme type disponible : `A` et `S`  
+`jon` le nom de l'objet  
+Éventuellement une valeur précise
+
+### B. Récupérer un objet existant 
+Pour récupérer un objet existant sur le Coordinateur :
+```
+lookup <type> <jon>
+```
+Avec comme type disponible : `A`, `S`, `S3` et `SM`  
+`jon` le nom de l'objet à récupérer
+
+## 2. Multi-Répartis Object (MRO)
+
+Pour tester les objets multi-répartis il existe la possibilité d'utiliser le `mro` et la commande `mro`  
+Le MRO mis à disposition contient une Map<String, JvnObject> avec 3 fonctions : Ajouter, Retirer et Obtenir un élément de la Map.
+
+Aide possible depuis la console : 
+```
+mro [help]
 ```
 
-### System Commands
+#### A. Créer ou récupérer le MRO existant :
+```
+mro init
+```
+#### B. Ajouter / Retirer des JvnObject du MRO :
 
-| Command       | Syntax | Description                      |
-|---------------|--------|----------------------------------|
-| `exit` or `q` | `exit` | Terminate the server and cleanup |
+Ajouter un nouveau JvnObject :
+```
+mro add <jon>
+```
+avec `jon` le nom du JvnObject à créer, il ne doit pas exister un autre JvnObject avec ce nom
 
+Retirer un JvnObject du MRO :
+```
+mro remove <jon>
+```
 
-## Testing Scenarios
+#### C. Action sur un JvnObject dans le MRO : 
 
-### Scenario 1: Basic Object Sharing
-1. Start coordinator and two servers
-2. On Server 1: `create counter 0`
-3. On Server 2: `lookup counter`
-4. On Server 1: `test counter 10` → should show 10
-5. On Server 2: `test counter 5` → should show 15 (synchronized!)
+Lecture de l'objet : 
+```
+mro <jon> r
+```
+- `r` = READ
 
-### Scenario 2: Concurrent Access
-1. Start coordinator and one server
-2. Run multithread test: `mt shared 100`
-3. Final value should be 100 (all increments synchronized)
+MAJ de la valeur (SET) :
+```
+mro <jon> s <value>
+```
+- `s` = SET
 
-### Scenario 3: Lock Contention
-1. Start coordinator and two servers
-2. On Server 1: `ww` (locks for 20 seconds)
-3. On Server 2: try `ww`
-4. Server 2 will wait until Server 1's lock is released
+MAJ de la valeur (ADD) :
+```
+mro <jon> a <value>
+```
+- `a` = ADD
 
+## 3. Stress Test :
+
+#### A. Explications :
+
+Le principe est de lancer plusieurs serveurs qui vont constamment augmenter un compteur commun afin d'essayer de provoquer des deadlocks, erreurs, incohérences du compteur, ...
+
+#### B. Lancer : Coordinateur & 2 serveurs ou plus
+Dans le dossier `scripts` :
+```
+./coord
+```
+```
+./server
+```
+#### C. Sur les serveurs effectuez la commande suivante :
+```
+cpt <nb>
+```
+Le 1er serveur à utiliser cette commande (donc celui qui va créer l'objet original `A cpt = JvnInterceptor.createInterceptor(...);`) laissera un délai de 5 secondes avant de commencer à "compter"
+
+## 4. JvnObject Cyclique (non fonctionnel mais avancé)
+
+#### A. Configuration initiale :
+
+Le coordinateur + 2 serveurs au moins de lancés  
+Sur le coordinateur et les serveurs, activer toutes les logs pour voir ce qu'il se passe : 
+```
+print_all y
+```
+
+#### B. Créer le cycle : 
+
+Sur un serveur : 
+```
+cycle
+```
+
+Sur le Coordinateur :  
+Afficher comment est représenté le cycle : 
+```
+ls
+```
+
+#### C. Récupérer le cycle sur le deuxième serveur :
+```
+lookup S3 cycle
+```
+
+## 5. SM (Serializable Map)
+
+=> Ressemble aux MRO mais il y a des commandes plus poussées
+
+#### A. Créer un SM
+```
+sm new <jon> <type>
+```
+Créer un nouveau SM avec le nom `<jon>` du type : A, S, S3
+
+On peut lister les SM avec : 
+```
+sm ls
+```
+Ou afficher les détails d'un SM avec :
+```
+sm <smn>
+```
+- avec smn le SM name
+
+#### B. Ajouter un JvnObject à un SM : 
+Ajouter un JvnObject (existant ou en créer un) à un SM.
+```
+sm addto <smn> [?new] <type> <jon>
+```
+
+#### C. Appel d'une méthode sur un Object dans le SM :
+```
+sm meth <smn> <jon> <type> <method> [param]
+```
+Appelle une méthode sur un JON contenu dans le SM indiqué  
+Méthodes pour le type : 
+- A 
+  - `addValue [value | 10]`
+  - `setValue [value | 0]`
+  - `getValue`
+- S1
+  - `addValue [value | 10]`
+  - `setValue [value | 0]`
+  - `getValue`
+- S3 
+  - `setObj <jon>`
+  - `getObj`
+  - `toString`
+
+#### D. Auto : 
+
+```
+sm auto
+```
+
+Créer automatiquement :
+- Un SM de A
+  - `sm_a` avec les objets : `_a0` et `_a1`
+- Un SM de S (S1)
+  - `sm_s1` avec les objets : `_s0` et `_s1`
+- Un SM de S3 `sm_s3` avec les objets suivants :
+  - `_s3_s0` { null }
+  - `_s3_s1` { null }
+  - `_s3_a0` {  `a` }
+  - `_s3_a1` { null }
+
+Après cela on peut utiliser : 
+```
+sm auto call
+```
+pour accéder au `a` de : <br>
+`sm_s3.get(_sm_a0).get()` <br>
+`sm_s3 -> _sm_a0 -> a`

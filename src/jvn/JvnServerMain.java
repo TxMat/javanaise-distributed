@@ -78,14 +78,14 @@ public class JvnServerMain {
     
     public static void help() {
         ConsoleColor.magicLog("create <A/S> <jon> [value] : Créer un JvnObject de type A ou S1", true);
-        ConsoleColor.magicLog("lookup <A/S/S3> <jon>      : Récupérer un objet déjà créé et sur le Coord (de type A, S ou S3)", true);
+        ConsoleColor.magicLog("lookup <A/S/S3> <jon>      : Récupérer un objet déjà créé et sur le Coord (de type A, S, S3 ou SM)", true);
         ConsoleColor.magicLog("list                       : liste des objets locaux", true);
         ConsoleColor.magicLog("mro                        : mro help", true);
         ConsoleColor.magicLog("test                       : test des truc", true);
         ConsoleColor.magicLog("cpt <nb>                   : Pour un stress test de compteur", true);
         ConsoleColor.magicLog("print_all <y/n>            : Affiche toutes les logs (yes / no)", true);
         ConsoleColor.magicLog("==------===", true);
-        ConsoleColor.magicLog("cycle");
+        ConsoleColor.magicLog("cycle", true);
         ConsoleColor.magicLog("sm                         : sm help", true);
         ConsoleColor.magicLog("test2                      : test2 help", true);
         ConsoleColor.magicLog("waitwrite                  : ", true);
@@ -135,57 +135,57 @@ public class JvnServerMain {
         */
         
         if(args.length < 2 || args[1].equals("help")) {
-            ConsoleColor.magicLog("test2 HELP : \ntest2 auto\ntest2 create <name> <A/S>\ntest2 set <jon> in <s3 name>\ntest2 meth <meth name> under <s3 name>");
+            ConsoleColor.magicLog("test2 HELP : \ntest2 auto\ntest2 create <name> <A/S>\ntest2 set <jon> in <s3 name>\ntest2 meth <meth name> under <s3 name>", true);
             return;
         }
         
         switch (args[1]) {
             case "auto" -> {
-                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("help();"));
+                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("help();"), true);
                 help();
-                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("create(new String[]{\"A\", \"a0\", \"10\"});"));
+                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("create(new String[]{\"A\", \"a0\", \"10\"});"), true);
                 create(new String[]{"c", "A", "a0", "10"});
-                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("create(new String[]{\"S\", \"s0\", \"20\"});"));
+                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("create(new String[]{\"S\", \"s0\", \"20\"});"), true);
                 create(new String[]{"c", "S", "s0", "20"});
-                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("ls();"));
+                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("ls();"), true);
                 ls();
-                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("test2(new String[]{\"create\", \"s3_a\", \"A\"});"));
+                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("test2(new String[]{\"create\", \"s3_a\", \"A\"});"), true);
                 test2(new String[]{"test2", "create", "s3_a", "A"});
-                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("test2(new String[]{\"create\", \"s3_s\", \"S\"});"));
+                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("test2(new String[]{\"create\", \"s3_s\", \"S\"});"), true);
                 test2(new String[]{"test2", "create", "s3_s", "S"});
-                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("ls();"));
+                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("ls();"), true);
                 ls();
-                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("test2(new String[]{\"set\", \"a0\", \"in\", \"s3_a\"});"));
+                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("test2(new String[]{\"set\", \"a0\", \"in\", \"s3_a\"});"), true);
                 test2(new String[]{"test2", "set", "a0", "in", "s3_a"});
-                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("test2(new String[]{\"set\", \"s0\", \"in\", \"s3_s\"});"));
+                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("test2(new String[]{\"set\", \"s0\", \"in\", \"s3_s\"});"), true);
                 test2(new String[]{"test2", "set", "s0", "in", "s3_s"});
-                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("ls();"));
+                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("ls();"), true);
                 ls();
-                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("test2(new String[]{\"meth\", \"add\", \"under\", \"s3_a\"});"));
+                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("test2(new String[]{\"meth\", \"add\", \"under\", \"s3_a\"});"), true);
                 test2(new String[]{"test2", "meth", "add", "under", "s3_a"});
-                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("ls();"));
+                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("ls();"), true);
                 ls();
-                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("test2(new String[]{\"meth\", \"add\", \"under\", \"s3_s\"});"));
+                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("test2(new String[]{\"meth\", \"add\", \"under\", \"s3_s\"});"), true);
                 test2(new String[]{"test2", "meth", "add", "under", "s3_s"});
-                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("ls();"));
+                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("ls();"), true);
                 ls();
             }
             case "auto2" -> {
-                ConsoleColor.magicLog("Création de 'a'");
+                ConsoleColor.magicLog("Création de 'a'", true);
                 A a = JvnInterceptor.createInterceptor(new A_Impl(1111), "_a", server);
                 interceptors.put("_a", a);
-                ConsoleColor.magicLog(a);
+                ConsoleColor.magicLog(a, true);
                 
-                ConsoleColor.magicLog("Création de 's3'");
+                ConsoleColor.magicLog("Création de 's3'", true);
                 S3<A> s3 = JvnInterceptor.createInterceptor(new S3_Impl<A>(), "_s3", server);
                 s_interceptors.put("_s3", s3);
-                ConsoleColor.magicLog(s3);
+                ConsoleColor.magicLog(s3, true);
                 
-                ConsoleColor.magicLog("Set de 'a' dans 's3'");
+                ConsoleColor.magicLog("Set de 'a' dans 's3'", true);
                 s3.setObj(a);
-                ConsoleColor.magicLog(s3);
+                ConsoleColor.magicLog(s3, true);
                 
-                ConsoleColor.magicLog("START SERIALIZATION");
+                ConsoleColor.magicLog("START SERIALIZATION", true);
                 
                 byte[] b;
                 try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -197,25 +197,25 @@ public class JvnServerMain {
                     return;
                 }
                 
-                ConsoleColor.magicLog("SERIALIZATION OK");
+                ConsoleColor.magicLog("SERIALIZATION OK", true);
                 
                 Object o;
                 try (ByteArrayInputStream bais = new ByteArrayInputStream(b); ObjectInputStream ois = new ObjectInputStream(bais)) {
-                    ConsoleColor.magicLog("A");
+                    ConsoleColor.magicLog("A", true);
                     o = ois.readObject();
-                    ConsoleColor.magicLog("B");
+                    ConsoleColor.magicLog("B", true);
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
                     return;
                 }
-                ConsoleColor.magicLog("DESERIALIZATION OK");
+                ConsoleColor.magicLog("DESERIALIZATION OK", true);
                 
-                ConsoleColor.magicLog(o);
+                ConsoleColor.magicLog(o, true);
                 
             }
             case "create", "c" -> {
                 if(args.length !=4) {
-                    ConsoleColor.magicLog("USAGE : test2 create <name> <A/S>");
+                    ConsoleColor.magicLog("USAGE : test2 create <name> <A/S>", true);
                     return;
                 }
                 
@@ -229,28 +229,28 @@ public class JvnServerMain {
                 
                 s = JvnInterceptor.createInterceptor(s, args[2], server);
                 s_interceptors.put(args[2], s);
-                ConsoleColor.magicLog(ConsoleColor.toGreen("OK."));
+                ConsoleColor.magicLog(ConsoleColor.toGreen("OK."), true);
             }
             case "set","s" -> {
                 if(args.length !=5) {
-                    ConsoleColor.magicLog("USAGE : test2 set <jon> in <s3 name>");
+                    ConsoleColor.magicLog("USAGE : test2 set <jon> in <s3 name>", true);
                     return;
                 }   A a = interceptors.get(args[2]);
                 S1 s1 = s1_interceptors.get(args[2]);
                 if(a == null && s1 == null) {
-                    ConsoleColor.magicError("Objet A/S1 non trouvé : "+args[2]);
+                    ConsoleColor.magicError("Objet A/S1 non trouvé : "+args[2], true);
                     return;
                 }   if(a!=null) {
                     S3<A> s = (S3<A>) s_interceptors.get(args[4]);
                     if(s==null) {
-                        ConsoleColor.magicError("Objet S3 non trouvé : "+args[2]);
+                        ConsoleColor.magicError("Objet S3 non trouvé : "+args[2], true);
                         return;
                     }
                     s.setObj(a);
                 } else {
                     S3<S1> s = (S3<S1>) s_interceptors.get(args[4]);
                     if(s==null) {
-                        ConsoleColor.magicError("Objet S3 non trouvé : "+args[2]);
+                        ConsoleColor.magicError("Objet S3 non trouvé : "+args[2], true);
                         return;
                     }
                     s.setObj(s1);
@@ -258,13 +258,13 @@ public class JvnServerMain {
             }
             case "meth","m" ->{
                 if(args.length !=5) {
-                    ConsoleColor.magicLog("USAGE : test2 meth <meth name> under <s3 name>");
+                    ConsoleColor.magicLog("USAGE : test2 meth <meth name> under <s3 name>", true);
                     return;
                 }       
                 
                 S3<?> s = s_interceptors.get(args[4]);
                 if(s==null) {
-                    ConsoleColor.magicError("Objet S3 non trouvé : "+args[4]);
+                    ConsoleColor.magicError("Objet S3 non trouvé : "+args[4], true);
                     return;
                 }
                 
@@ -272,14 +272,14 @@ public class JvnServerMain {
                 int value = 0;
                 if(args[2].equals("add") || args[2].equals("set")) {
                     value = (int)(Math.random()*100-50);
-                    ConsoleColor.magicLog("Meth value = "+value);
+                    ConsoleColor.magicLog("Meth value = "+value, true);
                 }
                 switch (o) {
                     case A a -> {
                         switch (args[2]) {
                             case "add" -> a.addValue(value);
                             case "set" -> a.setValue(value);
-                            case "get" -> ConsoleColor.magicLog("Value : "+a.getValue());
+                            case "get" -> ConsoleColor.magicLog("Value : "+a.getValue(), true);
                             default -> {}
                         }
                     }
@@ -287,7 +287,7 @@ public class JvnServerMain {
                         switch (args[2]) {
                             case "add" -> s1.addValue(value);
                             case "set" -> s1.setValue(value);
-                            case "get" -> ConsoleColor.magicLog("Value : "+s1.getValue());
+                            case "get" -> ConsoleColor.magicLog("Value : "+s1.getValue(), true);
                             default -> {}
                         }
                     }
@@ -336,10 +336,10 @@ public class JvnServerMain {
             ConsoleColor.magicLog(k + " = " + v.toString(), true);
         });
         s1_interceptors.forEach((k, v) -> {
-            ConsoleColor.magicLog(k + " = " + v.toString());
+            ConsoleColor.magicLog(k + " = " + v.toString(), true);
         });
         s_interceptors.forEach((k, v) -> {
-            ConsoleColor.magicLog(k + " = " + v.toString());
+            ConsoleColor.magicLog(k + " = " + v.toString(), true);
         });
         ConsoleColor.magicLog("mro = "+(mro==null?"null":mro.toString()), true);
 
@@ -569,13 +569,13 @@ public class JvnServerMain {
     private static void sm(String[] args) throws JvnException {
         if (args.length == 1 || args[1].equals("help")) {
             ConsoleColor.magicLog("sm help");
-            ConsoleColor.magicLog("sm auto [call]                       : Création auto de plueisurs SM, call = get value sur un 'a' profond ('auto' seul obligatoir avant)");
-            ConsoleColor.magicLog("sm new <name> <type>                 : crée une nouvelle SerializableMap (de A, S1, S3)");
-            ConsoleColor.magicLog("sm addto <sm name> <type> <name>     : ajoute un objet déjà existant dans une sm");
-            ConsoleColor.magicLog("sm addto <sm name> new <type> <name> : crée puis ajoute un objet dans une sm");
-            ConsoleColor.magicLog("sm ls                                : liste les SerializableMap existantes");
-            ConsoleColor.magicLog("sm <sm name>                         : affiche le contenu et la taille d'une SerializableMap");
-            ConsoleColor.magicLog("sm meth <sm name> <elem> <type> <method> [param] : appelle une méthode sur un objet dans une SerializableMap");
+            ConsoleColor.magicLog("sm auto [call]                       : Création auto de plueisurs SM, call = get value sur un 'a' profond ('auto' seul obligatoir avant)", true);
+            ConsoleColor.magicLog("sm new <name> <type>                 : crée une nouvelle SerializableMap (de A, S1, S3)", true);
+            ConsoleColor.magicLog("sm addto <sm name> <type> <name>     : ajoute un objet déjà existant dans une sm", true);
+            ConsoleColor.magicLog("sm addto <sm name> new <type> <name> : crée puis ajoute un objet dans une sm", true);
+            ConsoleColor.magicLog("sm ls                                : liste les SerializableMap existantes", true);
+            ConsoleColor.magicLog("sm <sm name>                         : affiche le contenu et la taille d'une SerializableMap", true);
+            ConsoleColor.magicLog("sm meth <sm name> <elem> <type> <method> [param] : appelle une méthode sur un objet dans une SerializableMap", true);
             
             return;
         }
@@ -589,8 +589,8 @@ public class JvnServerMain {
                     SerializableMap<S3> sm_s3 = (SerializableMap<S3>)sm.get("sm_s3");
                     S3<A> s3_a0 = (S3<A>)sm_s3.get("_s3_a0");
                     A a = s3_a0.getObj();
-                    ConsoleColor.magicLog(ConsoleColor.toYellow("sm_s3 => _s3_a0 => a . getValue : "+a.toString()));
-                    ConsoleColor.magicLog(ConsoleColor.toYellow("sm_s3 => _s3_a0 => a . getValue : "+a.getValue()));
+                    ConsoleColor.magicLog(ConsoleColor.toYellow("BF LOOKUP : sm_s3 => _s3_a0 => a . getValue : "+a.toString()), true);
+                    ConsoleColor.magicLog(ConsoleColor.toYellow("AF LOOKUP : sm_s3 => _s3_a0 => a . getValue : "+a.getValue()), true);
                     return;
                 }
                 // INIT SM
@@ -599,14 +599,14 @@ public class JvnServerMain {
                 sm(new String[]{"sm","new","sm_s3","S3"}, null);
                 sm(new String[]{"sm","ls"}, null);
                 
-                ConsoleColor.magicLog(ConsoleColor.toCyan("CREATE   _a0,    _s0,    _s3_a0,   _s3_s0"));
+                ConsoleColor.magicLog(ConsoleColor.toCyan("CREATE   _a0,    _s0,    _s3_a0,   _s3_s0"), true);
                 // CREATE pour les tests
                 create(new String[]{"sm","A","_a0","10"});
                 create(new String[]{"sm","S","_s0","20"});
                 //create <A/S> <jon> [value]
                 test2 (new String[]{"test2", "create", "_s3_a0", "A"});
                 test2 (new String[]{"test2", "create", "_s3_s0", "S"});
-                ConsoleColor.magicLog(ConsoleColor.toCyan("ls"));
+                ConsoleColor.magicLog(ConsoleColor.toCyan("ls"), true);
                 ls();
                 
                 // ADDTO sur les SM
@@ -623,7 +623,7 @@ public class JvnServerMain {
                 sm(new String[]{"sm","addto","sm_s3","new","S3","_s3_s1"}, null);
                 sm(new String[]{"sm","ls"}, null);
                 
-                ConsoleColor.magicLog(ConsoleColor.toCyan("Triple imbrication ( sm_s3 => _s3_a0 => a )"));
+                ConsoleColor.magicLog(ConsoleColor.toCyan("Triple imbrication ( sm_s3 => _s3_a0 => a )"), true);
                 create(new String[]{"sm","A","a","50"});
                 // test2 set a in _s3_a0
                 test2 (new String[]{"test2", "set", "a", "in", "_s3_a0"});
@@ -633,7 +633,7 @@ public class JvnServerMain {
             }
             case "new" -> {
                 if (args.length != 4) {
-                    ConsoleColor.magicError("Usage: sm new <name> <type>");
+                    ConsoleColor.magicError("Usage: sm new <name> <type>", true);
                     return;
                 }
                 
@@ -647,18 +647,18 @@ public class JvnServerMain {
                     case "S1" -> map = new SerializableMap_Impl<S1>();
                     case "S3" -> map = new SerializableMap_Impl<S3<?>>();
                     default -> {
-                        ConsoleColor.magicError("Type non supporté : " + type);
+                        ConsoleColor.magicError("Type non supporté : " + type, true);
                         return;
                     }
                 }
                 
                 sm.put(smn, JvnInterceptor.createInterceptor(map, smn, server));
-                ConsoleColor.magicLog("SerializableMap '" + smn + "' de type " + type + " créée.");
+                ConsoleColor.magicLog("SerializableMap '" + smn + "' de type " + type + " créée.", true);
             }
             case "addto" -> {
                 if (args.length != 5 && args.length != 6) {
-                    ConsoleColor.magicError("Usage: sm addto <sm name> <type> <name>");
-                    ConsoleColor.magicError("Usage: sm addto <sm name> new <type> <name>");
+                    ConsoleColor.magicError("Usage: sm addto <sm name> <type> <name>", true);
+                    ConsoleColor.magicError("Usage: sm addto <sm name> new <type> <name>", true);
                     return;
                 }
                 boolean withNew = args.length == 6;
@@ -669,7 +669,7 @@ public class JvnServerMain {
                 
                 SerializableMap map = sm.get(smn);
                 if (map == null) {
-                    ConsoleColor.magicError("SerializableMap '" + smn + "' non trouvée.");
+                    ConsoleColor.magicError("SerializableMap '" + smn + "' non trouvée.", true);
                     return;
                 }
                 
@@ -687,7 +687,7 @@ public class JvnServerMain {
                         }
                         default -> throw new AssertionError();
                     }
-                    ConsoleColor.magicLog("Objet "+type+" '" + jon + "' créé et sera ajouté au sm '" + smn + "'\n"+s);
+                    ConsoleColor.magicLog("Objet "+type+" '" + jon + "' créé et sera ajouté au sm '" + smn + "'\n"+s, true);
                 } else {
                     switch (type) {
                         case "A" -> {
@@ -701,23 +701,23 @@ public class JvnServerMain {
                         }
                         default -> throw new AssertionError();
                     }
-                    ConsoleColor.magicLog("Objet "+type+" '" + jon + "' récupéré et sera ajouté au sm '" + smn + "'\n"+s);
+                    ConsoleColor.magicLog("Objet "+type+" '" + jon + "' récupéré et sera ajouté au sm '" + smn + "'\n"+s, true);
                 }
                 map.put(jon, s);
-                ConsoleColor.magicLog("Objet ajouté au sm.");
+                ConsoleColor.magicLog("Objet ajouté au sm.", true);
             }
             case "ls" -> {
                 if (sm.isEmpty()) {
-                    ConsoleColor.magicLog("Aucune SerializableMap.");
+                    ConsoleColor.magicLog("Aucune SerializableMap.", true);
                     return;
                 }
                 
-                sm.forEach((name, map) -> ConsoleColor.magicLog(name + " = " + map));
+                sm.forEach((name, map) -> ConsoleColor.magicLog(name + " = " + map, true));
             }
-            case "math" -> {
+            case "meth" -> {
                 
                 if (args.length != 6 && args.length != 7) {
-                    ConsoleColor.magicError("Usage: sm meth <sm name> <elem name> <type> <method name> [arg]");
+                    ConsoleColor.magicError("Usage: sm meth <sm name> <elem name> <type> <method name> [arg]", true);
                     return;
                 }
                 
@@ -729,13 +729,13 @@ public class JvnServerMain {
                 
                 SerializableMap map = sm.get(smn);
                 if (map == null) {
-                    ConsoleColor.magicError("SerializableMap '" + smn + "' non trouvée.");
+                    ConsoleColor.magicError("SerializableMap '" + smn + "' non trouvée.", true);
                     return;
                 }
                 
                 Object obj = map.get(jon);
                 if (obj == null) {
-                    ConsoleColor.magicError("Element '" + jon + "' non trouvé dans le sm '" + smn + "'");
+                    ConsoleColor.magicError("Element '" + jon + "' non trouvé dans le sm '" + smn + "'", true);
                     return;
                 }
                 
@@ -745,9 +745,9 @@ public class JvnServerMain {
                         switch (meth) {
                             case "addValue" -> a.addValue(param != null ? Integer.parseInt(param) : 10);
                             case "setValue" -> a.setValue(param != null ? Integer.parseInt(param) : 0);
-                            case "getValue" -> ConsoleColor.magicLog("VALUE: " + a.getValue());
-                            case "waitWrite" -> ConsoleColor.magicLog("... non, pas cette methode");
-                            default -> ConsoleColor.magicError("Méthode inconnue pour A: " + meth);
+                            case "getValue" -> ConsoleColor.magicLog("VALUE: " + a.getValue(), true);
+                            case "waitWrite" -> ConsoleColor.magicLog("... non, pas cette methode", true);
+                            default -> ConsoleColor.magicError("Méthode inconnue pour A: " + meth, true);
                         }
                     }
                     case "S1" -> {
@@ -756,7 +756,7 @@ public class JvnServerMain {
                             case "addValue" -> s1.addValue(param != null ? Integer.parseInt(param) : 10);
                             case "setValue" -> s1.setValue(param != null ? Integer.parseInt(param) : 0);
                             case "getValue" -> ConsoleColor.magicLog("Résultat: " + s1.getValue());
-                            default -> ConsoleColor.magicError("Méthode inconnue pour S1: " + meth);
+                            default -> ConsoleColor.magicError("Méthode inconnue pour S1: " + meth, true);
                         }
                     }
                     case "S3" -> {
@@ -764,35 +764,35 @@ public class JvnServerMain {
                         switch (meth) {
                             case "setObj" -> {
                                 if (param == null) {
-                                    ConsoleColor.magicError("setObj attend un nom d’objet à utiliser.");
+                                    ConsoleColor.magicError("setObj attend un nom d’objet à utiliser.", true);
                                     return;
                                 }
                                 Serializable s = server.jvnLookupObject(param);
                                 if (s == null) {
-                                    ConsoleColor.magicError("Objet '" + param + "' introuvable via lookup.");
+                                    ConsoleColor.magicError("Objet '" + param + "' introuvable via lookup.", true);
                                     return;
                                 }
                                 s3.setObj(s);
-                                ConsoleColor.magicLog("Objet '" + param + "' assigné à S3.");
+                                ConsoleColor.magicLog("Objet '" + param + "' assigné à S3.", true);
                             }
-                            case "getObj" -> ConsoleColor.magicLog("Résultat: " + s3.getObj());
-                            case "toString" -> ConsoleColor.magicLog(s3.toString());
-                            default -> ConsoleColor.magicError("Méthode inconnue pour S3: " + meth);
+                            case "getObj" -> ConsoleColor.magicLog("Résultat: " + s3.getObj(), true);
+                            case "toString" -> ConsoleColor.magicLog(s3.toString(), true);
+                            default -> ConsoleColor.magicError("Méthode inconnue pour S3: " + meth, true);
                         }
                     }
-                    default -> ConsoleColor.magicError("Type inconnu : " + type);
+                    default -> ConsoleColor.magicError("Type inconnu : " + type, true);
                 }
                 
-                ConsoleColor.magicLog("Méthode " + meth + " appelée avec succès.");
+                ConsoleColor.magicLog("Méthode " + meth + " appelée avec succès.", true);
                 
             }
             default -> {
                 String smn = args[1];
                 SerializableMap map = sm.get(smn);
                 if (map == null) {
-                    ConsoleColor.magicError("SerializableMap '" + smn + "' non trouvée.");
+                    ConsoleColor.magicError("SerializableMap '" + smn + "' non trouvée.", true);
                 } else {
-                    ConsoleColor.magicLog("smn '" + smn + "' (size of " + map.size() + ") \n"+map.toString());
+                    ConsoleColor.magicLog("smn '" + smn + "' (size of " + map.size() + ") \n"+map.toString(), true);
                 }
             }
         }
