@@ -121,7 +121,7 @@ implements JvnLocalServer, JvnRemoteServer {
 	throws JvnException {
 		try {
 			coord.jvnRegisterObject(jon, jo, (JvnRemoteServer)js);
-			/*sysout*/ // ConsoleColor.magicLog("New JVN Object Registered : { jon: "+jon+", jos.toString(): { "+jo.jvnGetSharedObject().toString()+" } }");
+			ConsoleColor.magicLog("New JVN Object Registered : { jon: "+jon+", jos.toString(): { "+jo.jvnGetSharedObject().toString()+" } }");
 		} catch (JvnException e) {
 			throw e;
 		} catch (RemoteException e) {
