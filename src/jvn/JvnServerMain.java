@@ -46,6 +46,7 @@ public class JvnServerMain {
                     case "list", "ls" -> ls();
                     case "create", "c" -> create(args);
                     case "lookup" -> lookup(args);
+                    case "help" -> help();
                     default -> ConsoleColor.magicLog("Commande inconnue.");
                 }
             } catch (NumberFormatException | JvnException e) {
@@ -54,9 +55,19 @@ public class JvnServerMain {
         }
     }
     
+    public static void help(){
+        ConsoleColor.magicLog("create <jon> [value]       : Créer un JvnObject de type A");
+        ConsoleColor.magicLog("lookup <jon>               : Récupérer un objet déjà créé et sur le Coord (de type A)");
+        ConsoleColor.magicLog("list                       : liste des objets locaux");
+        ConsoleColor.magicLog("mro                        : mro help");
+        ConsoleColor.magicLog("test                       : test des truc");
+        ConsoleColor.magicLog("cpt <nb>                   : Pour un stress test de compteur");
+    }
+    
     public static void test(String[] args) throws JvnException {
         if (args.length != 3) {
             ConsoleColor.magicLog("test actuel : \n> test <jon> <nb>\n- jon : Object Name\n- nb : Valeur à ajouter");
+            return;
         }
         A a = interceptors.get(args[1]);
         
@@ -168,12 +179,13 @@ public class JvnServerMain {
         */
         int lg = args.length;
         if(lg==1 || (lg==2 && args[1].equals("help"))) {
-            ConsoleColor.magicLog("mro init          : Créé / Récupère le MRO");
+            ConsoleColor.magicLog("mro est une Map<String, JvnObject> simple ou l'on peut ajouter, retirer ou obtenir des couples Key-Value");
+            ConsoleColor.magicLog("mro init          : Créé / Récupère le MRO (1 seul MRO possible pour simplifier)");
             ConsoleColor.magicLog("mro add <new jon> : Créé et ajoute un JvnObject");
             ConsoleColor.magicLog("mro remove <jon>  : Remove un JvnObject");
-            ConsoleColor.magicLog("mro <jon> r       : Lit la valeur de l'objet");
-            ConsoleColor.magicLog("mro <jon> s <nb>  : Set la valeur de l'objet");
-            ConsoleColor.magicLog("mro <jon> a <nb>  : Add la valeur à l'objet");
+            ConsoleColor.magicLog("mro <jon> r       : Lit la valeur de l'objet ( r =    READ   )");
+            ConsoleColor.magicLog("mro <jon> s <nb>  : Set la valeur de l'objet ( s =    SET    )");
+            ConsoleColor.magicLog("mro <jon> a <nb>  : Add la valeur à l'objet  ( a = ADD_VALUE )");
         } else if(lg==2 && args[1].equals("init")) {
             if(mro != null) return;
             JvnObject jo = server.jvnLookupObject("mro");
