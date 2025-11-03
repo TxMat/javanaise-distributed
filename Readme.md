@@ -4,6 +4,13 @@ A distributed shared objects system implementation in Java using RMI (Remote Met
 
 ## Getting Started
 
+### Branches
+
+- `master`: Stable release version + support for ungraceful client disconnections
+- `multi-threading`: Experimental features for concurrent access testing
+- `server-cache-limitation`: Experimental features for server-side caching with size limits
+- `multi-repartis-objets`: Experimental features for nested distributed objects
+
 ### Prerequisites
 - SDK 21 or higher
 - Gradle (included via wrapper)
@@ -52,6 +59,13 @@ You can launch multiple servers in different terminals to test distributed synch
 
 Once a server is running, you can interact with it using the following commands:
 
+### Meta Commands
+
+| Command     | Syntax            | Description                                       |
+|-------------|-------------------|---------------------------------------------------|
+| `help`      | `help`            | Display help information about available commands |
+| `print_all` | `print_all` <y/n> | Print all debug logs to console (y/n)             |
+
 ### Object Management
 
 | Command         | Syntax                  | Description                                             |
@@ -70,12 +84,13 @@ ls                      # List all local objects
 
 ### Testing Commands
 
-| Command               | Syntax                | Description                                         |
-|-----------------------|-----------------------|-----------------------------------------------------|
-| `test`                | `test <name> <value>` | Add a value to an object and display before/after   |
-| `cpt`                 | `cpt <count>`         | Increment counter object N times (performance test) |
-| `waitwrite` or `ww`   | `ww`                  | Test write lock with 20-second delay                |
-| `multithread` or `mt` | `mt <name> <threads>` | Test concurrent access with N threads               |
+| Command               | Syntax                      | Description                                                                             |
+|-----------------------|-----------------------------|-----------------------------------------------------------------------------------------|
+| `test`                | `test <name> <value>`       | Add a value to an object and display before/after                                       |
+| `cpt`                 | `cpt <count>`               | Increment counter object N times (performance test)                                     |
+| `waitwrite` or `ww`   | `ww`                        | Test write lock with 20-second delay                                                    |
+| `multithread` or `mt` | `mt <name> <threads>`       | Test concurrent access with N threads (you **must** be on the `multi-threading` branch) |
+| `mro`                 | see `multi-repartis-objets` | Instructions for this commands are in the corresponding branch README                   |
 
 _if you encounter deadlocks with multithread tests, start small (2-5 threads) and increase gradually._
 
@@ -115,4 +130,11 @@ ww                      # Test long write lock (blocks for 20 seconds)
 2. On Server 1: `ww` (locks for 20 seconds)
 3. On Server 2: try `ww`
 4. Server 2 will wait until Server 1's lock is released
+
+### Scenario 4: Ungraceful Disconnection
+1. Start coordinator and two servers
+2. On Server 1: `ww` (locks for 20 seconds)
+3. On Server 2: try `ww`
+4. Kill Server 1 process before 20 seconds elapse
+5. Server 2 should proceed after Server 1's disconnection is detected
 
