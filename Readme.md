@@ -8,7 +8,8 @@ A distributed shared objects system implementation in Java using RMI (Remote Met
 
 - `master`: Stable release version + support for ungraceful client disconnections
 - `multi-threading`: Experimental features for concurrent access testing
-- `server-cache-limitation`: Experimental features for server-side caching with size limits
+- `server-cache-limitation`: Experimental features for server-side caching with size limits removing oldest object
+- `server-cache-limitation-v2`: Experimental features for server-side caching with size limits removing objects depending on lock status
 - `multi-repartis-objets`: Experimental features for nested distributed objects
 
 ### Prerequisites
