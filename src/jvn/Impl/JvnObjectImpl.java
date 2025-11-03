@@ -130,7 +130,7 @@ public class JvnObjectImpl implements JvnObject {
     @Override
     public void jvnUnLock() throws JvnException {
         synchronized (lockLockStatus) {
-            if (lockStatus == JvnObjectStatus.W && writeLockCount > 1) {
+            if (lockStatus == JvnObjectStatus.W && writeLockCount > 1 && Thread.currentThread().equals(writeLockOwner)) {
                 writeLockCount--;
                 return;
             }
