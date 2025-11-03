@@ -77,6 +77,8 @@ ls                      # List all local objects
 | `waitwrite` or `ww`   | `ww`                  | Test write lock with 20-second delay                |
 | `multithread` or `mt` | `mt <name> <threads>` | Test concurrent access with N threads               |
 
+_if you encounter deadlocks with multithread tests, start small (2-5 threads) and increase gradually._
+
 **Examples:**
 ```bash
 test myObject 5         # Add 5 to myObject, show before/after
@@ -103,8 +105,10 @@ ww                      # Test long write lock (blocks for 20 seconds)
 
 ### Scenario 2: Concurrent Access
 1. Start coordinator and one server
-2. Run multithread test: `mt shared 100`
-3. Final value should be 100 (all increments synchronized)
+2. Run multithread test: `mt test 2`
+3. Value should be 2
+4. Run multithread test: `mt test 100`
+5. Value should be 102
 
 ### Scenario 3: Lock Contention
 1. Start coordinator and two servers
