@@ -2,6 +2,7 @@ package jvn;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Scanner;
 
 import Objects.A;
@@ -48,6 +49,7 @@ public class JvnServerMain {
                     case "lookup" -> lookup(args);
                     case "help" -> help();
                     case "print_all" -> printAll(args);
+                    case "waitwrite", "ww" -> ww(args);
                     default -> ConsoleColor.magicLog("Commande inconnue.", true);
                 }
             } catch (NumberFormatException | JvnException e) {
@@ -181,6 +183,20 @@ public class JvnServerMain {
         long time_af = System.currentTimeMillis();
         long diff = time_af-time_bf;
         ConsoleColor.magicLog(diff+"ms pour augmenter le compteur de "+origin+" ( "+((float)origin/diff)+".ms^-1)", true);
+    }
+
+    public static void ww(String[] args) throws JvnException {
+        if (args.length != 1) return;
+
+        A wwrite = interceptors.get("wwrite");
+
+        if (wwrite == null) {
+            JvnObject jo = server.jvnLookupObject("wwrite");
+            wwrite = JvnInterceptor.createInterceptor(Objects.requireNonNullElseGet(jo, () -> new A_Impl(0)), "wwrite", server);
+            interceptors.put("wwrite", wwrite);
+        }
+
+        wwrite.waitWrite(20);
     }
 
     private static MultiRepartisObject mro;

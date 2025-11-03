@@ -13,4 +13,6 @@ public interface A extends Serializable {
     @JvnAnnotate( JvnAnnotate.LockType.WRITE)
     public void addValue(int n);
 
+    @JvnAnnotate( JvnAnnotate.LockType.WRITE)
+    void waitWrite(long seconds);
 }
