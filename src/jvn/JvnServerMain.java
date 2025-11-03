@@ -141,31 +141,29 @@ public class JvnServerMain {
         
         switch (args[1]) {
             case "auto" -> {
-                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("help();"), true);
-                help();
-                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("create(new String[]{\"A\", \"a0\", \"10\"});"), true);
+                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("create A a0 10"), true);
                 create(new String[]{"c", "A", "a0", "10"});
-                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("create(new String[]{\"S\", \"s0\", \"20\"});"), true);
+                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("create S s0 20"), true);
                 create(new String[]{"c", "S", "s0", "20"});
                 ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("ls();"), true);
                 ls();
-                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("test2(new String[]{\"create\", \"s3_a\", \"A\"});"), true);
+                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("test2 create s3_a A"), true);
                 test2(new String[]{"test2", "create", "s3_a", "A"});
-                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("test2(new String[]{\"create\", \"s3_s\", \"S\"});"), true);
+                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("test2 create s3_s S"), true);
                 test2(new String[]{"test2", "create", "s3_s", "S"});
                 ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("ls();"), true);
                 ls();
-                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("test2(new String[]{\"set\", \"a0\", \"in\", \"s3_a\"});"), true);
+                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("test2 set a0 in s3_a"), true);
                 test2(new String[]{"test2", "set", "a0", "in", "s3_a"});
-                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("test2(new String[]{\"set\", \"s0\", \"in\", \"s3_s\"});"), true);
+                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("test2 set s0 in s3_s"), true);
                 test2(new String[]{"test2", "set", "s0", "in", "s3_s"});
                 ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("ls();"), true);
                 ls();
-                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("test2(new String[]{\"meth\", \"add\", \"under\", \"s3_a\"});"), true);
+                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("test2 meth add under s3_a"), true);
                 test2(new String[]{"test2", "meth", "add", "under", "s3_a"});
                 ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("ls();"), true);
                 ls();
-                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("test2(new String[]{\"meth\", \"add\", \"under\", \"s3_s\"});"), true);
+                ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("test2 meth add under s3_s"), true);
                 test2(new String[]{"test2", "meth", "add", "under", "s3_s"});
                 ConsoleColor.magicLog("\n"+ConsoleColor.toCyan("ls();"), true);
                 ls();

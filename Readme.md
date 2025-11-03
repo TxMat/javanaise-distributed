@@ -1,3 +1,6 @@
+# Important :
+Lors des create et des lookup, il faut préciser le type de l'objet. Voire la partie **Test - 1.**
+
 # Utilisation
 
 Les commandes doivent être exécutées depuis le dossier /scripts et le Coordinateur doit être lancé avant les serveurs.
@@ -56,6 +59,10 @@ create <type> <jon> [value]
 Avec comme type disponible : `A` et `S`  
 `jon` le nom de l'objet  
 Éventuellement une valeur précise
+Pour créer des S3, voir la partie ** Test - 6.**
+Pour créer un MRO, voir la partie ** Test - 2.**
+Pour créer des SM, voir la partie ** Test - 5.**
+Pour le cycle, voir la partie ** Test - 4.**
 
 ### B. Récupérer un objet existant 
 Pour récupérer un objet existant sur le Coordinateur :
@@ -288,7 +295,13 @@ Méthodes pour le type :
   - `getObj`
   - `toString`
 
-#### D. Auto : 
+#### D. Récupérer un SM sur un autre server :
+
+```
+lookup SM <jon>
+```
+
+#### E. Auto : 
 
 ```
 sm auto
@@ -312,3 +325,46 @@ sm auto call
 pour accéder au `a` de : <br>
 `sm_s3.get(_sm_a0).get()` <br>
 `sm_s3 -> _sm_a0 -> a`
+
+## 6. Test des S3 (Serializable qui contien un Serializable)
+
+#### A. créer un S3 :
+```
+test2 create <jon> <type>
+```
+avec comme type A ou S
+(Ces contraintes sont uniquement pour simplifier les "interaction" en ligne de commande, sinon il faut directement coder en brute une fonction et rebuild)
+#### B. metre un JvnO dans le S3 :
+l'objet doit exister en local (create ou lookup)
+```
+create <A/S> <jon>
+```
+ou 
+```
+lookup <A/S> <jon>
+```
+Mettre l'objet dans le S3 :
+```
+test2 set <jon> in <s3 jon>
+```
+#### C. Appeler une methode sur l'objet sous le S3
+
+```
+test2 meth <meth name> under <s3 name>
+```
+avec `<meth name>` : 
+- `add`
+- `set`
+- `get`
+`get` affiche la valeur de l'objet en utilisant getValue() donc récupère la dernière valeur
+
+#### D. Récupérer le S3 sur un autre server :
+
+```
+lookup S3 <s3 name>
+```
+
+#### E. Auto :
+
+Créer un `A`, un `S`, un `S3<A>` et un `S3<S>`.
+Modifit la valeur du `A` sous le `S3<A>` et de même pour le `S3<S>`
