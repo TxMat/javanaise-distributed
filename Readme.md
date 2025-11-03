@@ -118,20 +118,28 @@ ww                      # Test long write lock (blocks for 20 seconds)
 4. On Server 1: `test counter 10` → should show 10
 5. On Server 2: `test counter 5` → should show 15 (synchronized!)
 
-### Scenario 2: Concurrent Access
+### Scenario 2: Stress Test
+1. Start coordinator and two servers
+2. On Server 1: `cpt 1000000`
+3. Server 1 will display a counter and wait 5 seconds before starting
+4. On Server 2: `cpt 1000000` (for better results, start this just before Server 1 starts)
+5. Wait for both to finish (takes about 5 seconds on a decent machine)
+6. On either server: `lookup cpt` and check value (should be 2000000)
+
+### Scenario 3: Concurrent Access
 1. Start coordinator and one server
 2. Run multithread test: `mt test 2`
 3. Value should be 2
 4. Run multithread test: `mt test 100`
 5. Value should be 102
 
-### Scenario 3: Lock Contention
+### Scenario 4: Lock Contention
 1. Start coordinator and two servers
 2. On Server 1: `ww` (locks for 20 seconds)
 3. On Server 2: try `ww`
 4. Server 2 will wait until Server 1's lock is released
 
-### Scenario 4: Ungraceful Disconnection
+### Scenario 5: Ungraceful Disconnection
 1. Start coordinator and two servers
 2. On Server 1: `ww` (locks for 20 seconds)
 3. On Server 2: try `ww`
