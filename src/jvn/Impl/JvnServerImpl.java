@@ -246,6 +246,10 @@ implements JvnLocalServer, JvnRemoteServer {
 		return coord;
 	}
 
+	public static JvnObject getObjectFromMap(int id) {
+		return js.jvnObjectsMap.get(id);
+	}
+
 	public static void putObjectInMap(int id, JvnObject jo) {
 		js.jvnObjectsMap.put(id, jo);
 	}
