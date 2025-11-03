@@ -228,6 +228,11 @@ public class JvnObjectImpl implements JvnObject {
         }
         return jvnGetSharedObject();
     }
+
+    @Override
+    public JvnObjectStatus getLockStatus() {
+        return this.lockStatus;
+    }
     
     @Override
     public String toString() {

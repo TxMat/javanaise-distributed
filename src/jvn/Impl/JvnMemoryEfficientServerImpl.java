@@ -18,6 +18,7 @@ import java.util.function.Function;
 
 import Objects.Debug;
 import jvn.Enums.ConsoleColor;
+import jvn.Enums.JvnObjectStatus;
 import jvn.Exceptions.JvnException;
 import jvn.Interfaces.JvnLocalServer;
 import jvn.Interfaces.JvnObject;
@@ -193,27 +194,36 @@ public class JvnMemoryEfficientServerImpl implements JvnLocalServer, JvnRemoteSe
 
     private void RegisterObject(int id, JvnObject jo) throws JvnException {
         while (evictionCallbacks.size() >= MAX_OBJECTS) {
-            EvictOldestObject();
+            EvictFreeObject();
         }
-        if (Debug.DEBUG) ConsoleColor.magicLog("Registering object ID: " + id);
+        if (Debug.DEBUG)
+            ConsoleColor.magicLog("Registering object ID: " + id);
         JvnServerImpl.putObjectInMap(id, jo);
         RegisterEvictionCallback(JvnServerImpl::removeObjectFromMap, id);
 
-        if (Debug.DEBUG) ConsoleColor.magicLog("Map content: " + JvnServerImpl.showObjectsInMap());
+        if (Debug.DEBUG)
+            ConsoleColor.magicLog("Map content: " + JvnServerImpl.showObjectsInMap());
     }
 
     private void RegisterEvictionCallback(Function<Integer, Object> callback, Integer id) {
-        if (Debug.DEBUG) ConsoleColor.magicLog("Registered eviction callback for object ID: " + id);
+        if (Debug.DEBUG)
+            ConsoleColor.magicLog("Registered eviction callback for object ID: " + id);
         evictionCallbacks.add(new SimpleEntry<>(callback, id));
     }
 
-    private void EvictOldestObject() {
+    private void EvictFreeObject() {
         var callbackEntry = evictionCallbacks.poll();
         if (callbackEntry != null) {
             Function<Integer, Object> callback = callbackEntry.getKey();
             Integer id = callbackEntry.getValue();
-            if (Debug.DEBUG) ConsoleColor.magicLog("Evicting object ID: " + id);
-            callback.apply(id);
+            JvnObjectStatus objectStatus = JvnServerImpl.getObjectFromMap(id).getLockStatus();
+            switch (objectStatus) {
+                case NL, R, RC, RWC -> {
+                    if (Debug.DEBUG) ConsoleColor.magicLog("Eviction of object id with lock status " + objectStatus + ": " + id);
+                    callback.apply(id);
+                }
+                default -> evictionCallbacks.add(callbackEntry);
+            }
         }
     }
 }

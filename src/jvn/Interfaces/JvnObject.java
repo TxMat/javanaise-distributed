@@ -7,9 +7,10 @@
 
 package jvn.Interfaces;
 
-import jvn.Exceptions.JvnException;
-
 import java.io.Serializable;
+
+import jvn.Enums.JvnObjectStatus;
+import jvn.Exceptions.JvnException;
 
 /**
  * Interface of a JVN object.
@@ -87,4 +88,6 @@ public interface JvnObject extends Serializable {
      * @throws JvnException
      **/
     Serializable jvnInvalidateWriterForReader() throws JvnException;
+
+    JvnObjectStatus getLockStatus();
 }
