@@ -88,7 +88,7 @@ ls                      # List all local objects
 |-----------------------|-----------------------------|-----------------------------------------------------------------------------------------|
 | `test`                | `test <name> <value>`       | Add a value to an object and display before/after                                       |
 | `cpt`                 | `cpt <count>`               | Increment counter object N times (performance test)                                     |
-| `waitwrite` or `ww`   | `ww`                        | Test write lock with 20-second delay                                                    |
+| `waitwrite` or `ww`   | `ww`                        | Acquire a long write lock (20 seconds) to test lock contention                          |
 | `multithread` or `mt` | `mt <name> <threads>`       | Test concurrent access with N threads (you **must** be on the `multi-threading` branch) |
 | `mro`                 | see `multi-repartis-objets` | Instructions for this commands are in the corresponding branch README                   |
 

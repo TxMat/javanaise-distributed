@@ -63,8 +63,10 @@ public class JvnServerMain {
         ConsoleColor.magicLog("lookup <jon>               : Récupérer un objet déjà créé et sur le Coord (de type A)", true);
         ConsoleColor.magicLog("list                       : liste des objets locaux", true);
         ConsoleColor.magicLog("mro                        : mro help", true);
-        ConsoleColor.magicLog("test                       : test des truc", true);
+        ConsoleColor.magicLog("test                       : test des trucs", true);
         ConsoleColor.magicLog("cpt <nb>                   : Pour un stress test de compteur", true);
+        ConsoleColor.magicLog("waitwrite                  : Lock un objet en écriture pendant 20s", true);
+        ConsoleColor.magicLog("exit                       : Quitter le serveur proprement", true);
         ConsoleColor.magicLog("print_all <y/n>            : Affiche toutes les logs (yes / no)", true);
     }
     public static void printAll(String[] args){
