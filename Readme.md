@@ -34,6 +34,14 @@ clear && ./compil && ./coord
 ./server
 ```
 
+#### Logs : 
+On peut afficher les logs "poussé" : serialisation / déserialisation custom, appel des Lock, Unlock, ... et autre avec la commande suivante :
+```
+print_all <y/n>
+```
+Par défaut à "no"
+Bien sur ce parametre est propre a chanque machine (l'activer sur le Server 2 ne l'active pas sur le Server 1 et le COordinateur par exemple).
+
 # Test :
 
 ## 1. Créer/Lookup des objets classiques
@@ -90,7 +98,7 @@ Lecture de l'objet :
 ```
 mro <jon> r
 ```
-- `r` = READ
+- `r` = READ ( Va l'afficher dans la console en utilisant @JvnAnnotation(READ) getValue() )
 
 MAJ de la valeur (SET) :
 ```
@@ -103,6 +111,66 @@ MAJ de la valeur (ADD) :
 mro <jon> a <value>
 ```
 - `a` = ADD
+
+#### D. Test conseillé : 
+
+- Utilisation d'un Coordinateur et 2 Servers
+
+Sur le server 1 : Créer le MRO et ajouter 2 objets (éventuelement ls pour voir que le MRO exique bien avec 2 objets) et afficher la valeur de `mro_a0` pour la suite
+- Server 1
+```
+mro init
+mro add mro_a0
+mro add mro_a1
+ls
+mro mro_a0 r 
+```
+Sur le Coordinateur on peut bien voir que les 3 objet sont répartis : 
+- Coord
+```
+ls
+```
+Sur le server 2 on peut récupérer le JvnO `mro_a0` seul, modifier ca valeur et vérifier qu'elle est bien modifier dans le MRO du Server 1 :
+- Server 2 : 
+```
+lookup A mro_a0
+test mro_a0 <value>
+```
+pour rappel : `test <jon> <value>` ajoute `<value>` à l'objet `<jon>` qui doit être une instance de class `A` (vien du main, n'a pas été modifier, c'est codé comme ca pour le simplifier)
+- Server 1 :
+Vérifier que la valeur a bien été modifié : 
+```
+mro mro_a0 r
+```
+
+Pour la suite, on va récupérer le MRO sur le Server 2 et ajouter un objet: 
+- Server 2
+```
+mro init
+mro add mro_a3
+```
+Sur le Server 1, en cas de `ls` il affichera toujours 2 objet car les toString ne mettent pas a jour les JvnObject mais on peut accéder au JvnO `mro_a3` et le modifier en fesant un SET à 0 par exemple :
+- Server 1 
+```
+ls
+mro mro_a3 s 0
+```
+
+Aussi on peut remove un objet sur le Server 1 par exemple :
+- Server 1
+```
+mro remove mro_a1
+```
+On ne peut plus modifier le JvnO `mro_a1` depuis le MRO (on peut toujours tester) mais le mro_a1 existe toujours sur le coordinateur et on peut le lookup individuelement (comportement normal et prévu)
+- Server 2
+```
+mro mro_a1 add 20
+ls
+lookup A mro_a1
+ls
+test mro_a1 20
+```
+
 
 ## 3. Stress Test :
 
@@ -122,7 +190,21 @@ Dans le dossier `scripts` :
 ```
 cpt <nb>
 ```
-Le 1er serveur à utiliser cette commande (donc celui qui va créer l'objet original `A cpt = JvnInterceptor.createInterceptor(...);`) laissera un délai de 5 secondes avant de commencer à "compter"
+Le 1er serveur à utiliser cette commande (donc celui qui va créer l'objet original `A cpt = JvnInterceptor.createInterceptor(...);`) laissera un délai de 5 secondes avant de commencer à "compter".
+Les autres font que récupérer l'objet et lance directement l'incrémentation.
+Il est donc conseillé de lancer le `cpt` du Server 2 en même temps que la fin du compteur du Server 1.
+
+Si toutes les logs sont afficher (pour voir les lock, unlock et les actions) avec la commande suivante :
+```
+print_all y
+```
+Le <nb> conseillé est de 25000 (sur le 1er server a finir sa valeur ne sera pas de 50000 car il n'aura pas "lut" la dernière valeur) mais sur le 2eme on verra bien la valeur de 50000 (pour vérifier que le cpt est bien a 50000, on peut lui ajouter 0 sur le server qui a fini en 1er avec `test cpt 0` ou `lookup A cpt` car le `ls` utilise le `toString` qui ne demande pas de ReadLock et donc ne va pas chercher la dernière valeur)
+
+Sinon il est conseillé d'utiliser 1 000 000 à 2 500 000 sans les logs 
+```
+print_all n
+```
+Par défaut le print_all est a `false` / `no`
 
 ## 4. JvnObject Cyclique (non fonctionnel mais avancé)
 
@@ -140,6 +222,7 @@ Sur un serveur :
 ```
 cycle
 ```
+Ne jamais `ls` ici car c'est un cycle réel, le toString ne le gère pas et donc créé un StackOverflow
 
 Sur le Coordinateur :  
 Afficher comment est représenté le cycle : 
@@ -150,7 +233,15 @@ ls
 #### C. Récupérer le cycle sur le deuxième serveur :
 ```
 lookup S3 cycle
+ls
 ```
+on a : 
+`cycle = S3_Impl { S3_Impl { S3_Impl { S3_Impl { S3_Impl { SerializedInterceptor:{ jon: _s3_2 } } } } } }`
+ou de manière plus lisible : 
+`cycle { _s3_s2 { _s3_s3 { _s3_s4 { cycle { SerializedInterceptor(_s3_s2) } } } } }`
+Ce n'est donc pas un reel cycle, il reste plus qu'a réussir a faire la réel boucle
+
+Il est conseillé de relancer le Server qui a créé le cycle car cela empeche d'utiliser un print sur l'objet sous peine d'erreur
 
 ## 5. SM (Serializable Map)
 

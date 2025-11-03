@@ -269,10 +269,7 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
                 // TODO : possibel comme en C de lancer tout les truc en paralelle et de faire un waitBarrier ?
                 
                 for (JvnRemoteServer jrs : readLock) {
-                    if (jrs.equals(server)) {
-                        ConsoleColor.magicLog("J'ai 3 IQ");
-                        continue;
-                    }
+                    if (jrs.equals(server)) continue;
                     try {
                         jrs.jvnInvalidateReader(joi);
                     } catch (RemoteException e) {
@@ -288,7 +285,7 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
                     jo.updateSerializable(s);
                 }
                 writeLock = server;
-                ConsoleColor.magicLog(hash + writeLock.hashCode() + "\n" + this + "\nLock unlock :iq: on switchWriter");
+                ConsoleColor.magicLog(hash + writeLock.hashCode() + "\n" + this + "\nLock unlock on switchWriter");
             }
         }
         
@@ -302,7 +299,7 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
                     jo.updateSerializable(s);
                 }
                 writeLock = null;
-                ConsoleColor.magicLog("Lock unlock :iq: on switchWriter");
+                ConsoleColor.magicLog("Lock unlock on switchWriter");
                 return jo;
             }
         }
@@ -328,7 +325,7 @@ public class JvnCoordImpl extends UnicastRemoteObject implements JvnRemoteCoord 
                     writeLock = null;
                 }
                 readLock.remove(js);
-                ConsoleColor.magicLog(this + "\nLock unlock :iq: on removeServer");
+                ConsoleColor.magicLog(this + "\nLock unlock on removeServer");
             }
         }
     }
