@@ -176,8 +176,6 @@ implements JvnLocalServer, JvnRemoteServer {
 		} catch (RemoteException e) {
 			throw new JvnException("Erreur lors de la récupération du LockRead vers le Coord : "+e.getMessage());
 		}
-		// to be completed 
-		
 	}	
 	
 	@Override
